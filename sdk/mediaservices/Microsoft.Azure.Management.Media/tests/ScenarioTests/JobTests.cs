@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using Microsoft.Azure.Management.Media;
@@ -16,7 +16,7 @@ namespace Media.Tests.ScenarioTests
         [Fact]
         public void JobComboTest()
         {
-            using (MockContext context = this.StartMockContextAndInitializeClients(this.GetType().FullName))
+            using (MockContext context = this.StartMockContextAndInitializeClients(this.GetType()))
             {
                 try
                 {
@@ -40,8 +40,7 @@ namespace Media.Tests.ScenarioTests
                     Assert.Empty(jobs);
 
                     // Try to get the job, which should not exist
-                    Job job = MediaClient.Jobs.Get(ResourceGroup, AccountName, transformName, jobName);
-                    Assert.Null(job);
+                    Assert.Equal(System.Net.HttpStatusCode.NotFound, Assert.Throws<ErrorResponseException>(() => MediaClient.Jobs.Get(ResourceGroup, AccountName, transformName, jobName)).Response.StatusCode);
 
                     // Create a job using an input from an HTTP url and an output to an Asset
                     Asset outputAsset = MediaClient.Assets.CreateOrUpdate(ResourceGroup, AccountName, outputAssetName, new Asset());
@@ -61,7 +60,7 @@ namespace Media.Tests.ScenarioTests
                     ValidateJob(jobs.First(), jobName, null, jobInputs, jobOutputs);
 
                     // Get the newly created job
-                    job = MediaClient.Jobs.Get(ResourceGroup, AccountName, transformName, jobName);
+                    Job job = MediaClient.Jobs.Get(ResourceGroup, AccountName, transformName, jobName);
                     Assert.NotNull(job);
                     ValidateJob(job, jobName, null, jobInputs, jobOutputs);
 
@@ -86,8 +85,7 @@ namespace Media.Tests.ScenarioTests
                     Assert.Empty(jobs);
 
                     // Try to get the job, which should not exist
-                    job = MediaClient.Jobs.Get(ResourceGroup, AccountName, transformName, jobName);
-                    Assert.Null(job);
+                    Assert.Equal(System.Net.HttpStatusCode.NotFound, Assert.Throws<ErrorResponseException>(() => MediaClient.Jobs.Get(ResourceGroup, AccountName, transformName, jobName)).Response.StatusCode);
 
                     // Delete the transform
                     MediaClient.Transforms.Delete(ResourceGroup, AccountName, transformName);
@@ -176,3 +174,4 @@ namespace Media.Tests.ScenarioTests
         }
     }
 }
+

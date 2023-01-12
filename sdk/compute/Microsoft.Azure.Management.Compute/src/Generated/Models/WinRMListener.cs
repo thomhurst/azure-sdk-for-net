@@ -29,7 +29,7 @@ namespace Microsoft.Azure.Management.Compute.Models
         /// <summary>
         /// Initializes a new instance of the WinRMListener class.
         /// </summary>
-        /// <param name="protocol">Specifies the protocol of listener.
+        /// <param name="protocol">Specifies the protocol of WinRM listener.
         /// &lt;br&gt;&lt;br&gt; Possible values are: &lt;br&gt;**http**
         /// &lt;br&gt;&lt;br&gt; **https**. Possible values include: 'Http',
         /// 'Https'</param>
@@ -42,7 +42,12 @@ namespace Microsoft.Azure.Management.Compute.Models
         /// &lt;br&gt;&lt;br&gt; {&lt;br&gt;
         /// "data":"&lt;Base64-encoded-certificate&gt;",&lt;br&gt;
         /// "dataType":"pfx",&lt;br&gt;
-        /// "password":"&lt;pfx-file-password&gt;"&lt;br&gt;}</param>
+        /// "password":"&lt;pfx-file-password&gt;"&lt;br&gt;} &lt;br&gt; To
+        /// install certificates on a virtual machine it is recommended to use
+        /// the [Azure Key Vault virtual machine extension for
+        /// Linux](https://docs.microsoft.com/azure/virtual-machines/extensions/key-vault-linux)
+        /// or the [Azure Key Vault virtual machine extension for
+        /// Windows](https://docs.microsoft.com/azure/virtual-machines/extensions/key-vault-windows).</param>
         public WinRMListener(ProtocolTypes? protocol = default(ProtocolTypes?), string certificateUrl = default(string))
         {
             Protocol = protocol;
@@ -56,7 +61,7 @@ namespace Microsoft.Azure.Management.Compute.Models
         partial void CustomInit();
 
         /// <summary>
-        /// Gets or sets specifies the protocol of listener.
+        /// Gets or sets specifies the protocol of WinRM listener.
         /// &amp;lt;br&amp;gt;&amp;lt;br&amp;gt; Possible values are:
         /// &amp;lt;br&amp;gt;**http** &amp;lt;br&amp;gt;&amp;lt;br&amp;gt;
         /// **https**. Possible values include: 'Http', 'Https'
@@ -75,6 +80,12 @@ namespace Microsoft.Azure.Management.Compute.Models
         /// "data":"&amp;lt;Base64-encoded-certificate&amp;gt;",&amp;lt;br&amp;gt;
         /// "dataType":"pfx",&amp;lt;br&amp;gt;
         /// "password":"&amp;lt;pfx-file-password&amp;gt;"&amp;lt;br&amp;gt;}
+        /// &amp;lt;br&amp;gt; To install certificates on a virtual machine it
+        /// is recommended to use the [Azure Key Vault virtual machine
+        /// extension for
+        /// Linux](https://docs.microsoft.com/azure/virtual-machines/extensions/key-vault-linux)
+        /// or the [Azure Key Vault virtual machine extension for
+        /// Windows](https://docs.microsoft.com/azure/virtual-machines/extensions/key-vault-windows).
         /// </summary>
         [JsonProperty(PropertyName = "certificateUrl")]
         public string CertificateUrl { get; set; }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using Microsoft.Azure.Management.Media;
@@ -15,7 +15,7 @@ namespace Media.Tests.ScenarioTests
         [Fact]
         public void StreamingPolicyComboTest()
         {
-            using (MockContext context = this.StartMockContextAndInitializeClients(this.GetType().FullName))
+            using (MockContext context = this.StartMockContextAndInitializeClients(this.GetType()))
             {
                 try
                 {
@@ -28,8 +28,7 @@ namespace Media.Tests.ScenarioTests
                     string policyName = TestUtilities.GenerateName("StreamingPolicy");
 
                     // Get the StreamingPolicy, which should not exist
-                    StreamingPolicy policy = MediaClient.StreamingPolicies.Get(ResourceGroup, AccountName, policyName);
-                    Assert.Null(policy);
+                    Assert.Equal(System.Net.HttpStatusCode.NotFound, Assert.Throws<ErrorResponseException>(() => MediaClient.StreamingPolicies.Get(ResourceGroup, AccountName, policyName)).Response.StatusCode);
 
                     // Create a new StreamingPolicy
                     string defaultContentKeyPolicyName = null;
@@ -43,7 +42,7 @@ namespace Media.Tests.ScenarioTests
 
                     // List StreamingPolicies and validate the newly created one shows up
                     policies = MediaClient.StreamingPolicies.List(ResourceGroup, AccountName);
-                    policy = policies.Where(p => !p.Name.StartsWith("Predefined_")).First();
+                    StreamingPolicy policy = policies.Where(p => !p.Name.StartsWith("Predefined_")).First();
                     ValidateStreamingPolicy(policy, policyName, defaultContentKeyPolicyName, commonEncryptionCbcs, commonEncryptionCenc, envelopeEncryption, noEncryption);
 
                     // Get the newly created StreamingPolicy
@@ -59,8 +58,7 @@ namespace Media.Tests.ScenarioTests
                     Assert.Empty(policies.Where(p => !p.Name.StartsWith("Predefined_")));
 
                     // Get the StreamingPolicy, which should not exist
-                    policy = MediaClient.StreamingPolicies.Get(ResourceGroup, AccountName, policyName);
-                    Assert.Null(policy);
+                    Assert.Equal(System.Net.HttpStatusCode.NotFound, Assert.Throws<ErrorResponseException>(() => MediaClient.StreamingPolicies.Get(ResourceGroup, AccountName, policyName)).Response.StatusCode);
                 }
                 finally
                 {
@@ -128,3 +126,4 @@ namespace Media.Tests.ScenarioTests
         }
     }
 }
+

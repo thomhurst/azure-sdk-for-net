@@ -3,10 +3,10 @@
 
 namespace Microsoft.Azure.ServiceBus
 {
+    using Primitives;
     using System;
     using System.Threading;
     using System.Threading.Tasks;
-    using Primitives;
 
     /// <summary>Provides options associated with message pump processing using
     /// <see cref="QueueClient.RegisterMessageHandler(Func{Message, CancellationToken, Task}, MessageHandlerOptions)" /> and
@@ -64,6 +64,8 @@ namespace Microsoft.Azure.ServiceBus
         /// <summary>Gets or sets the maximum duration within which the lock will be renewed automatically. This
         /// value should be greater than the longest message lock duration; for example, the LockDuration Property. </summary>
         /// <value>The maximum duration during which locks are automatically renewed.</value>
+        /// <remarks>The message renew can continue for sometime in the background
+        /// after completion of message and result in a few false MessageLockLostExceptions temporarily.</remarks>
         public TimeSpan MaxAutoRenewDuration
         {
             get => this.maxAutoRenewDuration;

@@ -41,13 +41,20 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         /// <param name="maxConcurrentConnections">The maximum concurrent
         /// connection count for the source data store. Type: integer (or
         /// Expression with resultType integer).</param>
+        /// <param name="disableMetricsCollection">If true, disable data store
+        /// metrics collection. Default is false. Type: boolean (or Expression
+        /// with resultType boolean).</param>
         /// <param name="storeSettings">DelimitedText store settings.</param>
         /// <param name="formatSettings">DelimitedText format settings.</param>
-        public DelimitedTextSource(IDictionary<string, object> additionalProperties = default(IDictionary<string, object>), object sourceRetryCount = default(object), object sourceRetryWait = default(object), object maxConcurrentConnections = default(object), ConnectorReadSetting storeSettings = default(ConnectorReadSetting), DelimitedTextReadSetting formatSettings = default(DelimitedTextReadSetting))
-            : base(additionalProperties, sourceRetryCount, sourceRetryWait, maxConcurrentConnections)
+        /// <param name="additionalColumns">Specifies the additional columns to
+        /// be added to source data. Type: array of objects(AdditionalColumns)
+        /// (or Expression with resultType array of objects).</param>
+        public DelimitedTextSource(IDictionary<string, object> additionalProperties = default(IDictionary<string, object>), object sourceRetryCount = default(object), object sourceRetryWait = default(object), object maxConcurrentConnections = default(object), object disableMetricsCollection = default(object), StoreReadSettings storeSettings = default(StoreReadSettings), DelimitedTextReadSettings formatSettings = default(DelimitedTextReadSettings), object additionalColumns = default(object))
+            : base(additionalProperties, sourceRetryCount, sourceRetryWait, maxConcurrentConnections, disableMetricsCollection)
         {
             StoreSettings = storeSettings;
             FormatSettings = formatSettings;
+            AdditionalColumns = additionalColumns;
             CustomInit();
         }
 
@@ -60,30 +67,21 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         /// Gets or sets delimitedText store settings.
         /// </summary>
         [JsonProperty(PropertyName = "storeSettings")]
-        public ConnectorReadSetting StoreSettings { get; set; }
+        public StoreReadSettings StoreSettings { get; set; }
 
         /// <summary>
         /// Gets or sets delimitedText format settings.
         /// </summary>
         [JsonProperty(PropertyName = "formatSettings")]
-        public DelimitedTextReadSetting FormatSettings { get; set; }
+        public DelimitedTextReadSettings FormatSettings { get; set; }
 
         /// <summary>
-        /// Validate the object.
+        /// Gets or sets specifies the additional columns to be added to source
+        /// data. Type: array of objects(AdditionalColumns) (or Expression with
+        /// resultType array of objects).
         /// </summary>
-        /// <exception cref="Rest.ValidationException">
-        /// Thrown if validation fails
-        /// </exception>
-        public virtual void Validate()
-        {
-            if (StoreSettings != null)
-            {
-                StoreSettings.Validate();
-            }
-            if (FormatSettings != null)
-            {
-                FormatSettings.Validate();
-            }
-        }
+        [JsonProperty(PropertyName = "additionalColumns")]
+        public object AdditionalColumns { get; set; }
+
     }
 }

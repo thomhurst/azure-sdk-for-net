@@ -13,23 +13,17 @@ namespace Microsoft.Azure.Services.AppAuthentication
 {
     internal class KeyVaultClient
     {
+        // Configurable MSI retry timeout for internal MsiAccessTokenProvider
+        private readonly int _msiRetryTimeoutInSeconds;
+
         // These members allow for unit testing
         private readonly HttpClient _httpClient;
         private NonInteractiveAzureServiceTokenProviderBase _tokenProvider;
 
-        // Key Vault constants and well-known values
+        // In case of User assigned MSI, this needs to be provided
+        private string _managedIdentityClientId;
+
         private const string KeyVaultRestApiVersion = "2016-10-01";
-        private const string AzureKeyVaultDnsSuffix = "vault.azure.net";
-        private const string ChinaKeyVaultDnsSuffix = "vault.azure.cn";
-        private const string USGovernmentKeyVaultDnsSuffix = "vault.usgovcloudapi.net";
-        private const string GermanKeyVaultDnsSuffix = "vault.microsoftazure.de";
-        private readonly List<string> WellKnownKeyVaultDnsSuffixes = new List<string>()
-        {
-            AzureKeyVaultDnsSuffix,
-            ChinaKeyVaultDnsSuffix,
-            USGovernmentKeyVaultDnsSuffix,
-            GermanKeyVaultDnsSuffix
-        };
 
         // Error messages
         internal const string BearerChallengeMissingOrInvalidError = "A bearer challenge was not returned or is invalid.";
@@ -37,7 +31,6 @@ namespace Microsoft.Azure.Services.AppAuthentication
         internal const string KeyVaultAccessTokenRetrievalError = "Unable to get a Key Vault access token to acquire certificate.";
         internal const string KeyVaultResponseError = "Key Vault returned an error.";
         internal const string SecretBundleInvalidContentTypeError = "Specified secret identifier does not contain private key data. Please check you are providing the secret identifier for the Key Vault client certificate.";
-        internal const string SecretIdentifierInvalidHostError = "Specified secret identifier has an unrecognized hostname.";
         internal const string SecretIdentifierInvalidSchemeError = "Specified identifier must use HTTPS.";
         internal const string SecretIdentifierInvalidTypeError = "Specified identifier is not a secret identifier.";
         internal const string SecretIdentifierInvalidUriError = "Specified secret identifier is not a valid URI.";
@@ -45,13 +38,23 @@ namespace Microsoft.Azure.Services.AppAuthentication
 
         internal Principal PrincipalUsed { get; private set; }
 
-        public KeyVaultClient(HttpClient httpClient = null, NonInteractiveAzureServiceTokenProviderBase tokenProvider = null)
+        internal KeyVaultClient(int msiRetryTimeoutInSeconds = 0, string managedIdentityClientId = null, HttpClient httpClient = null, NonInteractiveAzureServiceTokenProviderBase tokenProvider = null)
         {
+            _msiRetryTimeoutInSeconds = msiRetryTimeoutInSeconds;
+#if NETSTANDARD1_4 || net452 || net461
             _httpClient = httpClient ?? new HttpClient();
+#else
+            _httpClient = httpClient ?? new HttpClient(new HttpClientHandler() { CheckCertificateRevocationList = true });
+#endif
             _tokenProvider = tokenProvider;
+            _managedIdentityClientId = managedIdentityClientId;
         }
 
-        public async Task<X509Certificate2> GetCertificateAsync(string secretIdentifier, CancellationToken cancellationToken = default(CancellationToken))
+        internal KeyVaultClient(HttpClient httpClient, NonInteractiveAzureServiceTokenProviderBase tokenProvider = null, string managedIdentityClientId = null) : this(0, managedIdentityClientId, httpClient, tokenProvider)
+        {
+        }
+
+        internal async Task<X509Certificate2> GetCertificateAsync(string secretIdentifier, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -84,7 +87,18 @@ namespace Microsoft.Azure.Services.AppAuthentication
 
                 byte[] rawCertBytes = Convert.FromBase64String(secretBundle.Value);
 
-                X509Certificate2 certificate = new X509Certificate2(rawCertBytes);
+                X509Certificate2 certificate = null;
+
+                // access to key store dependent on environment, try to import to both user and machine key stores
+                try
+                {
+                    certificate = new X509Certificate2(rawCertBytes, default(string), X509KeyStorageFlags.UserKeySet);
+                }
+                catch
+                {
+                    certificate = new X509Certificate2(rawCertBytes, default(string), X509KeyStorageFlags.MachineKeySet);
+                }
+
                 return certificate;
             }
             catch (KeyVaultAccessTokenRetrievalException exp)
@@ -108,10 +122,6 @@ namespace Microsoft.Azure.Services.AppAuthentication
             if (!secretUri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
                 throw new Exception(SecretIdentifierInvalidSchemeError);
 
-            // Ensure secret URI host ends in well-known Key Vault DNS suffix
-            if (!WellKnownKeyVaultDnsSuffixes.Any(dnsSuffix => secretUri.Host.EndsWith(dnsSuffix, StringComparison.OrdinalIgnoreCase)))
-                throw new Exception(SecretIdentifierInvalidHostError);
-
             // Ensure secret URI is actually a secret identifier (and not key or certificate identifier)
             if (!secretUri.LocalPath.StartsWith("/secrets/", StringComparison.OrdinalIgnoreCase))
                 throw new Exception(SecretIdentifierInvalidTypeError);
@@ -124,6 +134,7 @@ namespace Microsoft.Azure.Services.AppAuthentication
             {
             }
         }
+
         private async Task<string> GetKeyVaultAccessTokenAsync(string secretUrl, CancellationToken cancellationToken)
         {
             // Send an anonymous request to Key Vault endpoint to get an OAuth2 HTTP Bearer challenge
@@ -146,8 +157,8 @@ namespace Microsoft.Azure.Services.AppAuthentication
             {
                 try
                 {
-                    var authResult = await tokenProvider.GetAuthResultAsync(challenge.AuthorizationServer,
-                        challenge.Resource, challenge.Scope, cancellationToken).ConfigureAwait(false);
+                    var authResult = await tokenProvider.GetAuthResultAsync(challenge.Resource,
+                        challenge.AuthorizationServer, cancellationToken).ConfigureAwait(false);
 
                     PrincipalUsed = tokenProvider.PrincipalUsed;
 
@@ -179,7 +190,7 @@ namespace Microsoft.Azure.Services.AppAuthentication
                 string azureAdInstance = UriHelper.GetAzureAdInstanceByAuthority(authority);
                 tokenProviders = new List<NonInteractiveAzureServiceTokenProviderBase>
                 {
-                    new MsiAccessTokenProvider(),
+                    new MsiAccessTokenProvider(_msiRetryTimeoutInSeconds, _managedIdentityClientId),
                     new VisualStudioAccessTokenProvider(new ProcessManager()),
                     new AzureCliAccessTokenProvider(new ProcessManager()),
 #if FullNetFx

@@ -46,11 +46,16 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         /// <param name="maxConcurrentConnections">The maximum concurrent
         /// connection count for the sink data store. Type: integer (or
         /// Expression with resultType integer).</param>
+        /// <param name="disableMetricsCollection">If true, disable data store
+        /// metrics collection. Default is false. Type: boolean (or Expression
+        /// with resultType boolean).</param>
         /// <param name="storeSettings">Parquet store settings.</param>
-        public ParquetSink(IDictionary<string, object> additionalProperties = default(IDictionary<string, object>), object writeBatchSize = default(object), object writeBatchTimeout = default(object), object sinkRetryCount = default(object), object sinkRetryWait = default(object), object maxConcurrentConnections = default(object), ConnectorWriteSetting storeSettings = default(ConnectorWriteSetting))
-            : base(additionalProperties, writeBatchSize, writeBatchTimeout, sinkRetryCount, sinkRetryWait, maxConcurrentConnections)
+        /// <param name="formatSettings">Parquet format settings.</param>
+        public ParquetSink(IDictionary<string, object> additionalProperties = default(IDictionary<string, object>), object writeBatchSize = default(object), object writeBatchTimeout = default(object), object sinkRetryCount = default(object), object sinkRetryWait = default(object), object maxConcurrentConnections = default(object), object disableMetricsCollection = default(object), StoreWriteSettings storeSettings = default(StoreWriteSettings), ParquetWriteSettings formatSettings = default(ParquetWriteSettings))
+            : base(additionalProperties, writeBatchSize, writeBatchTimeout, sinkRetryCount, sinkRetryWait, maxConcurrentConnections, disableMetricsCollection)
         {
             StoreSettings = storeSettings;
+            FormatSettings = formatSettings;
             CustomInit();
         }
 
@@ -63,20 +68,13 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         /// Gets or sets parquet store settings.
         /// </summary>
         [JsonProperty(PropertyName = "storeSettings")]
-        public ConnectorWriteSetting StoreSettings { get; set; }
+        public StoreWriteSettings StoreSettings { get; set; }
 
         /// <summary>
-        /// Validate the object.
+        /// Gets or sets parquet format settings.
         /// </summary>
-        /// <exception cref="Rest.ValidationException">
-        /// Thrown if validation fails
-        /// </exception>
-        public virtual void Validate()
-        {
-            if (StoreSettings != null)
-            {
-                StoreSettings.Validate();
-            }
-        }
+        [JsonProperty(PropertyName = "formatSettings")]
+        public ParquetWriteSettings FormatSettings { get; set; }
+
     }
 }

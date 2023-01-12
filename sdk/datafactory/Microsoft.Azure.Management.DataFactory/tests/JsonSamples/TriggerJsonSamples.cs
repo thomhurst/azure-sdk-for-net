@@ -9,6 +9,35 @@ namespace DataFactory.Tests.JsonSamples
     public class TriggerJsonSamples : JsonSampleCollection<TriggerJsonSamples>
     {
         [JsonSample]
+        public const string ChainingTriggerSample = @"
+    {
+        ""name"": ""chainingTrigger"",
+        ""properties"": {
+            ""type"": ""ChainingTrigger"",
+            ""pipeline"": {
+              ""pipelineReference"": {
+                ""referenceName"": ""childPipeline"",
+                ""type"": ""PipelineReference""
+              },
+              ""parameters"": {}
+            },
+            ""typeProperties"": {
+              ""dependsOn"": [
+                {
+                  ""referenceName"": ""parentPipeline1"",
+                  ""type"": ""PipelineReference""
+                },
+                {
+                  ""referenceName"": ""parentPipeline2"",
+                  ""type"": ""PipelineReference""
+                }
+              ],
+              ""runDimension"": ""JobId""
+            }
+        }
+    }";
+
+        [JsonSample]
         public const string BlobTriggerSample = @"
 {
   name: ""myDemoTrigger"",
@@ -151,6 +180,62 @@ namespace DataFactory.Tests.JsonSamples
 }
 ";
 
+        public const string TumblingWindowTriggerSample_Month = @"
+{
+  name: ""myDemoTWTrigger"",
+  properties: {
+    type: ""TumblingWindowTrigger"",
+    typeProperties: {
+      frequency: ""Month"",
+      interval: 24,
+      startTime: ""2017-04-14T13:00:00Z"",
+      endTime: ""2018-04-14T13:00:00Z"",
+      delay: ""00:00:01"",
+      retryPolicy: {
+        count: 3,
+        intervalInSeconds: 30
+      },
+      maxConcurrency: 10
+    },
+    pipeline: {
+      pipelineReference: {
+        type: ""PipelineReference"",
+        referenceName: ""myPipeline""
+      },
+      parameters: {
+        windowStart: {
+          type: ""Expression"",
+          value: ""@{trigger().outputs.windowStartTime}""
+        },
+        windowEnd: {
+          type: ""Expression"",
+          value: ""@{trigger().outputs.windowEndTime}""
+        },
+      }
+    }
+  }
+}
+";
+
+        [JsonSample]
+        public const string RerunTumblingWindowTriggerSample = @"
+{
+  name: ""myDemoRerunTWTrigger"",
+  properties: {
+    type: ""RerunTumblingWindowTrigger"",
+    typeProperties: {
+      ""parentTrigger"": {
+                ""type"": ""TriggerReference"",
+                ""referenceName"": ""parentTrigger""
+            },
+            ""requestedStartTime"": ""2017-04-14T13:00:00Z"",
+            ""requestedEndTime"": ""2018-04-14T13:00:00Z"",
+            ""rerunConcurrency"": 1
+    }
+  }
+}
+";
+
         [JsonSample]
         public const string TumblingWindowTriggerWithDependencySample = @"
 {
@@ -203,6 +288,24 @@ namespace DataFactory.Tests.JsonSamples
         },
       }
     }
+  }
+}
+";
+
+        [JsonSample]
+        public const string CustomEventsTriggerSample = @"
+{
+  name: ""myDemoCustomEventsTrigger"",
+  properties: {
+    type: ""CustomEventsTrigger"",
+    typeProperties: {
+      subjectBeginsWith: ""B"",
+      subjectEndsWith: ""E"",
+      events:  [
+        ""Microsoft.Storage.BlobCreated""
+      ],
+      scope: ""demoScope""
+    } 
   }
 }
 ";

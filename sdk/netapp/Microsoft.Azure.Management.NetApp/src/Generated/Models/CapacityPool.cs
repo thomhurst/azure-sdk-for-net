@@ -14,6 +14,8 @@ namespace Microsoft.Azure.Management.NetApp.Models
     using Microsoft.Rest.Azure;
     using Microsoft.Rest.Serialization;
     using Newtonsoft.Json;
+    using System.Collections;
+    using System.Collections.Generic;
     using System.Linq;
 
     /// <summary>
@@ -34,25 +36,44 @@ namespace Microsoft.Azure.Management.NetApp.Models
         /// Initializes a new instance of the CapacityPool class.
         /// </summary>
         /// <param name="location">Resource location</param>
+        /// <param name="size">size</param>
+        /// <param name="serviceLevel">serviceLevel</param>
         /// <param name="id">Resource Id</param>
         /// <param name="name">Resource name</param>
+        /// <param name="etag">A unique read-only string that changes whenever
+        /// the resource is updated.</param>
         /// <param name="type">Resource type</param>
         /// <param name="tags">Resource tags</param>
         /// <param name="poolId">poolId</param>
-        /// <param name="size">size</param>
-        /// <param name="serviceLevel">serviceLevel</param>
         /// <param name="provisioningState">Azure lifecycle management</param>
-        public CapacityPool(string location, string id = default(string), string name = default(string), string type = default(string), object tags = default(object), string poolId = default(string), long? size = default(long?), string serviceLevel = default(string), string provisioningState = default(string))
+        /// <param name="totalThroughputMibps">Total throughput of pool in
+        /// Mibps</param>
+        /// <param name="utilizedThroughputMibps">Utilized throughput of pool
+        /// in Mibps</param>
+        /// <param name="qosType">qosType</param>
+        /// <param name="coolAccess">If enabled (true) the pool can contain
+        /// cool Access enabled volumes.</param>
+        /// <param name="encryptionType">encryptionType</param>
+        /// <param name="systemData">The system meta data relating to this
+        /// resource.</param>
+        public CapacityPool(string location, long size, string serviceLevel, string id = default(string), string name = default(string), string etag = default(string), string type = default(string), IDictionary<string, string> tags = default(IDictionary<string, string>), string poolId = default(string), string provisioningState = default(string), double? totalThroughputMibps = default(double?), double? utilizedThroughputMibps = default(double?), string qosType = default(string), bool? coolAccess = default(bool?), string encryptionType = default(string), SystemData systemData = default(SystemData))
         {
             Location = location;
             Id = id;
             Name = name;
+            Etag = etag;
             Type = type;
             Tags = tags;
             PoolId = poolId;
             Size = size;
             ServiceLevel = serviceLevel;
             ProvisioningState = provisioningState;
+            TotalThroughputMibps = totalThroughputMibps;
+            UtilizedThroughputMibps = utilizedThroughputMibps;
+            QosType = qosType;
+            CoolAccess = coolAccess;
+            EncryptionType = encryptionType;
+            SystemData = systemData;
             CustomInit();
         }
 
@@ -80,6 +101,13 @@ namespace Microsoft.Azure.Management.NetApp.Models
         public string Name { get; private set; }
 
         /// <summary>
+        /// Gets a unique read-only string that changes whenever the resource
+        /// is updated.
+        /// </summary>
+        [JsonProperty(PropertyName = "etag")]
+        public string Etag { get; private set; }
+
+        /// <summary>
         /// Gets resource type
         /// </summary>
         [JsonProperty(PropertyName = "type")]
@@ -89,7 +117,7 @@ namespace Microsoft.Azure.Management.NetApp.Models
         /// Gets or sets resource tags
         /// </summary>
         [JsonProperty(PropertyName = "tags")]
-        public object Tags { get; set; }
+        public IDictionary<string, string> Tags { get; set; }
 
         /// <summary>
         /// Gets poolId
@@ -104,18 +132,18 @@ namespace Microsoft.Azure.Management.NetApp.Models
         /// Gets or sets size
         /// </summary>
         /// <remarks>
-        /// Provisioned size of the pool (in bytes). Allowed values are in 4TiB
+        /// Provisioned size of the pool (in bytes). Allowed values are in 1TiB
         /// chunks (value must be multiply of 4398046511104).
         /// </remarks>
         [JsonProperty(PropertyName = "properties.size")]
-        public long? Size { get; set; }
+        public long Size { get; set; }
 
         /// <summary>
         /// Gets or sets serviceLevel
         /// </summary>
         /// <remarks>
-        /// The service level of the file system. Possible values include:
-        /// 'Standard', 'Premium', 'Ultra'
+        /// Possible values include: 'Standard', 'Premium', 'Ultra',
+        /// 'StandardZRS'
         /// </remarks>
         [JsonProperty(PropertyName = "properties.serviceLevel")]
         public string ServiceLevel { get; set; }
@@ -125,6 +153,52 @@ namespace Microsoft.Azure.Management.NetApp.Models
         /// </summary>
         [JsonProperty(PropertyName = "properties.provisioningState")]
         public string ProvisioningState { get; private set; }
+
+        /// <summary>
+        /// Gets total throughput of pool in Mibps
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.totalThroughputMibps")]
+        public double? TotalThroughputMibps { get; private set; }
+
+        /// <summary>
+        /// Gets utilized throughput of pool in Mibps
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.utilizedThroughputMibps")]
+        public double? UtilizedThroughputMibps { get; private set; }
+
+        /// <summary>
+        /// Gets or sets qosType
+        /// </summary>
+        /// <remarks>
+        /// The qos type of the pool. Possible values include: 'Auto', 'Manual'
+        /// </remarks>
+        [JsonProperty(PropertyName = "properties.qosType")]
+        public string QosType { get; set; }
+
+        /// <summary>
+        /// Gets or sets if enabled (true) the pool can contain cool Access
+        /// enabled volumes.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.coolAccess")]
+        public bool? CoolAccess { get; set; }
+
+        /// <summary>
+        /// Gets or sets encryptionType
+        /// </summary>
+        /// <remarks>
+        /// Encryption type of the capacity pool, set encryption type for data
+        /// at rest for this pool and all volumes in it. This value can only be
+        /// set when creating new pool. Possible values include: 'Single',
+        /// 'Double'
+        /// </remarks>
+        [JsonProperty(PropertyName = "properties.encryptionType")]
+        public string EncryptionType { get; set; }
+
+        /// <summary>
+        /// Gets the system meta data relating to this resource.
+        /// </summary>
+        [JsonProperty(PropertyName = "systemData")]
+        public SystemData SystemData { get; private set; }
 
         /// <summary>
         /// Validate the object.
@@ -137,6 +211,10 @@ namespace Microsoft.Azure.Management.NetApp.Models
             if (Location == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "Location");
+            }
+            if (ServiceLevel == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "ServiceLevel");
             }
             if (PoolId != null)
             {
@@ -152,14 +230,6 @@ namespace Microsoft.Azure.Management.NetApp.Models
                 {
                     throw new ValidationException(ValidationRules.Pattern, "PoolId", "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$");
                 }
-            }
-            if (Size > 549755813888000)
-            {
-                throw new ValidationException(ValidationRules.InclusiveMaximum, "Size", 549755813888000);
-            }
-            if (Size < 4398046511104)
-            {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "Size", 4398046511104);
             }
         }
     }

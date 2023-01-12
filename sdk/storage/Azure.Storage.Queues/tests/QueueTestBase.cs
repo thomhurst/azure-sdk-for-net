@@ -1,164 +1,281 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See License.txt in the project root for
-// license information.
+// Licensed under the MIT License.
 
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using Azure.Core.Pipeline.Policies;
-using Azure.Core.Testing;
-using Azure.Storage.Common;
+using Azure.Core;
+using Azure.Core.Pipeline;
+using Azure.Core.TestFramework;
 using Azure.Storage.Queues.Models;
+using Azure.Storage.Sas;
 using Azure.Storage.Test;
 using Azure.Storage.Test.Shared;
 
 namespace Azure.Storage.Queues.Tests
 {
-    public class QueueTestBase : StorageTestBase
+    public class QueueTestBase : StorageTestBase<StorageTestEnvironment>
     {
-        public string GetNewQueueName() => $"test-queue-{this.Recording.Random.NewGuid()}";
-        public string GetNewMessageId() => $"test-message-{this.Recording.Random.NewGuid()}";
+        /// <summary>
+        /// Source of clients.
+        /// </summary>
+        protected ClientBuilder<QueueServiceClient, QueueClientOptions> QueuesClientBuilder { get; }
 
-        public QueueTestBase(RecordedTestMode? mode = null)
-            : base(mode)
+        public string GetNewQueueName() => QueuesClientBuilder.GetNewQueueName();
+        public string GetNewMessageId() => QueuesClientBuilder.GetNewMessageId();
+
+        public Uri GetDefaultPrimaryEndpoint() => new Uri(QueuesClientBuilder.Tenants.TestConfigDefault.QueueServiceEndpoint);
+
+        protected string SecondaryStorageTenantPrimaryHost() =>
+            new Uri(Tenants.TestConfigSecondary.QueueServiceEndpoint).Host;
+
+        protected string SecondaryStorageTenantSecondaryHost() =>
+            new Uri(Tenants.TestConfigSecondary.QueueServiceSecondaryEndpoint).Host;
+
+        public QueueTestBase(bool async) : this(async, null) { }
+
+        public QueueTestBase(bool async, RecordedTestMode? mode = null)
+            : base(async, mode)
         {
+            QueuesClientBuilder = new ClientBuilder<QueueServiceClient, QueueClientOptions>(
+                ServiceEndpoint.Queue,
+                Tenants,
+                (uri, clientOptions) => new QueueServiceClient(uri, clientOptions),
+                (uri, sharedKeyCredential, clientOptions) => new QueueServiceClient(uri, sharedKeyCredential, clientOptions),
+                (uri, tokenCredential, clientOptions) => new QueueServiceClient(uri, tokenCredential, clientOptions),
+                (uri, azureSasCredential, clientOptions) => new QueueServiceClient(uri, azureSasCredential, clientOptions),
+                () => new QueueClientOptions());
         }
 
-        public QueueConnectionOptions GetOptions(IStorageCredentials credentials = null)
-            => this.Recording.InstrumentClientOptions(
-                    new QueueConnectionOptions
-                    {
-                        Credentials = credentials,
-                        ResponseClassifier = new TestResponseClassifier(),
-                        LoggingPolicy = LoggingPolicy.Shared,
-                        RetryPolicy =
-                            new RetryPolicy()
-                            {
-                                Mode = RetryMode.Exponential,
-                                MaxRetries = Azure.Storage.Constants.MaxReliabilityRetries,
-                                Delay = TimeSpan.FromSeconds(this.Mode == RecordedTestMode.Playback ? 0.01 : 0.5),
-                                MaxDelay = TimeSpan.FromSeconds(this.Mode == RecordedTestMode.Playback ? 0.1 : 10)
-                            }
-                    });
+        public QueueClientOptions GetOptions()
+            => QueuesClientBuilder.GetOptions();
 
-        public QueueServiceClient GetServiceClient_SharedKey()
-            => this.InstrumentClient(
+        public QueueServiceClient GetServiceClient_SharedKey(QueueClientOptions options = default)
+            => InstrumentClient(GetServiceClient_SharedKey_UnInstrumented(options));
+
+        private QueueServiceClient GetServiceClient_SharedKey_UnInstrumented(QueueClientOptions options = default)
+            => new QueueServiceClient(
+                    new Uri(TestConfigDefault.QueueServiceEndpoint),
+                    new StorageSharedKeyCredential(
+                        TestConfigDefault.AccountName,
+                        TestConfigDefault.AccountKey),
+                    options ?? GetOptions());
+
+        public QueueServiceClient GetServiceClient_AccountSas(StorageSharedKeyCredential sharedKeyCredentials = default, SasQueryParameters sasCredentials = default)
+            => InstrumentClient(
                 new QueueServiceClient(
-                    new Uri(TestConfigurations.DefaultTargetTenant.QueueServiceEndpoint),
-                    this.GetOptions(
-                        new SharedKeyCredentials(
-                            TestConfigurations.DefaultTargetTenant.AccountName,
-                            TestConfigurations.DefaultTargetTenant.AccountKey))));
+                    new Uri($"{TestConfigDefault.QueueServiceEndpoint}?{sasCredentials ?? GetNewAccountSasCredentials(sharedKeyCredentials ?? GetNewSharedKeyCredentials())}"),
+                    GetOptions()));
 
-        public QueueServiceClient GetServiceClient_AccountSas(SharedKeyCredentials sharedKeyCredentials = default, SasQueryParameters sasCredentials = default)
-            => this.InstrumentClient(
+        public QueueServiceClient GetServiceClient_QueueServiceSas(string queueName, StorageSharedKeyCredential sharedKeyCredentials = default, SasQueryParameters sasCredentials = default)
+            => InstrumentClient(
                 new QueueServiceClient(
-                    new Uri($"{TestConfigurations.DefaultTargetTenant.QueueServiceEndpoint}?{sasCredentials ?? this.GetNewAccountSasCredentials(sharedKeyCredentials ?? this.GetNewSharedKeyCredentials())}"),
-                    this.GetOptions()));
+                    new Uri($"{TestConfigDefault.QueueServiceEndpoint}?{sasCredentials ?? GetNewQueueServiceSasCredentials(queueName, sharedKeyCredentials ?? GetNewSharedKeyCredentials())}"),
+                    GetOptions()));
 
-        public QueueServiceClient GetServiceClient_QueueServiceSas(string queueName, SharedKeyCredentials sharedKeyCredentials = default, SasQueryParameters sasCredentials = default)
-            => this.InstrumentClient(
-                new QueueServiceClient(
-                    new Uri($"{TestConfigurations.DefaultTargetTenant.QueueServiceEndpoint}?{sasCredentials ?? this.GetNewQueueServiceSasCredentials(queueName, sharedKeyCredentials ?? this.GetNewSharedKeyCredentials())}"),
-                    this.GetOptions()));
+        public Security.KeyVault.Keys.KeyClient GetKeyClient_TargetKeyClient()
+            => GetKeyClient(TestConfigurations.DefaultTargetKeyVault);
 
-        public async Task<QueueServiceClient> GetServiceClient_OauthAccount()
-            => await this.GetServiceClientFromOauthConfig(TestConfigurations.DefaultTargetOAuthTenant);
+        public TokenCredential GetTokenCredential_TargetKeyClient()
+            => GetKeyClientTokenCredential(TestConfigurations.DefaultTargetKeyVault);
 
-        private async Task<QueueServiceClient> GetServiceClientFromOauthConfig(TenantConfiguration config)
-        {
-            var initalToken = await this.GenerateOAuthToken(
-                config.ActiveDirectoryAuthEndpoint,
+        private static Security.KeyVault.Keys.KeyClient GetKeyClient(KeyVaultConfiguration config)
+            => new Security.KeyVault.Keys.KeyClient(
+                new Uri(config.VaultEndpoint),
+                GetKeyClientTokenCredential(config));
+
+        private static TokenCredential GetKeyClientTokenCredential(KeyVaultConfiguration config)
+            => new Identity.ClientSecretCredential(
                 config.ActiveDirectoryTenantId,
                 config.ActiveDirectoryApplicationId,
                 config.ActiveDirectoryApplicationSecret);
 
-            return this.InstrumentClient(
-                new QueueServiceClient(
-                    new Uri(config.QueueServiceEndpoint),
-                    this.GetOptions(new TokenCredentials(initalToken))));
-        }
+        public QueueServiceClient GetServiceClient_SecondaryAccount_ReadEnabledOnRetry(int numberOfReadFailuresToSimulate, out TestExceptionPolicy testExceptionPolicy, bool simulate404 = false)
+            => GetSecondaryReadServiceClient(Tenants.TestConfigSecondary, numberOfReadFailuresToSimulate, out testExceptionPolicy, simulate404);
 
-        public IDisposable GetNewQueue(out QueueClient queue, QueueServiceClient service = default, IDictionary<string, string> metadata = default)
+        public QueueClient GetQueueClient_SecondaryAccount_ReadEnabledOnRetry(int numberOfReadFailuresToSimulate, out TestExceptionPolicy testExceptionPolicy, bool simulate404 = false)
+            => GetSecondaryReadQueueClient(Tenants.TestConfigSecondary, numberOfReadFailuresToSimulate, out testExceptionPolicy, simulate404);
+
+        private QueueServiceClient GetSecondaryReadServiceClient(TenantConfiguration config, int numberOfReadFailuresToSimulate, out TestExceptionPolicy testExceptionPolicy, bool simulate404 = false, List<RequestMethod> enabledRequestMethods = null)
         {
-            var containerName = this.GetNewQueueName();
-            service = service ?? this.GetServiceClient_SharedKey();
-            var result = new DisposingQueue(
-                this.InstrumentClient(service.GetQueueClient(containerName)),
-                metadata ?? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase));
-            queue = this.InstrumentClient(result.QueueClient);
-            return result;
+            QueueClientOptions options = getSecondaryStorageOptions(config, out testExceptionPolicy, numberOfReadFailuresToSimulate, simulate404, enabledRequestMethods);
+
+            return InstrumentClient(
+                 new QueueServiceClient(
+                    new Uri(config.QueueServiceEndpoint),
+                    new StorageSharedKeyCredential(config.AccountName, config.AccountKey),
+                    options));
         }
 
-        public SharedKeyCredentials GetNewSharedKeyCredentials()
-            => new SharedKeyCredentials(
-                TestConfigurations.DefaultTargetTenant.AccountName,
-                TestConfigurations.DefaultTargetTenant.AccountKey);
+        private QueueClient GetSecondaryReadQueueClient(TenantConfiguration config, int numberOfReadFailuresToSimulate, out TestExceptionPolicy testExceptionPolicy, bool simulate404 = false, List<RequestMethod> enabledRequestMethods = null)
+        {
+            QueueClientOptions options = getSecondaryStorageOptions(config, out testExceptionPolicy, numberOfReadFailuresToSimulate, simulate404, enabledRequestMethods);
 
-        public SasQueryParameters GetNewAccountSasCredentials(SharedKeyCredentials sharedKeyCredentials = default)
-            => new AccountSasSignatureValues
+            return InstrumentClient(
+                 new QueueClient(
+                    new Uri(config.QueueServiceEndpoint).AppendToPath(GetNewQueueName()),
+                    new StorageSharedKeyCredential(config.AccountName, config.AccountKey),
+                    options));
+        }
+
+        private QueueClientOptions getSecondaryStorageOptions(TenantConfiguration config, out TestExceptionPolicy testExceptionPolicy, int numberOfReadFailuresToSimulate = 1, bool simulate404 = false, List<RequestMethod> enabledRequestMethods = null)
+        {
+            QueueClientOptions options = GetOptions();
+            options.GeoRedundantSecondaryUri = new Uri(config.QueueServiceSecondaryEndpoint);
+            options.Retry.MaxRetries = 4;
+            testExceptionPolicy = new TestExceptionPolicy(numberOfReadFailuresToSimulate, options.GeoRedundantSecondaryUri, simulate404, enabledRequestMethods);
+            options.AddPolicy(testExceptionPolicy, HttpPipelinePosition.PerRetry);
+            return options;
+        }
+
+        public async Task<DisposingQueue> GetTestQueueAsync(
+            QueueServiceClient service = default,
+            IDictionary<string, string> metadata = default)
+            => await QueuesClientBuilder.GetTestQueueAsync(service, metadata);
+
+        public QueueClient GetEncodingClient(
+            string queueName,
+            QueueMessageEncoding encoding,
+            params SyncAsyncEventHandler<QueueMessageDecodingFailedEventArgs>[] messageDecodingFailedHandlers)
+        {
+            var options = GetOptions();
+            options.MessageEncoding = encoding;
+            foreach (var messageDecodingFailedHandler in messageDecodingFailedHandlers)
+            {
+                options.MessageDecodingFailed += messageDecodingFailedHandler;
+            }
+            var service = GetServiceClient_SharedKey_UnInstrumented(options);
+            var queueClient = service.GetQueueClient(queueName);
+            return InstrumentClient(queueClient);
+        }
+
+        public StorageSharedKeyCredential GetNewSharedKeyCredentials()
+            => new StorageSharedKeyCredential(
+                TestConfigDefault.AccountName,
+                TestConfigDefault.AccountKey);
+
+        public SasQueryParameters GetNewAccountSasCredentials(
+            StorageSharedKeyCredential sharedKeyCredentials = default,
+            AccountSasResourceTypes resourceTypes = AccountSasResourceTypes.Container)
+        {
+            var builder = new AccountSasBuilder
             {
                 Protocol = SasProtocol.None,
-                Services = new AccountSasServices { Queue = true }.ToString(),
-                ResourceTypes = new AccountSasResourceTypes { Container = true }.ToString(),
-                StartTime = this.Recording.UtcNow.AddHours(-1),
-                ExpiryTime = this.Recording.UtcNow.AddHours(+1),
-                Permissions = new QueueAccountSasPermissions { Read = true, Write = true, Update = true, Process = true, Add = true, Delete = true, List = true }.ToString(),
-                IPRange = new IPRange { Start = IPAddress.None, End = IPAddress.None }
-            }.ToSasQueryParameters(sharedKeyCredentials);
+                Services = AccountSasServices.Queues,
+                ResourceTypes = resourceTypes,
+                StartsOn = Recording.UtcNow.AddHours(-1),
+                ExpiresOn = Recording.UtcNow.AddHours(+1),
+                IPRange = new SasIPRange(IPAddress.None, IPAddress.None)
+            };
+            builder.SetPermissions(
+                AccountSasPermissions.Read |
+                AccountSasPermissions.Write |
+                AccountSasPermissions.Update |
+                AccountSasPermissions.Process |
+                AccountSasPermissions.Add |
+                AccountSasPermissions.Delete |
+                AccountSasPermissions.List);
+            return builder.ToSasQueryParameters(sharedKeyCredentials ?? GetNewSharedKeyCredentials());
+        }
 
-        public SasQueryParameters GetNewQueueServiceSasCredentials(string queueName, SharedKeyCredentials sharedKeyCredentials = default)
-            => new QueueSasBuilder
+        public SasQueryParameters GetNewQueueServiceSasCredentials(string queueName, StorageSharedKeyCredential sharedKeyCredentials = default)
+        {
+            var builder = new QueueSasBuilder
             {
                 QueueName = queueName,
                 Protocol = SasProtocol.None,
-                StartTime = this.Recording.UtcNow.AddHours(-1),
-                ExpiryTime = this.Recording.UtcNow.AddHours(+1),
-                Permissions = new QueueAccountSasPermissions { Read = true, Update = true, Process = true, Add = true }.ToString(),
-                IPRange = new IPRange { Start = IPAddress.None, End = IPAddress.None }
-            }.ToSasQueryParameters(sharedKeyCredentials ?? this.GetNewSharedKeyCredentials());
-
-        class DisposingQueue : IDisposable
-        {
-            public QueueClient QueueClient { get; }
-
-            public DisposingQueue(QueueClient queue, IDictionary<string, string> metadata)
-            {
-                queue.CreateAsync(metadata: metadata).Wait();
-
-                this.QueueClient = queue;
-            }
-
-            public void Dispose()
-            {
-                if (this.QueueClient != null)
-                {
-                    try
-                    {
-                        this.QueueClient.DeleteAsync().Wait();
-                    }
-                    catch
-                    {
-                        // swallow the exception to avoid hiding another test failure
-                    }
-                }
-            }
+                StartsOn = Recording.UtcNow.AddHours(-1),
+                ExpiresOn = Recording.UtcNow.AddHours(+1),
+                IPRange = new SasIPRange(IPAddress.None, IPAddress.None)
+            };
+            builder.SetPermissions(QueueAccountSasPermissions.Read | QueueAccountSasPermissions.Update | QueueAccountSasPermissions.Process | QueueAccountSasPermissions.Add);
+            return builder.ToSasQueryParameters(sharedKeyCredentials ?? GetNewSharedKeyCredentials());
         }
 
-        public SignedIdentifier[] BuildSignedIdentifiers() =>
+        internal StorageConnectionString GetConnectionString(
+            SharedAccessSignatureCredentials credentials = default,
+            bool includeEndpoint = true)
+        {
+            credentials ??= GetAccountSasCredentials();
+            if (!includeEndpoint)
+            {
+                return new StorageConnectionString(
+                    credentials,
+                    (new Uri(TestConfigDefault.BlobServiceEndpoint), new Uri(TestConfigDefault.BlobServiceSecondaryEndpoint)),
+                    (new Uri(TestConfigDefault.QueueServiceEndpoint), new Uri(TestConfigDefault.QueueServiceSecondaryEndpoint)),
+                    (new Uri(TestConfigDefault.TableServiceEndpoint), new Uri(TestConfigDefault.TableServiceSecondaryEndpoint)),
+                    (new Uri(TestConfigDefault.FileServiceEndpoint), new Uri(TestConfigDefault.FileServiceSecondaryEndpoint)));
+            }
+
+            (Uri, Uri) queueUri = (new Uri(TestConfigDefault.QueueServiceEndpoint), new Uri(TestConfigDefault.QueueServiceSecondaryEndpoint));
+
+            return new StorageConnectionString(
+                    credentials,
+                    queueStorageUri: queueUri);
+        }
+
+        public QueueSignedIdentifier[] BuildSignedIdentifiers() =>
             new[]
             {
-                new SignedIdentifier
+                new QueueSignedIdentifier
                 {
-                    Id = this.GetNewString(),
+                    Id = GetNewString(),
                     AccessPolicy =
-                        new AccessPolicy
+                        new QueueAccessPolicy
                         {
-                            Start =  this.Recording.UtcNow.AddHours(-1),
-                            Expiry =  this.Recording.UtcNow.AddHours(1),
-                            Permission = "raup"
+                            StartsOn =  Recording.UtcNow.AddHours(-1),
+                            ExpiresOn =  Recording.UtcNow.AddHours(1),
+                            Permissions = "raup"
                         }
+                }
+            };
+
+        public QueueServiceProperties GetQueueServiceProperties() =>
+            new QueueServiceProperties()
+            {
+                Logging = new QueueAnalyticsLogging()
+                {
+                    Version = "1.0",
+                    Read = false,
+                    Write = false,
+                    Delete = false,
+                    RetentionPolicy = new QueueRetentionPolicy()
+                    {
+                        Enabled = false
+                    }
+                },
+                HourMetrics = new QueueMetrics()
+                {
+                    Version = "1.0",
+                    Enabled = true,
+                    IncludeApis = true,
+                    RetentionPolicy = new QueueRetentionPolicy()
+                    {
+                        Enabled = true,
+                        Days = 7
+                    }
+                },
+                MinuteMetrics = new QueueMetrics()
+                {
+                    Version = "1.0",
+                    Enabled = false,
+                    RetentionPolicy = new QueueRetentionPolicy()
+                    {
+                        Enabled = true,
+                        Days = 7
+                    }
+                },
+                Cors = new[]
+                {
+                    new QueueCorsRule()
+                    {
+                        AllowedOrigins = "http://www.contoso.com,http://www.fabrikam.com",
+                        AllowedMethods = "GET,PUT",
+                        MaxAgeInSeconds = 500,
+                        ExposedHeaders = "x-ms-meta-customheader,x-ms-meta-data*",
+                        AllowedHeaders = "x-ms-meta-customheader,x-ms-meta-target*"
+                    }
                 }
             };
     }

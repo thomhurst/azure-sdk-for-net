@@ -40,7 +40,6 @@ namespace Microsoft.Azure.ServiceBus.Core
         readonly ActiveClientLinkManager clientLinkManager;
         readonly ServiceBusDiagnosticSource diagnosticSource;
         readonly bool isViaSender;
-        readonly string transferDestinationPath;
 
         /// <summary>
         /// Creates a new AMQP MessageSender.
@@ -152,7 +151,7 @@ namespace Microsoft.Azure.ServiceBus.Core
 
             this.ServiceBusConnection = serviceBusConnection ?? throw new ArgumentNullException(nameof(serviceBusConnection));
             this.Path = entityPath;
-            this.TransferDestinationPath = transferDestinationPath;
+            this.SendingLinkDestination = entityPath;
             this.EntityType = entityType;
             this.ServiceBusConnection.ThrowIfClosed();
 
@@ -177,7 +176,8 @@ namespace Microsoft.Azure.ServiceBus.Core
             if (!string.IsNullOrWhiteSpace(transferDestinationPath))
             {
                 this.isViaSender = true;
-                this.transferDestinationPath = transferDestinationPath;
+                this.TransferDestinationPath = transferDestinationPath;
+                this.ViaEntityPath = entityPath;
             }
 
             MessagingEventSource.Log.MessageSenderCreateStop(serviceBusConnection.Endpoint.Authority, entityPath, this.ClientId);
@@ -190,14 +190,20 @@ namespace Microsoft.Azure.ServiceBus.Core
         public override IList<ServiceBusPlugin> RegisteredPlugins { get; } = new List<ServiceBusPlugin>();
 
         /// <summary>
-        /// Gets the entity path of the MessageSender.
+        /// Gets the entity path of the MessageSender. 
+        /// In the case of a via-sender, this returns the path of the via entity.
         /// </summary>
         public override string Path { get; }
 
         /// <summary>
-        /// Gets the transfer destination path (send-via) of the MessageSender.
+        /// In the case of a via-sender, gets the final destination path of the messages; null otherwise.
         /// </summary>
         public string TransferDestinationPath { get; }
+
+        /// <summary>
+        /// In the case of a via-sender, the message is sent to <see cref="TransferDestinationPath"/> via <see cref="ViaEntityPath"/>; null otherwise.
+        /// </summary>
+        public string ViaEntityPath { get; }
 
         /// <summary>
         /// Duration after which individual operations will timeout.
@@ -215,6 +221,8 @@ namespace Microsoft.Azure.ServiceBus.Core
 
         internal MessagingEntityType? EntityType { get; }
 
+        internal string SendingLinkDestination { get; set; }
+
         ICbsTokenProvider CbsTokenProvider { get; }
 
         FaultTolerantAmqpObject<SendingAmqpLink> SendLinkManager { get; }
@@ -231,6 +239,7 @@ namespace Microsoft.Azure.ServiceBus.Core
 
         /// <summary>
         /// Sends a list of messages to the entity as described by <see cref="Path"/>.
+        /// When called on partitioned entities, messages meant for different partitions cannot be batched together.
         /// </summary>
         public async Task SendAsync(IList<Message> messageList)
         {
@@ -564,7 +573,7 @@ namespace Microsoft.Azure.ServiceBus.Core
                 }
                 catch (Exception exception)
                 {
-                    throw AmqpExceptionHelper.GetClientException(exception, amqpLink?.GetTrackingId(), null, amqpLink?.Session.IsClosing() ?? false);
+                    throw AmqpExceptionHelper.GetClientException(exception, true, amqpLink?.GetTrackingId(), null, amqpLink?.Session.IsClosing() ?? false);
                 }
             }
         }
@@ -633,7 +642,7 @@ namespace Microsoft.Azure.ServiceBus.Core
                 }
                 catch (Exception exception)
                 {
-                    throw AmqpExceptionHelper.GetClientException(exception, sendLink?.GetTrackingId(), null, sendLink?.Session.IsClosing() ?? false);
+                    throw AmqpExceptionHelper.GetClientException(exception, true, sendLink?.GetTrackingId(), null, sendLink?.Session.IsClosing() ?? false);
                 }
             }
         }
@@ -666,19 +675,19 @@ namespace Microsoft.Azure.ServiceBus.Core
             }
             catch (Exception exception)
             {
-                throw AmqpExceptionHelper.GetClientException(exception, sendLink?.GetTrackingId(), null, sendLink?.Session.IsClosing() ?? false);
+                throw AmqpExceptionHelper.GetClientException(exception, true, sendLink?.GetTrackingId(), null, sendLink?.Session.IsClosing() ?? false);
             }
         }
 
         async Task<SendingAmqpLink> CreateLinkAsync(TimeSpan timeout)
         {
-            MessagingEventSource.Log.AmqpSendLinkCreateStart(this.ClientId, this.EntityType, this.Path);
+            MessagingEventSource.Log.AmqpSendLinkCreateStart(this.ClientId, this.EntityType, this.SendingLinkDestination);
 
             var amqpLinkSettings = new AmqpLinkSettings
             {
                 Role = false,
                 InitialDeliveryCount = 0,
-                Target = new Target { Address = this.Path },
+                Target = new Target { Address = this.SendingLinkDestination },
                 Source = new Source { Address = this.ClientId },
             };
             if (this.EntityType != null)
@@ -686,14 +695,14 @@ namespace Microsoft.Azure.ServiceBus.Core
                 amqpLinkSettings.AddProperty(AmqpClientConstants.EntityTypeName, (int)this.EntityType);
             }
 
-            var endpointUri = new Uri(this.ServiceBusConnection.Endpoint, this.Path);
+            var endpointUri = new Uri(this.ServiceBusConnection.Endpoint, this.SendingLinkDestination);
 
             string[] audience;
             if (this.isViaSender)
             {
-                var transferDestinationEndpointUri = new Uri(this.ServiceBusConnection.Endpoint, this.transferDestinationPath);
+                var transferDestinationEndpointUri = new Uri(this.ServiceBusConnection.Endpoint, this.TransferDestinationPath);
                 audience = new string[] { endpointUri.AbsoluteUri, transferDestinationEndpointUri.AbsoluteUri };
-                amqpLinkSettings.AddProperty(AmqpClientConstants.TransferDestinationAddress, this.transferDestinationPath);
+                amqpLinkSettings.AddProperty(AmqpClientConstants.TransferDestinationAddress, this.TransferDestinationPath);
             }
             else
             {
@@ -701,7 +710,7 @@ namespace Microsoft.Azure.ServiceBus.Core
             }
 
             string[] claims = {ClaimConstants.Send};
-            var amqpSendReceiveLinkCreator = new AmqpSendReceiveLinkCreator(this.Path, this.ServiceBusConnection, endpointUri, audience, claims, this.CbsTokenProvider, amqpLinkSettings, this.ClientId);
+            var amqpSendReceiveLinkCreator = new AmqpSendReceiveLinkCreator(this.SendingLinkDestination, this.ServiceBusConnection, endpointUri, audience, claims, this.CbsTokenProvider, amqpLinkSettings, this.ClientId);
             Tuple<AmqpObject, DateTime> linkDetails = await amqpSendReceiveLinkCreator.CreateAndOpenAmqpLinkAsync().ConfigureAwait(false);
 
             var sendingAmqpLink = (SendingAmqpLink) linkDetails.Item1;
@@ -720,7 +729,7 @@ namespace Microsoft.Azure.ServiceBus.Core
 
         async Task<RequestResponseAmqpLink> CreateRequestResponseLinkAsync(TimeSpan timeout)
         {
-            var entityPath = this.Path + '/' + AmqpClientConstants.ManagementAddress;
+            var entityPath = this.SendingLinkDestination + '/' + AmqpClientConstants.ManagementAddress;
             var amqpLinkSettings = new AmqpLinkSettings();
             amqpLinkSettings.AddProperty(AmqpClientConstants.EntityTypeName, AmqpClientConstants.EntityTypeManagement);
 
@@ -729,16 +738,16 @@ namespace Microsoft.Azure.ServiceBus.Core
             string[] audience;
             if (this.isViaSender)
             {
-                var transferDestinationEndpointUri = new Uri(this.ServiceBusConnection.Endpoint, this.transferDestinationPath);
+                var transferDestinationEndpointUri = new Uri(this.ServiceBusConnection.Endpoint, this.TransferDestinationPath);
                 audience = new string[] { endpointUri.AbsoluteUri, transferDestinationEndpointUri.AbsoluteUri };
-                amqpLinkSettings.AddProperty(AmqpClientConstants.TransferDestinationAddress, this.transferDestinationPath);
+                amqpLinkSettings.AddProperty(AmqpClientConstants.TransferDestinationAddress, this.TransferDestinationPath);
             }
             else
             {
                 audience = new string[] { endpointUri.AbsoluteUri };
             }
 
-            string[] claims = { ClaimConstants.Manage, ClaimConstants.Send };
+            string[] claims = { ClaimConstants.Send };
             var amqpRequestResponseLinkCreator = new AmqpRequestResponseLinkCreator(
                 entityPath,
                 this.ServiceBusConnection,

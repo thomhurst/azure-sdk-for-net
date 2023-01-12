@@ -39,6 +39,9 @@ namespace Microsoft.Azure.Management.Network.Models
         /// <param name="type">Resource type.</param>
         /// <param name="location">Resource location.</param>
         /// <param name="tags">Resource tags.</param>
+        /// <param name="flushConnection">When enabled, flows created from
+        /// Network Security Group connections will be re-evaluated when rules
+        /// are updates. Initial enablement will trigger re-evaluation.</param>
         /// <param name="securityRules">A collection of security rules of the
         /// network security group.</param>
         /// <param name="defaultSecurityRules">The default security rules of
@@ -47,20 +50,24 @@ namespace Microsoft.Azure.Management.Network.Models
         /// network interfaces.</param>
         /// <param name="subnets">A collection of references to
         /// subnets.</param>
+        /// <param name="flowLogs">A collection of references to flow log
+        /// resources.</param>
         /// <param name="resourceGuid">The resource GUID property of the
         /// network security group resource.</param>
         /// <param name="provisioningState">The provisioning state of the
-        /// public IP resource. Possible values are: 'Updating', 'Deleting',
-        /// and 'Failed'.</param>
+        /// network security group resource. Possible values include:
+        /// 'Succeeded', 'Updating', 'Deleting', 'Failed'</param>
         /// <param name="etag">A unique read-only string that changes whenever
         /// the resource is updated.</param>
-        public NetworkSecurityGroup(string id = default(string), string name = default(string), string type = default(string), string location = default(string), IDictionary<string, string> tags = default(IDictionary<string, string>), IList<SecurityRule> securityRules = default(IList<SecurityRule>), IList<SecurityRule> defaultSecurityRules = default(IList<SecurityRule>), IList<NetworkInterface> networkInterfaces = default(IList<NetworkInterface>), IList<Subnet> subnets = default(IList<Subnet>), string resourceGuid = default(string), string provisioningState = default(string), string etag = default(string))
+        public NetworkSecurityGroup(string id = default(string), string name = default(string), string type = default(string), string location = default(string), IDictionary<string, string> tags = default(IDictionary<string, string>), bool? flushConnection = default(bool?), IList<SecurityRule> securityRules = default(IList<SecurityRule>), IList<SecurityRule> defaultSecurityRules = default(IList<SecurityRule>), IList<NetworkInterface> networkInterfaces = default(IList<NetworkInterface>), IList<Subnet> subnets = default(IList<Subnet>), IList<FlowLog> flowLogs = default(IList<FlowLog>), string resourceGuid = default(string), string provisioningState = default(string), string etag = default(string))
             : base(id, name, type, location, tags)
         {
+            FlushConnection = flushConnection;
             SecurityRules = securityRules;
             DefaultSecurityRules = defaultSecurityRules;
             NetworkInterfaces = networkInterfaces;
             Subnets = subnets;
+            FlowLogs = flowLogs;
             ResourceGuid = resourceGuid;
             ProvisioningState = provisioningState;
             Etag = etag;
@@ -73,6 +80,14 @@ namespace Microsoft.Azure.Management.Network.Models
         partial void CustomInit();
 
         /// <summary>
+        /// Gets or sets when enabled, flows created from Network Security
+        /// Group connections will be re-evaluated when rules are updates.
+        /// Initial enablement will trigger re-evaluation.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.flushConnection")]
+        public bool? FlushConnection { get; set; }
+
+        /// <summary>
         /// Gets or sets a collection of security rules of the network security
         /// group.
         /// </summary>
@@ -80,10 +95,10 @@ namespace Microsoft.Azure.Management.Network.Models
         public IList<SecurityRule> SecurityRules { get; set; }
 
         /// <summary>
-        /// Gets or sets the default security rules of network security group.
+        /// Gets the default security rules of network security group.
         /// </summary>
         [JsonProperty(PropertyName = "properties.defaultSecurityRules")]
-        public IList<SecurityRule> DefaultSecurityRules { get; set; }
+        public IList<SecurityRule> DefaultSecurityRules { get; private set; }
 
         /// <summary>
         /// Gets a collection of references to network interfaces.
@@ -98,25 +113,32 @@ namespace Microsoft.Azure.Management.Network.Models
         public IList<Subnet> Subnets { get; private set; }
 
         /// <summary>
-        /// Gets or sets the resource GUID property of the network security
-        /// group resource.
+        /// Gets a collection of references to flow log resources.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.flowLogs")]
+        public IList<FlowLog> FlowLogs { get; private set; }
+
+        /// <summary>
+        /// Gets the resource GUID property of the network security group
+        /// resource.
         /// </summary>
         [JsonProperty(PropertyName = "properties.resourceGuid")]
-        public string ResourceGuid { get; set; }
+        public string ResourceGuid { get; private set; }
 
         /// <summary>
-        /// Gets or sets the provisioning state of the public IP resource.
-        /// Possible values are: 'Updating', 'Deleting', and 'Failed'.
+        /// Gets the provisioning state of the network security group resource.
+        /// Possible values include: 'Succeeded', 'Updating', 'Deleting',
+        /// 'Failed'
         /// </summary>
         [JsonProperty(PropertyName = "properties.provisioningState")]
-        public string ProvisioningState { get; set; }
+        public string ProvisioningState { get; private set; }
 
         /// <summary>
-        /// Gets or sets a unique read-only string that changes whenever the
-        /// resource is updated.
+        /// Gets a unique read-only string that changes whenever the resource
+        /// is updated.
         /// </summary>
         [JsonProperty(PropertyName = "etag")]
-        public string Etag { get; set; }
+        public string Etag { get; private set; }
 
     }
 }

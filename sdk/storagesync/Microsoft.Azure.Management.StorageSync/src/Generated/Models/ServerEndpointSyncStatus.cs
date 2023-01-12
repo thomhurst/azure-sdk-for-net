@@ -10,6 +10,7 @@
 
 namespace Microsoft.Azure.Management.StorageSync.Models
 {
+    using Microsoft.Rest;
     using Newtonsoft.Json;
     using System.Linq;
 
@@ -30,19 +31,15 @@ namespace Microsoft.Azure.Management.StorageSync.Models
         /// Initializes a new instance of the ServerEndpointSyncStatus class.
         /// </summary>
         /// <param name="downloadHealth">Download Health Status. Possible
-        /// values include: 'Healthy', 'Error', 'SyncBlockedForRestore',
-        /// 'SyncBlockedForChangeDetectionPostRestore', 'NoActivity'</param>
+        /// values include: 'Unavailable', 'Healthy', 'Error'</param>
         /// <param name="uploadHealth">Upload Health Status. Possible values
-        /// include: 'Healthy', 'Error', 'SyncBlockedForRestore',
-        /// 'SyncBlockedForChangeDetectionPostRestore', 'NoActivity'</param>
+        /// include: 'Unavailable', 'Healthy', 'Error'</param>
         /// <param name="combinedHealth">Combined Health Status. Possible
-        /// values include: 'Healthy', 'Error', 'SyncBlockedForRestore',
-        /// 'SyncBlockedForChangeDetectionPostRestore', 'NoActivity'</param>
+        /// values include: 'Unavailable', 'Healthy', 'Error'</param>
         /// <param name="syncActivity">Sync activity. Possible values include:
         /// 'Upload', 'Download', 'UploadAndDownload'</param>
         /// <param name="totalPersistentFilesNotSyncingCount">Total count of
-        /// persistent files not syncing (combined upload + download). Reserved
-        /// for future use.</param>
+        /// persistent files not syncing (combined upload + download).</param>
         /// <param name="lastUpdatedTimestamp">Last Updated Timestamp</param>
         /// <param name="uploadStatus">Upload Status</param>
         /// <param name="downloadStatus">Download Status</param>
@@ -51,7 +48,9 @@ namespace Microsoft.Azure.Management.StorageSync.Models
         /// <param name="offlineDataTransferStatus">Offline Data Transfer
         /// State. Possible values include: 'InProgress', 'Stopping',
         /// 'NotRunning', 'Complete'</param>
-        public ServerEndpointSyncStatus(string downloadHealth = default(string), string uploadHealth = default(string), string combinedHealth = default(string), string syncActivity = default(string), long? totalPersistentFilesNotSyncingCount = default(long?), System.DateTime? lastUpdatedTimestamp = default(System.DateTime?), SyncSessionStatus uploadStatus = default(SyncSessionStatus), SyncSessionStatus downloadStatus = default(SyncSessionStatus), SyncActivityStatus uploadActivity = default(SyncActivityStatus), SyncActivityStatus downloadActivity = default(SyncActivityStatus), string offlineDataTransferStatus = default(string))
+        /// <param name="backgroundDataDownloadActivity">Background data
+        /// download activity</param>
+        public ServerEndpointSyncStatus(string downloadHealth = default(string), string uploadHealth = default(string), string combinedHealth = default(string), string syncActivity = default(string), long? totalPersistentFilesNotSyncingCount = default(long?), System.DateTime? lastUpdatedTimestamp = default(System.DateTime?), ServerEndpointSyncSessionStatus uploadStatus = default(ServerEndpointSyncSessionStatus), ServerEndpointSyncSessionStatus downloadStatus = default(ServerEndpointSyncSessionStatus), ServerEndpointSyncActivityStatus uploadActivity = default(ServerEndpointSyncActivityStatus), ServerEndpointSyncActivityStatus downloadActivity = default(ServerEndpointSyncActivityStatus), string offlineDataTransferStatus = default(string), ServerEndpointBackgroundDataDownloadActivity backgroundDataDownloadActivity = default(ServerEndpointBackgroundDataDownloadActivity))
         {
             DownloadHealth = downloadHealth;
             UploadHealth = uploadHealth;
@@ -64,6 +63,7 @@ namespace Microsoft.Azure.Management.StorageSync.Models
             UploadActivity = uploadActivity;
             DownloadActivity = downloadActivity;
             OfflineDataTransferStatus = offlineDataTransferStatus;
+            BackgroundDataDownloadActivity = backgroundDataDownloadActivity;
             CustomInit();
         }
 
@@ -73,25 +73,22 @@ namespace Microsoft.Azure.Management.StorageSync.Models
         partial void CustomInit();
 
         /// <summary>
-        /// Gets download Health Status. Possible values include: 'Healthy',
-        /// 'Error', 'SyncBlockedForRestore',
-        /// 'SyncBlockedForChangeDetectionPostRestore', 'NoActivity'
+        /// Gets download Health Status. Possible values include:
+        /// 'Unavailable', 'Healthy', 'Error'
         /// </summary>
         [JsonProperty(PropertyName = "downloadHealth")]
         public string DownloadHealth { get; private set; }
 
         /// <summary>
-        /// Gets upload Health Status. Possible values include: 'Healthy',
-        /// 'Error', 'SyncBlockedForRestore',
-        /// 'SyncBlockedForChangeDetectionPostRestore', 'NoActivity'
+        /// Gets upload Health Status. Possible values include: 'Unavailable',
+        /// 'Healthy', 'Error'
         /// </summary>
         [JsonProperty(PropertyName = "uploadHealth")]
         public string UploadHealth { get; private set; }
 
         /// <summary>
-        /// Gets combined Health Status. Possible values include: 'Healthy',
-        /// 'Error', 'SyncBlockedForRestore',
-        /// 'SyncBlockedForChangeDetectionPostRestore', 'NoActivity'
+        /// Gets combined Health Status. Possible values include:
+        /// 'Unavailable', 'Healthy', 'Error'
         /// </summary>
         [JsonProperty(PropertyName = "combinedHealth")]
         public string CombinedHealth { get; private set; }
@@ -105,7 +102,7 @@ namespace Microsoft.Azure.Management.StorageSync.Models
 
         /// <summary>
         /// Gets total count of persistent files not syncing (combined upload +
-        /// download). Reserved for future use.
+        /// download).
         /// </summary>
         [JsonProperty(PropertyName = "totalPersistentFilesNotSyncingCount")]
         public long? TotalPersistentFilesNotSyncingCount { get; private set; }
@@ -120,25 +117,25 @@ namespace Microsoft.Azure.Management.StorageSync.Models
         /// Gets upload Status
         /// </summary>
         [JsonProperty(PropertyName = "uploadStatus")]
-        public SyncSessionStatus UploadStatus { get; private set; }
+        public ServerEndpointSyncSessionStatus UploadStatus { get; private set; }
 
         /// <summary>
         /// Gets download Status
         /// </summary>
         [JsonProperty(PropertyName = "downloadStatus")]
-        public SyncSessionStatus DownloadStatus { get; private set; }
+        public ServerEndpointSyncSessionStatus DownloadStatus { get; private set; }
 
         /// <summary>
         /// Gets upload sync activity
         /// </summary>
         [JsonProperty(PropertyName = "uploadActivity")]
-        public SyncActivityStatus UploadActivity { get; private set; }
+        public ServerEndpointSyncActivityStatus UploadActivity { get; private set; }
 
         /// <summary>
         /// Gets download sync activity
         /// </summary>
         [JsonProperty(PropertyName = "downloadActivity")]
-        public SyncActivityStatus DownloadActivity { get; private set; }
+        public ServerEndpointSyncActivityStatus DownloadActivity { get; private set; }
 
         /// <summary>
         /// Gets offline Data Transfer State. Possible values include:
@@ -147,5 +144,44 @@ namespace Microsoft.Azure.Management.StorageSync.Models
         [JsonProperty(PropertyName = "offlineDataTransferStatus")]
         public string OfflineDataTransferStatus { get; private set; }
 
+        /// <summary>
+        /// Gets background data download activity
+        /// </summary>
+        [JsonProperty(PropertyName = "backgroundDataDownloadActivity")]
+        public ServerEndpointBackgroundDataDownloadActivity BackgroundDataDownloadActivity { get; private set; }
+
+        /// <summary>
+        /// Validate the object.
+        /// </summary>
+        /// <exception cref="ValidationException">
+        /// Thrown if validation fails
+        /// </exception>
+        public virtual void Validate()
+        {
+            if (TotalPersistentFilesNotSyncingCount < 0)
+            {
+                throw new ValidationException(ValidationRules.InclusiveMinimum, "TotalPersistentFilesNotSyncingCount", 0);
+            }
+            if (UploadStatus != null)
+            {
+                UploadStatus.Validate();
+            }
+            if (DownloadStatus != null)
+            {
+                DownloadStatus.Validate();
+            }
+            if (UploadActivity != null)
+            {
+                UploadActivity.Validate();
+            }
+            if (DownloadActivity != null)
+            {
+                DownloadActivity.Validate();
+            }
+            if (BackgroundDataDownloadActivity != null)
+            {
+                BackgroundDataDownloadActivity.Validate();
+            }
+        }
     }
 }

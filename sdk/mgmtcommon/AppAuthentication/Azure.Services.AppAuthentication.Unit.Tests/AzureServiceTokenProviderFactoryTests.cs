@@ -136,6 +136,7 @@ namespace Microsoft.Azure.Services.AppAuthentication.Unit.Tests
             Assert.IsType<AzureCliAccessTokenProvider>(provider);
         }
 
+#if FullNetFx
         [Fact]
         public void ActiveDirectoryIntegratedValidTest()
         {
@@ -143,6 +144,14 @@ namespace Microsoft.Azure.Services.AppAuthentication.Unit.Tests
             Assert.NotNull(provider);
             Assert.Equal(Constants.ActiveDirectoryIntegratedConnectionString, provider.ConnectionString);
         }
+#else
+        [Fact]
+        public void ActiveDirectoryNotSupportedInNetCoreTest()
+        {
+            var exception = Assert.Throws<ArgumentException>(() => AzureServiceTokenProviderFactory.Create(Constants.ActiveDirectoryIntegratedConnectionString, Constants.AzureAdInstance));
+            Assert.Contains(Constants.NotSupportedInNetCoreError, exception.ToString());
+        }
+#endif
 
         [Fact]
         public void ManagedServiceIdentityValidTest()
@@ -185,6 +194,11 @@ namespace Microsoft.Azure.Services.AppAuthentication.Unit.Tests
             Assert.Equal(Constants.CertificateConnStringKeyVaultCertificateSecretIdentifier, provider.ConnectionString);
             Assert.IsType<ClientCertificateAzureServiceTokenProvider>(provider);
 
+            provider = AzureServiceTokenProviderFactory.Create(Constants.CertificateConnStringKeyVaultCertificateSecretIdentifierUserAssignedMsi, Constants.AzureAdInstance);
+            Assert.NotNull(provider);
+            Assert.Equal(Constants.CertificateConnStringKeyVaultCertificateSecretIdentifierUserAssignedMsi, provider.ConnectionString);
+            Assert.IsType<ClientCertificateAzureServiceTokenProvider>(provider);
+
             provider = AzureServiceTokenProviderFactory.Create(Constants.CertificateConnStringKeyVaultCertificateSecretIdentifierWithOptionalTenantId, Constants.AzureAdInstance);
             Assert.NotNull(provider);
             Assert.Equal(Constants.CertificateConnStringKeyVaultCertificateSecretIdentifierWithOptionalTenantId, provider.ConnectionString);
@@ -224,7 +238,6 @@ namespace Microsoft.Azure.Services.AppAuthentication.Unit.Tests
         public void ConnectionStringParametersWithQuoteEscapingNegativeTest(string connectionString)
         {
             var exception = Assert.Throws<ArgumentException>(() => AzureServiceTokenProviderFactory.ParseConnectionString(connectionString));
-
             Assert.Contains(Constants.NotInProperFormatError, exception.ToString());
         }
     }

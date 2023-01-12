@@ -46,13 +46,24 @@ namespace Microsoft.Azure.Management.Compute.Models
         /// IP address.</param>
         /// <param name="publicIPPrefix">The PublicIPPrefix from which to
         /// allocate publicIP addresses.</param>
-        public VirtualMachineScaleSetPublicIPAddressConfiguration(string name, int? idleTimeoutInMinutes = default(int?), VirtualMachineScaleSetPublicIPAddressConfigurationDnsSettings dnsSettings = default(VirtualMachineScaleSetPublicIPAddressConfigurationDnsSettings), IList<VirtualMachineScaleSetIpTag> ipTags = default(IList<VirtualMachineScaleSetIpTag>), SubResource publicIPPrefix = default(SubResource))
+        /// <param name="publicIPAddressVersion">Available from Api-Version
+        /// 2019-07-01 onwards, it represents whether the specific
+        /// ipconfiguration is IPv4 or IPv6. Default is taken as IPv4. Possible
+        /// values are: 'IPv4' and 'IPv6'. Possible values include: 'IPv4',
+        /// 'IPv6'</param>
+        /// <param name="deleteOption">Specify what happens to the public IP
+        /// when the VM is deleted. Possible values include: 'Delete',
+        /// 'Detach'</param>
+        public VirtualMachineScaleSetPublicIPAddressConfiguration(string name, int? idleTimeoutInMinutes = default(int?), VirtualMachineScaleSetPublicIPAddressConfigurationDnsSettings dnsSettings = default(VirtualMachineScaleSetPublicIPAddressConfigurationDnsSettings), IList<VirtualMachineScaleSetIpTag> ipTags = default(IList<VirtualMachineScaleSetIpTag>), SubResource publicIPPrefix = default(SubResource), string publicIPAddressVersion = default(string), string deleteOption = default(string), PublicIPAddressSku sku = default(PublicIPAddressSku))
         {
             Name = name;
             IdleTimeoutInMinutes = idleTimeoutInMinutes;
             DnsSettings = dnsSettings;
             IpTags = ipTags;
             PublicIPPrefix = publicIPPrefix;
+            PublicIPAddressVersion = publicIPAddressVersion;
+            DeleteOption = deleteOption;
+            Sku = sku;
             CustomInit();
         }
 
@@ -93,6 +104,27 @@ namespace Microsoft.Azure.Management.Compute.Models
         /// </summary>
         [JsonProperty(PropertyName = "properties.publicIPPrefix")]
         public SubResource PublicIPPrefix { get; set; }
+
+        /// <summary>
+        /// Gets or sets available from Api-Version 2019-07-01 onwards, it
+        /// represents whether the specific ipconfiguration is IPv4 or IPv6.
+        /// Default is taken as IPv4. Possible values are: 'IPv4' and 'IPv6'.
+        /// Possible values include: 'IPv4', 'IPv6'
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.publicIPAddressVersion")]
+        public string PublicIPAddressVersion { get; set; }
+
+        /// <summary>
+        /// Gets or sets specify what happens to the public IP when the VM is
+        /// deleted. Possible values include: 'Delete', 'Detach'
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.deleteOption")]
+        public string DeleteOption { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "sku")]
+        public PublicIPAddressSku Sku { get; set; }
 
         /// <summary>
         /// Validate the object.

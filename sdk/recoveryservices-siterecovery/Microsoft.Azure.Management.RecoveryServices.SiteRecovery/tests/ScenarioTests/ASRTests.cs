@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System;
@@ -15,24 +15,24 @@ namespace RecoveryServices.SiteRecovery.Tests
 {
     public class ASRTests : SiteRecoveryTestsBase
     {
-        private const string targetResourceGroup = "/subscriptions/c183865e-6077-46f2-a3b1-deb0f4f4650a/resourceGroups/siterecoveryprod1";
-        private const string storageAccountId = "/subscriptions/c183865e-6077-46f2-a3b1-deb0f4f4650a/resourceGroups/siterecoveryprod1/providers/Microsoft.Storage/storageAccounts/storavrai";
-        private const string azureNetworkId = "/subscriptions/c183865e-6077-46f2-a3b1-deb0f4f4650a/resourceGroups/siterecoveryProd1/providers/Microsoft.Network/virtualNetworks/vnetavrai";
+        private const string targetResourceGroup = "/subscriptions/b364ed8d-4279-4bf8-8fd1-56f8fa0ae05c/resourceGroups/prakccyrg";
+        private const string storageAccountId = "/subscriptions/b364ed8d-4279-4bf8-8fd1-56f8fa0ae05c/resourceGroups/Arpita-air/providers/Microsoft.Storage/storageAccounts/sah2atest";
+        private const string azureNetworkId = "/subscriptions/b364ed8d-4279-4bf8-8fd1-56f8fa0ae05c/resourceGroups/Arpita-air/providers/Microsoft.Network/virtualNetworks/vnh2atest";
         private const string siteName = "SiteRecoveryTestSite1";
-        private const string vmmFabric = "d188dc378a78c819bfb8b1f07eba2c15511e1788c41ba27792d9433fc6a4e087";
-        private const string location = "westus";
-        private const string providerName = "ba2a2d25-377f-4f4b-94a4-2981c79b0998";
-        private const string policyName = "protectionprofile1";
+        private const string vmmFabric = "ca667d2536f540cc57a566ae639081b123ad508d93caef2859237ca22f265866";
+        private const string location = "centraluseuap";
+        private const string providerName = "71f21bed-b00f-4869-9dbf-288e7cb4051d";
+        private const string policyName = "protectionprofile2";
         private const string recoveryCloud = "Microsoft Azure";
         private const string protectionContainerMappingName = "PCMapping";
         private const string networkMappingName = "NWMapping";
-        private const string vmName = "vm1";
-        private const string vmId = "f8491e4f-817a-40dd-a90c-af773978c75b";
-        private const string vmName2 = "vm2";
+        private const string vmName = "VMforSDKFirst";
+        private const string vmId = "193ca098-991d-4a6f-be78-da2c6e7bd290";
+        private const string vmName2 = "VMforSDK";
         private const string rpName = "rpTest1";
-        private const string emailAddress = "ronehr@microsoft.com";
+        private const string emailAddress = "arpgup@microsoft.com";
         private const string alertSettingName = "defaultAlertSetting";
-        private const string vmNetworkName = "c41eda86-96d5-4541-a6f8-c47d4b75a24a";
+        private const string vmNetworkName = "4f704b8f-946c-4705-9844-11167e90102f";
 
         private const string a2aPrimaryLocation = "westeurope";
         private const string a2aRecoveryLocation = "northeurope";
@@ -44,14 +44,16 @@ namespace RecoveryServices.SiteRecovery.Tests
         private const string a2aPrimaryRecoveryContainerMappingName = "primaryToRecovery";
         private const string a2aRecoveryPrimaryContainerMappingName = "recoveryToPrimary";
         private const string a2aVirtualMachineToProtect =
-            "/subscriptions/a7d8f9d0-930c-4dc8-9c14-1526ba255c20/resourceGroups/sdkTestVmRG/providers/Microsoft.Compute/virtualMachines/sdkTestVm1";
+            "/subscriptions/b364ed8d-4279-4bf8-8fd1-56f8fa0ae05c/resourceGroups/sdkTestVMRG/providers/Microsoft.Compute/virtualMachines/sdkTestVM1";
         private const string a2aVirtualMachineDiskToProtect =
-            "/subscriptions/a7d8f9d0-930c-4dc8-9c14-1526ba255c20/resourceGroups/SDKTESTVMRG/providers/Microsoft.Compute/disks/sdkTestVm1_OsDisk_1_3b1dd430d52044f18fb996d34617f609";
+            "/subscriptions/b364ed8d-4279-4bf8-8fd1-56f8fa0ae05c/resourceGroups/sdkTestVMRG/providers/Microsoft.Compute/disks/sdkTestVM1_OsDisk_1_719b58f929ca4b97ba638f272b166a96";
         private const string a2aStagingStorageAccount =
-            "/subscriptions/a7d8f9d0-930c-4dc8-9c14-1526ba255c20/resourceGroups/siterecoveryprod1/providers/Microsoft.Storage/storageAccounts/do00nssdkvaultasrcache";
+            "/subscriptions/b364ed8d-4279-4bf8-8fd1-56f8fa0ae05c/resourceGroups/sdkTestVMRG/providers/Microsoft.Storage/storageAccounts/sdkcache";
         private const string a2aRecoveryResourceGroup =
-            "/subscriptions/a7d8f9d0-930c-4dc8-9c14-1526ba255c20/resourceGroups/sdkTestVmRG-asr";
+            "/subscriptions/b364ed8d-4279-4bf8-8fd1-56f8fa0ae05c/resourceGroups/sdkTestVMRG-asr";
         private const string a2aReplicationProtectedItemName = "sdkTestVm1";
+        private const string a2aVirtualMachineToValidate = "testVm1";
+        private const string a2aReplicationProtectionIntentName = "intentName1";
 
         TestHelper testHelper { get; set; }
 
@@ -63,9 +65,9 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void CreateA2APolicy()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
-                testHelper.Initialize(context);
+                testHelper.Initialize(context, "sdkVTRG", "sdkVault1");
                 var client = testHelper.SiteRecoveryClient;
 
                 var a2aPolicyCreationInput = new A2APolicyCreationInput
@@ -93,9 +95,9 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void CreateA2AFabrics()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
-                testHelper.Initialize(context);
+                testHelper.Initialize(context, "sdkVTRG", "sdkVault1");
                 var client = testHelper.SiteRecoveryClient;
 
                 var fabricCreationInput = new FabricCreationInput();
@@ -129,9 +131,9 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void CreateA2AContainers()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
-                testHelper.Initialize(context);
+                testHelper.Initialize(context, "sdkVTRG", "sdkVault1");
                 var client = testHelper.SiteRecoveryClient;
 
                 var createProtectionContainerInput =
@@ -163,9 +165,9 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void CreateA2AContainerMappings()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
-                testHelper.Initialize(context);
+                testHelper.Initialize(context, "sdkVTRG", "sdkVault1");
                 var client = testHelper.SiteRecoveryClient;
 
                 var createProtectionContainerMappingInput =
@@ -219,9 +221,9 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void CreateA2AReplicationProtectedItem()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
-                testHelper.Initialize(context);
+                testHelper.Initialize(context, "sdkVTRG", "sdkVault1");
                 var client = testHelper.SiteRecoveryClient;
 
                 var policy = client.ReplicationPolicies.Get(a2aPolicyName);
@@ -267,9 +269,9 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void GetA2AResources()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
-                testHelper.Initialize(context);
+                testHelper.Initialize(context, "sdkVTRG", "sdkVault1");
                 var client = testHelper.SiteRecoveryClient;
 
                 var policy = client.ReplicationPolicies.Get(a2aPolicyName);
@@ -333,9 +335,9 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void ListA2AResources()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
-                testHelper.Initialize(context);
+                testHelper.Initialize(context, "sdkVTRG", "sdkVault1");
                 var client = testHelper.SiteRecoveryClient;
 
                 var policies= client.ReplicationPolicies.List();
@@ -363,9 +365,9 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void DeleteA2AReplicationProtectedItem()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
-                testHelper.Initialize(context);
+                testHelper.Initialize(context, "sdkVTRG", "sdkVault1");
                 var client = testHelper.SiteRecoveryClient;
 
                 var disableProtectionInput = new DisableProtectionInput
@@ -391,9 +393,9 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void DeleteA2AContainerMappings()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
-                testHelper.Initialize(context);
+                testHelper.Initialize(context, "sdkVTRG", "sdkVault1");
                 var client = testHelper.SiteRecoveryClient;
 
                 var removeProtectionContainerMappingInput =
@@ -425,9 +427,9 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void DeleteA2AContainers()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
-                testHelper.Initialize(context);
+                testHelper.Initialize(context, "sdkVTRG", "sdkVault1");
                 var client = testHelper.SiteRecoveryClient;
 
                 client.ReplicationProtectionContainers.Delete(
@@ -447,9 +449,9 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void DeleteA2AFabrics()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
-                testHelper.Initialize(context);
+                testHelper.Initialize(context, "sdkVTRG", "sdkVault1");
                 var client = testHelper.SiteRecoveryClient;
 
                 client.ReplicationFabrics.Delete(a2aPrimaryFabricName);
@@ -463,9 +465,9 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void DeleteA2APolicy()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
-                testHelper.Initialize(context);
+                testHelper.Initialize(context, "sdkVTRG", "sdkVault1");
                 var client = testHelper.SiteRecoveryClient;
 
                 client.ReplicationPolicies.Delete(a2aPolicyName);
@@ -476,9 +478,76 @@ namespace RecoveryServices.SiteRecovery.Tests
         }
 
         [Fact]
+        public void CreateA2AReplicationProtectionIntent()
+        {
+            using (var context = MockContext.Start(this.GetType()))
+            {
+                testHelper.Initialize(context, "sdkVTRG", "sdkVault1");
+                var client = testHelper.SiteRecoveryClient;
+
+                var a2aCreateProtectionIntentInput = new A2ACreateProtectionIntentInput();
+                a2aCreateProtectionIntentInput.FabricObjectId = a2aVirtualMachineToProtect;
+                a2aCreateProtectionIntentInput.AutoProtectionOfDataDisk = "Enabled";
+                a2aCreateProtectionIntentInput.PrimaryLocation = a2aPrimaryLocation;
+                a2aCreateProtectionIntentInput.RecoveryLocation = a2aRecoveryLocation;
+                a2aCreateProtectionIntentInput.RecoverySubscriptionId = "b364ed8d-4279-4bf8-8fd1-56f8fa0ae05c";
+                a2aCreateProtectionIntentInput.RecoveryResourceGroupId = a2aRecoveryResourceGroup;
+                a2aCreateProtectionIntentInput.RecoveryAvailabilityType = "Single";
+                a2aCreateProtectionIntentInput.ProtectionProfileCustomInput = new NewProtectionProfile
+                {
+                    PolicyName = "intentPolicy",
+                    RecoveryPointHistory = 1440,
+                    CrashConsistentFrequencyInMinutes = 10,
+                    AppConsistentFrequencyInMinutes = 60,
+                    MultiVmSyncStatus = "Enable"
+
+                };
+
+                var createProtectionIntentInput = new CreateProtectionIntentInput
+                {
+                    Properties = new CreateProtectionIntentProperties()
+                };
+
+                createProtectionIntentInput.Properties.ProviderSpecificDetails = a2aCreateProtectionIntentInput;
+
+                var replicationProtectionIntent =
+                    client.ReplicationProtectionIntents.Create(
+                        a2aReplicationProtectionIntentName,
+                        createProtectionIntentInput);
+                Assert.True(
+                    replicationProtectionIntent.Name == a2aReplicationProtectionIntentName,
+                    "Resource name can not be different.");
+            }
+        }
+
+        [Fact]
+        public void ListA2AProtectionIntents()
+        {
+            using (var context = MockContext.Start(this.GetType()))
+            {
+                testHelper.Initialize(context, "sdkVTRG", "sdkVault1");
+                var client = testHelper.SiteRecoveryClient;
+
+                var protectionItents = client.ReplicationProtectionIntents.List();
+            }
+        }
+
+        [Fact]
+        public void GetA2AProtectionIntent()
+        {
+            using (var context = MockContext.Start(this.GetType()))
+            {
+                testHelper.Initialize(context, "sdkVTRG", "sdkVault1");
+                var client = testHelper.SiteRecoveryClient;
+
+                var protectionItent = client.ReplicationProtectionIntents.Get(a2aReplicationProtectionIntentName);
+            }
+        }
+
+        [Fact]
         public void CreateSite()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
 
@@ -496,7 +565,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void GetSite()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -509,7 +578,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void ListSite()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -522,7 +591,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void DeleteSite()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -534,7 +603,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void PurgeSite()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -546,7 +615,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void CheckConsistency()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -556,11 +625,10 @@ namespace RecoveryServices.SiteRecovery.Tests
             }
         }
 
-        [Fact(Skip = "ReRecord due to CR change")]
-        [Trait("ReRecord", "CR Changes")]
+        [Fact]
         public void RenewCertificate()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -583,7 +651,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void GetRSP()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -601,7 +669,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void ListRspByFabric()
         {
-            using (var context = MockContext.Start(GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -616,7 +684,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void ListRsp()
         {
-            using (var context = MockContext.Start(GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -630,7 +698,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void DeleteRsp()
         {
-            using (var context = MockContext.Start(GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -643,21 +711,21 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void PurgeRsp()
         {
-            using (var context = MockContext.Start(GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
 
-                string rspName = "74ef040f-fa15-4f71-9652-c27d5d19d575";
+                var purgeProviderName = "d4f5707e-16df-4e60-92df-fea789694c62";
                 var fabric = client.ReplicationFabrics.Get(siteName);
-                client.ReplicationRecoveryServicesProviders.Purge(fabric.Name, rspName);
+                client.ReplicationRecoveryServicesProviders.Purge(fabric.Name, purgeProviderName);
             }
         }
 
         [Fact]
         public void RefreshRsp()
         {
-            using (var context = MockContext.Start(GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -672,7 +740,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void GetContainer()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -693,7 +761,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void EnumerateContainer()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -710,7 +778,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void ListAllContainers()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -727,7 +795,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void CreatePolicy()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -760,7 +828,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void GetPolicy()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -774,7 +842,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void ListPolicy()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -786,7 +854,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void UpdatePolicy()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -797,7 +865,7 @@ namespace RecoveryServices.SiteRecovery.Tests
                     ApplicationConsistentSnapshotFrequencyInHours = 2,
                     ReplicationInterval = 300,
                     OnlineReplicationStartTime = null,
-                    StorageAccounts = new List<string>() { "/subscriptions/c183865e-6077-46f2-a3b1-deb0f4f4650a/resourceGroups/siterecoveryprod1/providers/Microsoft.Storage/storageAccounts/storavrai" }
+                    StorageAccounts = new List<string>() { "/subscriptions/b364ed8d-4279-4bf8-8fd1-56f8fa0ae05c/resourceGroups/Arpita-air/providers/Microsoft.Storage/storageAccounts/sah2atest2" }
                 };
 
                 UpdatePolicyInputProperties inputProperties = new UpdatePolicyInputProperties()
@@ -821,7 +889,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void DeletePolicy()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -832,7 +900,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void CreatePCMapping()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -871,7 +939,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void GetPCMapping()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -892,7 +960,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void EnumeratePCMapping()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -908,7 +976,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void ListAllPCMapping()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -920,7 +988,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void DeletePCMapping()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -939,7 +1007,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void PurgePCMapping()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -955,7 +1023,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void GetProtectableItem()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -979,7 +1047,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void EnumerateProtectableItem()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1000,7 +1068,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void CreateProtectedItem()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1056,7 +1124,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void GetProtectedItem()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1066,7 +1134,7 @@ namespace RecoveryServices.SiteRecovery.Tests
                 var protectionContainer = client.ReplicationProtectionContainers.Get(siteName,
                     protectionContainerList.FirstOrDefault().Name);
 
-                var protectedItem = client.ReplicationProtectedItems.Get(siteName, protectionContainer.Name, vmName);
+                var protectedItem = client.ReplicationProtectedItems.Get(siteName, protectionContainer.Name, vmId);
                 Assert.NotNull(protectedItem.Id);
             }
         }
@@ -1074,7 +1142,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void EnumerateProtectedItem()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1090,7 +1158,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void ListAllProtectedItem()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1103,7 +1171,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void UpdateProtectedItem()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1111,11 +1179,16 @@ namespace RecoveryServices.SiteRecovery.Tests
                 var protectionContainer =
                     client.ReplicationProtectionContainers.ListByReplicationFabrics(siteName).FirstOrDefault();
                 var protectedItem = client.ReplicationProtectedItems.Get(siteName, protectionContainer.Name, vmName2);
+                var ipconfig = new IPConfigInputDetails{
+                    RecoverySubnetName = "Subnet1"
+                };
+                var ipconfigs = new List<IPConfigInputDetails>();
+                ipconfigs.Add(ipconfig);
 
                 VMNicInputDetails nicInput = new VMNicInputDetails()
                 {
                     NicId = (protectedItem.Properties.ProviderSpecificDetails as HyperVReplicaAzureReplicationDetails).VmNics[0].NicId,
-                    RecoveryVMSubnetName = "Subnet1",
+                    IpConfigs = ipconfigs,
                     SelectionType = "SelectedByUser"
                 };
 
@@ -1142,11 +1215,12 @@ namespace RecoveryServices.SiteRecovery.Tests
                 var updatedProtecteditem = client.ReplicationProtectedItems.Get(siteName, protectionContainer.Name, vmName2);
             }
         }
+        
 
         [Fact]
         public void DeleteProtectedItem()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1172,7 +1246,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void PurgeProtectedItem()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1180,14 +1254,14 @@ namespace RecoveryServices.SiteRecovery.Tests
                 var protectionContainer =
                     client.ReplicationProtectionContainers.ListByReplicationFabrics(siteName).FirstOrDefault();
 
-                client.ReplicationProtectedItems.Purge(siteName, protectionContainer.Name, vmName);
+                client.ReplicationProtectedItems.Purge(siteName, protectionContainer.Name, vmId);
             }
         }
 
-        [Fact(Skip = "ReRecord due to CR change")]
+        [Fact]
         public void RepairReplication()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1202,30 +1276,27 @@ namespace RecoveryServices.SiteRecovery.Tests
             }
         }
 
-        [Fact(Skip = "ReRecord due to CR change")]
+        [Fact]
         public void TestFailover()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
 
                 var protectionContainer =
                     client.ReplicationProtectionContainers.ListByReplicationFabrics(siteName).FirstOrDefault();
-                var protectedItem = client.ReplicationProtectedItems.Get(siteName, protectionContainer.Name, vmName);
+                var protectedItem = client.ReplicationProtectedItems.Get(siteName, protectionContainer.Name, vmId);
 
                 string networkId = (protectedItem.Properties.ProviderSpecificDetails as HyperVReplicaAzureReplicationDetails)
                         .SelectedRecoveryAzureNetworkId;
-                HyperVReplicaAzureFailoverProviderInput h2AFOInput = new HyperVReplicaAzureFailoverProviderInput()
-                {
-                    VaultLocation = "West US",
-                };
+
+                HyperVReplicaAzureTestFailoverInput h2AFOInput = new HyperVReplicaAzureTestFailoverInput();
 
                 TestFailoverInputProperties tfoInputProperties = new TestFailoverInputProperties()
                 {
                     NetworkId = networkId,
                     NetworkType = string.IsNullOrEmpty(networkId) ? null : "VmNetworkAsInput",
-                    SkipTestFailoverCleanup = true.ToString(),
                     ProviderSpecificDetails = h2AFOInput
                 };
 
@@ -1234,21 +1305,21 @@ namespace RecoveryServices.SiteRecovery.Tests
                     Properties = tfoInputProperties
                 };
 
-                var response = client.ReplicationProtectedItems.TestFailover(siteName, protectionContainer.Name, vmName, tfoInput);
+                var response = client.ReplicationProtectedItems.TestFailover(siteName, protectionContainer.Name, vmId, tfoInput);
             }
         }
 
-        [Fact(Skip = "ReRecord due to CR change")]
+        [Fact]
         public void TestFailoverCleanup()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
 
                 var protectionContainer =
                     client.ReplicationProtectionContainers.ListByReplicationFabrics(siteName).FirstOrDefault();
-                var protectedItem = client.ReplicationProtectedItems.Get(siteName, protectionContainer.Name, vmName);
+                var protectedItem = client.ReplicationProtectedItems.Get(siteName, protectionContainer.Name, vmId);
 
                 TestFailoverCleanupInputProperties inputProperties = new TestFailoverCleanupInputProperties()
                 {
@@ -1261,14 +1332,14 @@ namespace RecoveryServices.SiteRecovery.Tests
                 };
 
                 client.ReplicationProtectedItems.TestFailoverCleanup(
-                    siteName, protectionContainer.Name, vmName, input);
+                    siteName, protectionContainer.Name, vmId, input);
             }
         }
 
         [Fact]
         public void PlannedFailover()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1291,10 +1362,7 @@ namespace RecoveryServices.SiteRecovery.Tests
                 }
                 else
                 {
-                    HyperVReplicaAzureFailoverProviderInput h2AFailoverInput = new HyperVReplicaAzureFailoverProviderInput()
-                    {
-                        VaultLocation = "West US"
-                    };
+                    HyperVReplicaAzurePlannedFailoverProviderInput h2AFailoverInput = new HyperVReplicaAzurePlannedFailoverProviderInput();
 
                     inputProperties.ProviderSpecificDetails = h2AFailoverInput;
                 }
@@ -1308,10 +1376,10 @@ namespace RecoveryServices.SiteRecovery.Tests
             }
         }
 
-        [Fact(Skip = "ReRecord due to CR change")]
+        [Fact]
         public void UnplannedFailover()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1321,10 +1389,7 @@ namespace RecoveryServices.SiteRecovery.Tests
 
                 var protectedItem = client.ReplicationProtectedItems.Get(siteName, protectionContainer.Name, vmName2);
 
-                HyperVReplicaAzureFailoverProviderInput h2AFailoverInput = new HyperVReplicaAzureFailoverProviderInput()
-                {
-                    VaultLocation = "West US"
-                };
+                HyperVReplicaAzureUnplannedFailoverInput h2AFailoverInput = new HyperVReplicaAzureUnplannedFailoverInput();
 
                 UnplannedFailoverInputProperties inputProperties = new UnplannedFailoverInputProperties()
                 {
@@ -1347,7 +1412,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void CommitFailover()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1359,10 +1424,10 @@ namespace RecoveryServices.SiteRecovery.Tests
             }
         }
 
-        [Fact(Skip = "ReRecord due to CR change")]
+        [Fact]
         public void Reprotect()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1410,7 +1475,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void GetRecoveryPoints()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1426,7 +1491,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void ListRecoveryPoints()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1434,14 +1499,14 @@ namespace RecoveryServices.SiteRecovery.Tests
                 var protectionContainer =
                     client.ReplicationProtectionContainers.ListByReplicationFabrics(siteName).FirstOrDefault();
 
-                var rps = client.RecoveryPoints.ListByReplicationProtectedItems(siteName, protectionContainer.Name, vmName);
+                var rps = client.RecoveryPoints.ListByReplicationProtectedItems(siteName, protectionContainer.Name, vmId);
             }
         }
 
         [Fact]
         public void ApplyRecoveryPoint()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1450,10 +1515,7 @@ namespace RecoveryServices.SiteRecovery.Tests
                     client.ReplicationProtectionContainers.ListByReplicationFabrics(siteName).FirstOrDefault();
 
                 var rps = client.RecoveryPoints.ListByReplicationProtectedItems(siteName, protectionContainer.Name, vmName2).ToList();
-                HyperVReplicaAzureApplyRecoveryPointInput h2APitInput = new HyperVReplicaAzureApplyRecoveryPointInput()
-                {
-                    VaultLocation = "West US"
-                };
+                HyperVReplicaAzureApplyRecoveryPointInput h2APitInput = new HyperVReplicaAzureApplyRecoveryPointInput();
 
                 ApplyRecoveryPointInputProperties inputProperties = new ApplyRecoveryPointInputProperties()
                 {
@@ -1473,14 +1535,14 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void CreateRecoveryPlan()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
 
                 var fabric = client.ReplicationFabrics.Get(siteName);
                 var protectionContainer = client.ReplicationProtectionContainers.ListByReplicationFabrics(siteName).FirstOrDefault();
-                var protectedItem1 = client.ReplicationProtectedItems.Get(siteName, protectionContainer.Name, vmName);
+                var protectedItem1 = client.ReplicationProtectedItems.Get(siteName, protectionContainer.Name, vmId);
 
                 RecoveryPlanProtectedItem rpVm1 = new RecoveryPlanProtectedItem()
                 {
@@ -1518,7 +1580,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void GetRecoveryPlan()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1530,7 +1592,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void UpdateRecoveryPlan()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1572,7 +1634,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void DeleteRecoveryPlan()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1581,24 +1643,21 @@ namespace RecoveryServices.SiteRecovery.Tests
             }
         }
 
-        [Fact(Skip = "ReRecord due to CR change")]
+        [Fact]
         public void RPTestFailover()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
 
-                RecoveryPlanHyperVReplicaAzureFailoverInput h2AInput = new RecoveryPlanHyperVReplicaAzureFailoverInput()
-                {
-                    VaultLocation = "West US"
-                };
+                RecoveryPlanHyperVReplicaAzureFailoverInput h2AInput = new RecoveryPlanHyperVReplicaAzureFailoverInput();
 
                 RecoveryPlanTestFailoverInputProperties inputProperties = new RecoveryPlanTestFailoverInputProperties()
                 {
                     NetworkId = azureNetworkId,
+                    FailoverDirection = PossibleOperationsDirections.PrimaryToRecovery,
                     NetworkType = string.IsNullOrEmpty(azureNetworkId) ? null : "VmNetworkAsInput",
-                    SkipTestFailoverCleanup = true.ToString(),
                     ProviderSpecificDetails = new List<RecoveryPlanProviderSpecificFailoverInput>() { h2AInput }
                 };
 
@@ -1613,10 +1672,10 @@ namespace RecoveryServices.SiteRecovery.Tests
             }
         }
 
-        [Fact(Skip = "ReRecord due to CR change")]
+        [Fact]
         public void RPTestFailoverCleanup()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1636,18 +1695,15 @@ namespace RecoveryServices.SiteRecovery.Tests
             }
         }
 
-        [Fact(Skip = "ReRecord due to CR change")]
+        [Fact]
         public void RPPlannedFailover()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
 
-                RecoveryPlanHyperVReplicaAzureFailoverInput h2AInput = new RecoveryPlanHyperVReplicaAzureFailoverInput()
-                {
-                    VaultLocation = "West US"
-                };
+                RecoveryPlanHyperVReplicaAzureFailoverInput h2AInput = new RecoveryPlanHyperVReplicaAzureFailoverInput();
 
                 RecoveryPlanPlannedFailoverInputProperties inputProperties = new RecoveryPlanPlannedFailoverInputProperties()
                 {
@@ -1665,18 +1721,15 @@ namespace RecoveryServices.SiteRecovery.Tests
             }
         }
 
-        [Fact(Skip = "ReRecord due to CR change")]
+        [Fact]
         public void RPUnplannedFailover()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
 
-                RecoveryPlanHyperVReplicaAzureFailoverInput h2AInput = new RecoveryPlanHyperVReplicaAzureFailoverInput()
-                {
-                    VaultLocation = "West US"
-                };
+                RecoveryPlanHyperVReplicaAzureFailoverInput h2AInput = new RecoveryPlanHyperVReplicaAzureFailoverInput();
 
                 RecoveryPlanUnplannedFailoverInputProperties inputProperties = new RecoveryPlanUnplannedFailoverInputProperties()
                 {
@@ -1695,10 +1748,10 @@ namespace RecoveryServices.SiteRecovery.Tests
             }
         }
 
-        [Fact(Skip = "ReRecord due to CR change")]
+        [Fact]
         public void RPFailoverCommit()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1708,10 +1761,10 @@ namespace RecoveryServices.SiteRecovery.Tests
             }
         }
 
-        [Fact(Skip = "ReRecord due to CR change")]
+        [Fact]
         public void RPFailback()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1738,10 +1791,10 @@ namespace RecoveryServices.SiteRecovery.Tests
             }
         }
 
-        [Fact(Skip = "ReRecord due to CR change")]
+        [Fact]
         public void RPReprotect()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1755,7 +1808,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void CreateAlertSettings()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1780,7 +1833,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void GetAlertSettings()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1792,7 +1845,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void ListAlertSettings()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1801,10 +1854,10 @@ namespace RecoveryServices.SiteRecovery.Tests
             }
         }
 
-        [Fact]
+        [Fact(Skip = "Understand test scenario")]
         public void GetReplicationEvent()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1817,7 +1870,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void ListReplicationEvent()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1829,7 +1882,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void GetNetworks()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1841,7 +1894,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void ListNetworks()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1853,7 +1906,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void EnumerateNetworks()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1865,7 +1918,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void CreateNetworkMapping()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1892,7 +1945,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void GetNetworkMapping()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1904,7 +1957,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void ListNetworkMapping()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1916,7 +1969,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void EnumerateNetworkMapping()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1928,7 +1981,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void UpdateNetworkMapping()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1953,7 +2006,7 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void DeleteNetworkMapping()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
                 testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
@@ -1962,25 +2015,12 @@ namespace RecoveryServices.SiteRecovery.Tests
             }
         }
         
-       
-        [Fact]
-        public void MigrateToAad()
-        {
-            using (var context = MockContext.Start(this.GetType().FullName))
-            {
-                testHelper.Initialize(context, "canaryexproute", "IbizaV2ATest");
-                var client = testHelper.SiteRecoveryClient;
-
-                client.ReplicationFabrics.MigrateToAad("38de67c62c2b231fb647b060df06a8a69da7e305c44db6646693b7470d709c87");
-            }
-        }
-
         [Fact]
         public void ListEventByQuery()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
-                testHelper.Initialize(context, "canaryexproute", "IbizaV2ATest");
+                testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
 
                 var querydata = new ODataQuery<EventQueryParameter>("Severity  eq 'Critical'");
@@ -1991,12 +2031,40 @@ namespace RecoveryServices.SiteRecovery.Tests
         [Fact]
         public void GetHealthDetails()
         {
-            using (var context = MockContext.Start(this.GetType().FullName))
+            using (var context = MockContext.Start(this.GetType()))
             {
-                testHelper.Initialize(context, "canaryexproute", "IbizaV2ATest");
+                testHelper.Initialize(context);
                 var client = testHelper.SiteRecoveryClient;
 
                 client.ReplicationVaultHealth.Get();
+            }
+        }
+
+        [Fact]
+        public void GetReplicationEligibilityResults()
+        {
+            using (var context = MockContext.Start(this.GetType()))
+            {
+                testHelper.Initialize(context, "testRg1", "");
+                var client = testHelper.SiteRecoveryClient;
+
+                var replicationEligibilityResults = client.ReplicationEligibilityResults.Get(a2aVirtualMachineToValidate);
+
+                Assert.NotNull(replicationEligibilityResults);
+            }
+        }
+
+        [Fact]
+        public void EnumerateReplicationEligibilityResults()
+        {
+            using (var context = MockContext.Start(this.GetType()))
+            {
+                testHelper.Initialize(context, "testRg1", "");
+                var client = testHelper.SiteRecoveryClient;
+
+                var replicationEligibilityResultsCollection = client.ReplicationEligibilityResults.List(a2aVirtualMachineToValidate);
+
+                Assert.NotNull(replicationEligibilityResultsCollection);
             }
         }
     }

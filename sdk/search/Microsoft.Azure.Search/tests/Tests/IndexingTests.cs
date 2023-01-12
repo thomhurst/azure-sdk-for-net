@@ -15,6 +15,7 @@ namespace Microsoft.Azure.Search.Tests
     using Newtonsoft.Json.Serialization;
     using Rest.Serialization;
     using Xunit;
+    using Index = Microsoft.Azure.Search.Models.Index;
 
     public sealed class IndexingTests : SearchTestBase<IndexFixture>
     {
@@ -1363,7 +1364,7 @@ namespace Microsoft.Azure.Search.Tests
                             }
                         }
                     },
-                    // Maximimum values
+                    // Maximum values
                     new Hotel()
                     {
                         HotelId = "2",
@@ -1452,6 +1453,37 @@ namespace Microsoft.Azure.Search.Tests
                 {
                     Assert.Equal(expectedDocs[i], actualDocs[i]);
                 }
+            });
+        }
+
+        [Fact]
+        public void MergeDocumentWithoutExistingKeyThrowsIndexingException()
+        {
+            Run(() =>
+            {
+                SearchIndexClient client = Data.GetSearchIndexClient();
+
+                var documents = new[]
+                {
+                    new Hotel()
+                    {
+                        HotelId = "1",
+                        ParkingIncluded = false,
+                        Rating = int.MinValue,
+                        Tags = new string[0],
+                        Address = new HotelAddress(),
+                        Rooms = new[]
+                        {
+                            new HotelRoom()
+                            {
+                                BaseRate = double.MinValue
+                            }
+                        }
+                    },
+                };
+
+                var batch = IndexBatch.Merge(documents);
+                Assert.Throws<IndexBatchException>(() => client.Documents.Index(batch));
             });
         }
 

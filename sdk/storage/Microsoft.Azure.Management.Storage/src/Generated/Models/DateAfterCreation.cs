@@ -15,7 +15,7 @@ namespace Microsoft.Azure.Management.Storage.Models
     using System.Linq;
 
     /// <summary>
-    /// Object to define the number of days after creation.
+    /// Object to define snapshot and version action conditions.
     /// </summary>
     public partial class DateAfterCreation
     {
@@ -30,11 +30,18 @@ namespace Microsoft.Azure.Management.Storage.Models
         /// <summary>
         /// Initializes a new instance of the DateAfterCreation class.
         /// </summary>
-        /// <param name="daysAfterCreationGreaterThan">Integer value indicating
-        /// the age in days after creation</param>
-        public DateAfterCreation(int daysAfterCreationGreaterThan)
+        /// <param name="daysAfterCreationGreaterThan">Value indicating the age
+        /// in days after creation</param>
+        /// <param name="daysAfterLastTierChangeGreaterThan">Value indicating
+        /// the age in days after last blob tier change time. This property is
+        /// only applicable for tierToArchive actions and requires
+        /// daysAfterCreationGreaterThan to be set for snapshots and blob
+        /// version based actions. The blob will be archived if both the
+        /// conditions are satisfied.</param>
+        public DateAfterCreation(double daysAfterCreationGreaterThan, double? daysAfterLastTierChangeGreaterThan = default(double?))
         {
             DaysAfterCreationGreaterThan = daysAfterCreationGreaterThan;
+            DaysAfterLastTierChangeGreaterThan = daysAfterLastTierChangeGreaterThan;
             CustomInit();
         }
 
@@ -44,11 +51,20 @@ namespace Microsoft.Azure.Management.Storage.Models
         partial void CustomInit();
 
         /// <summary>
-        /// Gets or sets integer value indicating the age in days after
-        /// creation
+        /// Gets or sets value indicating the age in days after creation
         /// </summary>
         [JsonProperty(PropertyName = "daysAfterCreationGreaterThan")]
-        public int DaysAfterCreationGreaterThan { get; set; }
+        public double DaysAfterCreationGreaterThan { get; set; }
+
+        /// <summary>
+        /// Gets or sets value indicating the age in days after last blob tier
+        /// change time. This property is only applicable for tierToArchive
+        /// actions and requires daysAfterCreationGreaterThan to be set for
+        /// snapshots and blob version based actions. The blob will be archived
+        /// if both the conditions are satisfied.
+        /// </summary>
+        [JsonProperty(PropertyName = "daysAfterLastTierChangeGreaterThan")]
+        public double? DaysAfterLastTierChangeGreaterThan { get; set; }
 
         /// <summary>
         /// Validate the object.
@@ -61,6 +77,21 @@ namespace Microsoft.Azure.Management.Storage.Models
             if (DaysAfterCreationGreaterThan < 0)
             {
                 throw new ValidationException(ValidationRules.InclusiveMinimum, "DaysAfterCreationGreaterThan", 0);
+            }
+            if (DaysAfterCreationGreaterThan % 1 != 0)
+            {
+                throw new ValidationException(ValidationRules.MultipleOf, "DaysAfterCreationGreaterThan", 1);
+            }
+            if (DaysAfterLastTierChangeGreaterThan != null)
+            {
+                if (DaysAfterLastTierChangeGreaterThan < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "DaysAfterLastTierChangeGreaterThan", 0);
+                }
+                if (DaysAfterLastTierChangeGreaterThan % 1 != 0)
+                {
+                    throw new ValidationException(ValidationRules.MultipleOf, "DaysAfterLastTierChangeGreaterThan", 1);
+                }
             }
         }
     }

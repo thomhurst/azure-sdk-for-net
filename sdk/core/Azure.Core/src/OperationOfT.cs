@@ -5,116 +5,109 @@ using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure.Core;
+
+#nullable enable
 
 namespace Azure
 {
     /// <summary>
-    /// Represents a long running operation (LRO).
+    /// Represents a long-running operation that returns a value when it completes.
     /// </summary>
-    /// <typeparam name="T">The final result of the LRO.</typeparam>
-    public abstract class Operation<T>
+    /// <typeparam name="T">The final result of the long-running operation.</typeparam>
+#pragma warning disable SA1649 // File name should match first type name
+#pragma warning disable AZC0012 // Avoid single word type names
+    public abstract class Operation<T> : Operation where T : notnull
+#pragma warning restore AZC0012 // Avoid single word type names
+#pragma warning restore SA1649 // File name should match first type name
     {
-        T _value;
-        Response _response;
-
         /// <summary>
-        /// Final result of the LRO.
+        /// Final result of the long-running operation.
         /// </summary>
         /// <remarks>
-        /// This property can be accessed only after the operation completes succesfully (HasValue is true).
+        /// This property can be accessed only after the operation completes successfully (HasValue is true).
         /// </remarks>
-        public T Value
-        {
-            get {
-                if (!HasValue) throw new InvalidOperationException("operation has not completed");
-                return _value;
-            }
-            protected set
-            {
-                _value = value;
-            }
-        }
+        public abstract T Value { get; }
 
         /// <summary>
-        /// The last HTTP response received from the server.
-        /// </summary>
-        /// <remarks>
-        /// The last response returned from the server during the lifecycle of this instance.
-        /// An instance of Operation<typeparamref name="T"/> sends requests to a server in UpdateStatusAsync, UpdateStatus, and other methods.
-        /// Responses from these requests can be accessed using GetRawResponse.
-        /// </remarks>
-        public Response GetRawResponse() => _response;
-        protected void SetRawResponse(Response response) => _response = response;
-
-        /// <summary>
-        /// Returns true if the LRO completed.
-        /// </summary>
-        public abstract bool HasCompleted { get; }
-
-        /// <summary>
-        /// Returns true if the LRO completed succesfully and has produced final result (accessible by Value property).
+        /// Returns true if the long-running operation completed successfully and has produced final result (accessible by Value property).
         /// </summary>
         public abstract bool HasValue { get; }
 
         /// <summary>
-        /// Polling interval used by WaitCompletionAsync method. 
+        /// Periodically calls the server till the long-running operation completes.
         /// </summary>
-        /// <remarks>
-        /// The interval can change based on information returned from the server.
-        /// For example, the server might communicate to the client that there is not reason to poll for status change sooner than some time.
-        /// </remarks>
-        public TimeSpan PollingInterval { get; set; } = TimeSpan.FromSeconds(1);
-
-        /// <summary>
-        /// Periodically calls the server till the LRO completes.
-        /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> used for the periodical service calls.</param>
+        /// <returns>The last HTTP response received from the server.</returns>
         /// <remarks>
         /// This method will periodically call UpdateStatusAsync till HasCompleted is true, then return the final result of the operation.
         /// </remarks>
-        public virtual async ValueTask<Response<T>> WaitCompletionAsync(CancellationToken cancellationToken = default)
+        public virtual Response<T> WaitForCompletion(CancellationToken cancellationToken = default)
         {
-            while (true)
-            {
-                await UpdateStatusAsync(cancellationToken).ConfigureAwait(false);
-                if (HasCompleted)
-                {
-                    return new Response<T>(_response, Value);
-                }
-                await Task.Delay(PollingInterval, cancellationToken).ConfigureAwait(false);
-            }
+            OperationPoller poller = new OperationPoller();
+            return poller.WaitForCompletion(this, null, cancellationToken);
         }
 
         /// <summary>
-        /// Calls the server to get updated status of the LRO.
+        /// Periodically calls the server till the long-running operation completes.
         /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <param name="pollingInterval">
+        /// The interval between status requests to the server.
+        /// The interval can change based on information returned from the server.
+        /// For example, the server might communicate to the client that there is not reason to poll for status change sooner than some time.
+        /// </param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> used for the periodical service calls.</param>
+        /// <returns>The last HTTP response received from the server.</returns>
         /// <remarks>
-        /// This operation will update the value returned from GetRawResponse and might update HasCompleted, HasValue, and Value.
+        /// This method will periodically call UpdateStatusAsync till HasCompleted is true, then return the final result of the operation.
         /// </remarks>
-        public abstract ValueTask<Response> UpdateStatusAsync(CancellationToken cancellationToken = default);
+        public virtual Response<T> WaitForCompletion(TimeSpan pollingInterval, CancellationToken cancellationToken)
+        {
+            OperationPoller poller = new OperationPoller();
+            return poller.WaitForCompletion(this, pollingInterval, cancellationToken);
+        }
 
         /// <summary>
-        /// Calls the server to get updated status of the LRO.
+        /// Periodically calls the server till the long-running operation completes.
         /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> used for the periodical service calls.</param>
+        /// <returns>The last HTTP response received from the server.</returns>
         /// <remarks>
-        /// This operation will update the value returned from GetRawResponse and might update HasCompleted, HasValue, and Value.
+        /// This method will periodically call UpdateStatusAsync till HasCompleted is true, then return the final result of the operation.
         /// </remarks>
-        public abstract Response UpdateStatus(CancellationToken cancellationToken = default);
+        public virtual async ValueTask<Response<T>> WaitForCompletionAsync(CancellationToken cancellationToken = default)
+        {
+            OperationPoller poller = new OperationPoller();
+            return await poller.WaitForCompletionAsync(this, null, cancellationToken).ConfigureAwait(false);
+        }
 
-        protected Operation() { }
+        /// <summary>
+        /// Periodically calls the server till the long-running operation completes.
+        /// </summary>
+        /// <param name="pollingInterval">
+        /// The interval between status requests to the server.
+        /// The interval can change based on information returned from the server.
+        /// For example, the server might communicate to the client that there is not reason to poll for status change sooner than some time.
+        /// </param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> used for the periodical service calls.</param>
+        /// <returns>The last HTTP response received from the server.</returns>
+        /// <remarks>
+        /// This method will periodically call UpdateStatusAsync till HasCompleted is true, then return the final result of the operation.
+        /// </remarks>
+        public virtual async ValueTask<Response<T>> WaitForCompletionAsync(TimeSpan pollingInterval, CancellationToken cancellationToken)
+        {
+            OperationPoller poller = new OperationPoller();
+            return await poller.WaitForCompletionAsync(this, pollingInterval, cancellationToken).ConfigureAwait(false);
+        }
 
+        /// <inheritdoc />
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj) => base.Equals(obj);
+        public override async ValueTask<Response> WaitForCompletionResponseAsync(CancellationToken cancellationToken = default)
+            => (await WaitForCompletionAsync(cancellationToken).ConfigureAwait(false)).GetRawResponse();
 
+        /// <inheritdoc />
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode() => base.GetHashCode();
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override string ToString() => base.ToString();
+        public override async ValueTask<Response> WaitForCompletionResponseAsync(TimeSpan pollingInterval, CancellationToken cancellationToken = default)
+            => (await WaitForCompletionAsync(pollingInterval, cancellationToken).ConfigureAwait(false)).GetRawResponse();
     }
 }

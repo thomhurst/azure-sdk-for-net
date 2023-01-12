@@ -39,6 +39,8 @@ namespace Microsoft.Azure.Management.Network.Models
         /// <param name="type">Resource type.</param>
         /// <param name="location">Resource location.</param>
         /// <param name="tags">Resource tags.</param>
+        /// <param name="extendedLocation">The extended location of the public
+        /// ip address.</param>
         /// <param name="sku">The public IP address SKU.</param>
         /// <param name="publicIPAllocationMethod">The public IP address
         /// allocation method. Possible values include: 'Static',
@@ -60,17 +62,30 @@ namespace Microsoft.Azure.Management.Network.Models
         /// <param name="idleTimeoutInMinutes">The idle timeout of the public
         /// IP address.</param>
         /// <param name="resourceGuid">The resource GUID property of the public
-        /// IP resource.</param>
+        /// IP address resource.</param>
         /// <param name="provisioningState">The provisioning state of the
-        /// PublicIP resource. Possible values are: 'Updating', 'Deleting', and
-        /// 'Failed'.</param>
+        /// public IP address resource. Possible values include: 'Succeeded',
+        /// 'Updating', 'Deleting', 'Failed'</param>
+        /// <param name="servicePublicIPAddress">The service public IP address
+        /// of the public IP address resource.</param>
+        /// <param name="natGateway">The NatGateway for the Public IP
+        /// address.</param>
+        /// <param name="migrationPhase">Migration phase of Public IP Address.
+        /// Possible values include: 'None', 'Prepare', 'Commit', 'Abort',
+        /// 'Committed'</param>
+        /// <param name="linkedPublicIPAddress">The linked public IP address of
+        /// the public IP address resource.</param>
+        /// <param name="deleteOption">Specify what happens to the public IP
+        /// address when the VM using it is deleted. Possible values include:
+        /// 'Delete', 'Detach'</param>
         /// <param name="etag">A unique read-only string that changes whenever
         /// the resource is updated.</param>
         /// <param name="zones">A list of availability zones denoting the IP
         /// allocated for the resource needs to come from.</param>
-        public PublicIPAddress(string id = default(string), string name = default(string), string type = default(string), string location = default(string), IDictionary<string, string> tags = default(IDictionary<string, string>), PublicIPAddressSku sku = default(PublicIPAddressSku), string publicIPAllocationMethod = default(string), string publicIPAddressVersion = default(string), IPConfiguration ipConfiguration = default(IPConfiguration), PublicIPAddressDnsSettings dnsSettings = default(PublicIPAddressDnsSettings), DdosSettings ddosSettings = default(DdosSettings), IList<IpTag> ipTags = default(IList<IpTag>), string ipAddress = default(string), SubResource publicIPPrefix = default(SubResource), int? idleTimeoutInMinutes = default(int?), string resourceGuid = default(string), string provisioningState = default(string), string etag = default(string), IList<string> zones = default(IList<string>))
+        public PublicIPAddress(string id = default(string), string name = default(string), string type = default(string), string location = default(string), IDictionary<string, string> tags = default(IDictionary<string, string>), ExtendedLocation extendedLocation = default(ExtendedLocation), PublicIPAddressSku sku = default(PublicIPAddressSku), string publicIPAllocationMethod = default(string), string publicIPAddressVersion = default(string), IPConfiguration ipConfiguration = default(IPConfiguration), PublicIPAddressDnsSettings dnsSettings = default(PublicIPAddressDnsSettings), DdosSettings ddosSettings = default(DdosSettings), IList<IpTag> ipTags = default(IList<IpTag>), string ipAddress = default(string), SubResource publicIPPrefix = default(SubResource), int? idleTimeoutInMinutes = default(int?), string resourceGuid = default(string), string provisioningState = default(string), PublicIPAddress servicePublicIPAddress = default(PublicIPAddress), NatGateway natGateway = default(NatGateway), string migrationPhase = default(string), PublicIPAddress linkedPublicIPAddress = default(PublicIPAddress), string deleteOption = default(string), string etag = default(string), IList<string> zones = default(IList<string>))
             : base(id, name, type, location, tags)
         {
+            ExtendedLocation = extendedLocation;
             Sku = sku;
             PublicIPAllocationMethod = publicIPAllocationMethod;
             PublicIPAddressVersion = publicIPAddressVersion;
@@ -83,6 +98,11 @@ namespace Microsoft.Azure.Management.Network.Models
             IdleTimeoutInMinutes = idleTimeoutInMinutes;
             ResourceGuid = resourceGuid;
             ProvisioningState = provisioningState;
+            ServicePublicIPAddress = servicePublicIPAddress;
+            NatGateway = natGateway;
+            MigrationPhase = migrationPhase;
+            LinkedPublicIPAddress = linkedPublicIPAddress;
+            DeleteOption = deleteOption;
             Etag = etag;
             Zones = zones;
             CustomInit();
@@ -92,6 +112,12 @@ namespace Microsoft.Azure.Management.Network.Models
         /// An initialization method that performs custom operations like setting defaults
         /// </summary>
         partial void CustomInit();
+
+        /// <summary>
+        /// Gets or sets the extended location of the public ip address.
+        /// </summary>
+        [JsonProperty(PropertyName = "extendedLocation")]
+        public ExtendedLocation ExtendedLocation { get; set; }
 
         /// <summary>
         /// Gets or sets the public IP address SKU.
@@ -161,24 +187,59 @@ namespace Microsoft.Azure.Management.Network.Models
         public int? IdleTimeoutInMinutes { get; set; }
 
         /// <summary>
-        /// Gets or sets the resource GUID property of the public IP resource.
+        /// Gets the resource GUID property of the public IP address resource.
         /// </summary>
         [JsonProperty(PropertyName = "properties.resourceGuid")]
-        public string ResourceGuid { get; set; }
+        public string ResourceGuid { get; private set; }
 
         /// <summary>
-        /// Gets or sets the provisioning state of the PublicIP resource.
-        /// Possible values are: 'Updating', 'Deleting', and 'Failed'.
+        /// Gets the provisioning state of the public IP address resource.
+        /// Possible values include: 'Succeeded', 'Updating', 'Deleting',
+        /// 'Failed'
         /// </summary>
         [JsonProperty(PropertyName = "properties.provisioningState")]
-        public string ProvisioningState { get; set; }
+        public string ProvisioningState { get; private set; }
 
         /// <summary>
-        /// Gets or sets a unique read-only string that changes whenever the
-        /// resource is updated.
+        /// Gets or sets the service public IP address of the public IP address
+        /// resource.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.servicePublicIPAddress")]
+        public PublicIPAddress ServicePublicIPAddress { get; set; }
+
+        /// <summary>
+        /// Gets or sets the NatGateway for the Public IP address.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.natGateway")]
+        public NatGateway NatGateway { get; set; }
+
+        /// <summary>
+        /// Gets or sets migration phase of Public IP Address. Possible values
+        /// include: 'None', 'Prepare', 'Commit', 'Abort', 'Committed'
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.migrationPhase")]
+        public string MigrationPhase { get; set; }
+
+        /// <summary>
+        /// Gets or sets the linked public IP address of the public IP address
+        /// resource.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.linkedPublicIPAddress")]
+        public PublicIPAddress LinkedPublicIPAddress { get; set; }
+
+        /// <summary>
+        /// Gets or sets specify what happens to the public IP address when the
+        /// VM using it is deleted. Possible values include: 'Delete', 'Detach'
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.deleteOption")]
+        public string DeleteOption { get; set; }
+
+        /// <summary>
+        /// Gets a unique read-only string that changes whenever the resource
+        /// is updated.
         /// </summary>
         [JsonProperty(PropertyName = "etag")]
-        public string Etag { get; set; }
+        public string Etag { get; private set; }
 
         /// <summary>
         /// Gets or sets a list of availability zones denoting the IP allocated

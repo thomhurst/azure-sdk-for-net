@@ -15,11 +15,6 @@ namespace Microsoft.Azure.Services.AppAuthentication
     {
         private const string TokenResponseFormatExceptionMessage = "Token response is not in the expected format.";
 
-        internal enum DateFormat
-        {
-            Unix,
-            DateTimeString
-        };
 
         // VS token service and MSI endpoint return access_token
         [DataMember(Name = "access_token", IsRequired = false)]
@@ -36,9 +31,6 @@ namespace Microsoft.Azure.Services.AppAuthentication
         // Azure CLI returns expiresOn
         [DataMember(Name = "expiresOn", IsRequired = false)]
         public string ExpiresOn2 { get; private set; }
-
-        [DataMember(Name = "error_description", IsRequired = false)]
-        public string ErrorDescription { get; private set; }
 
         // VS token service returns resource
         [DataMember(Name = "resource", IsRequired = false)]

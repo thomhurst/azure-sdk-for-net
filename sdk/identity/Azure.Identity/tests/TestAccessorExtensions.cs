@@ -1,46 +1,50 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
+using System.Security;
+using Azure.Core;
+using NUnit.Framework;
 
 namespace Azure.Identity.Tests
 {
     internal static class TestAccessorExtensions
     {
-        public static string _clientId(this ClientSecretCredential credential)
+        public static ClientSecretCredential _client(this ClientSecretCredential credential)
         {
-            return typeof(ClientSecretCredential).GetField("_clientId", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(credential) as string;
+            return typeof(ClientSecretCredential).GetField("_client", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(credential) as ClientSecretCredential;
         }
 
-        public static string _tenantId(this ClientSecretCredential credential)
+        public static SecureString ToSecureString(this string plainString)
         {
-            return typeof(ClientSecretCredential).GetField("_tenantId", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(credential) as string;
+            if (plainString == null)
+                return null;
+
+            SecureString secureString = new SecureString();
+            foreach (char c in plainString.ToCharArray())
+            {
+                secureString.AppendChar(c);
+            }
+            return secureString;
         }
 
-        public static string _clientSecret(this ClientSecretCredential credential)
+        public static void _client(this InteractiveBrowserCredential credential, MsalPublicClient client)
         {
-            return typeof(ClientSecretCredential).GetField("_clientSecret", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(credential) as string;
+            typeof(InteractiveBrowserCredential).GetField("_client", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(credential, client);
         }
 
-        public static string _client(this ClientSecretCredential credential)
+        public static TokenCredential[] _sources(this DefaultAzureCredential credential)
         {
-            return typeof(ClientSecretCredential).GetField("_client", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(credential) as string;
-        }
-        public static void _client(this ClientSecretCredential credential, AadIdentityClient client)
-        {
-            typeof(ClientSecretCredential).GetField("_client", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(credential, client);
+            return typeof(DefaultAzureCredential).GetField("_sources", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(credential) as TokenCredential[];
         }
 
-        public static ManagedIdentityClient _client(this ManagedIdentityCredential credential)
+        public static void ConditionalAdd<T>(this List<T> list, bool condition, T item)
         {
-            return typeof(ManagedIdentityCredential).GetField("_client", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(credential) as ManagedIdentityClient;
-        }
-        public static void _client(this ManagedIdentityCredential credential, ManagedIdentityClient client)
-        {
-            typeof(ManagedIdentityCredential).GetField("_client", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(credential, client);
+            if (condition)
+            {
+                list.Add(item);
+            }
         }
     }
 }

@@ -12,8 +12,8 @@ using System.Net.Http;
 namespace Management.HDInsight.Tests
 {
     /// <summary>
-    /// Extened mock context to add ability to post-process generated session records.
-    /// It can replace some senstive data to mock value.
+    /// Extended mock context to add ability to post-process generated session records.
+    /// It can replace some sensitive data to mock value.
     /// </summary>
     public class HDInsightMockContext : MockContext
     {
@@ -41,13 +41,13 @@ namespace Management.HDInsight.Tests
         /// </summary>
         /// <returns></returns>
         public new static HDInsightMockContext Start(
-            string className,
+            Type typeName,
             [System.Runtime.CompilerServices.CallerMemberName]
             string methodName= "testframework_failed")
         {
             var context = new HDInsightMockContext
             {
-                innerContext = MockContext.Start(className, methodName)
+                innerContext = MockContext.Start(typeName, methodName)
             };
 
             return context;

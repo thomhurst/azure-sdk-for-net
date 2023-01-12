@@ -1,5 +1,7 @@
 # Azure Event Hubs client library for .NET
 
+> Please note, a newer package [Azure.Messaging.EventHubs](https://www.nuget.org/packages/Azure.Messaging.EventHubs) for [Azure Event Hubs](https://azure.microsoft.com/services/event-hubs/) is available as of February 2020. While this package will continue to receive critical bug fixes, we strongly encourage you to upgrade. Read the [migration guide](https://aka.ms/azsdk/net/migrate/eh) for more details.
+
 Azure Event Hubs is a highly scalable publish-subscribe service that can ingest millions of events per second and stream them into multiple applications. This lets you process and analyze the massive amounts of data produced by your connected devices and applications. Once Event Hubs has collected the data, you can retrieve, transform and store it by using any real-time analytics provider or with batching/storage adapters. 
 
 The Azure Events Hubs client library for .NET allows for both sending and receiving of events.  Most common scenarios call for an application to act as either an event publisher or an event consumer, but rarely both. 
@@ -13,7 +15,7 @@ computation and filtering. Processing may also involve distribution or storage o
 Event Hub consumers are often robust and high-scale platform infrastructure parts with built-in analytics capabilities, like Azure 
 Stream Analytics, Apache Spark, or Apache Storm.  
 
-This directory contains the open source subset of the .NET SDK. For documentation of the complete Azure SDK, please see the [Microsoft Azure .NET Developer Center](http://azure.microsoft.com/en-us/develop/net/).
+This directory contains the open source subset of the .NET SDK. For documentation of the complete Azure SDK, please see the [Microsoft Azure .NET Developer Center](https://azure.microsoft.com/develop/net/).
 
 Use the client library for Event Hubs to:
 
@@ -25,13 +27,13 @@ Use the client library for Event Hubs to:
 
 - Receive events from one or more publishers, transform them to better meet the needs of your ecosystem, then publish the transformed events to a new stream for consumers to observe.
 
-[Source code](https://github.com/Azure/azure-sdk-for-net/tree/master/sdk/eventhub/Microsoft.Azure.EventHubs) | [Package (NuGet)](https://www.nuget.org/packages/Microsoft.Azure.EventHubs/) | [API reference documentation](https://docs.microsoft.com/en-us/dotnet/api/overview/azure/event-hubs?view=azure-dotnet) | [Product documentation](https://docs.microsoft.com/en-us/azure/event-hubs/)
+[Source code](https://github.com/Azure/azure-sdk-for-net/tree/main/sdk/eventhub/Microsoft.Azure.EventHubs) | [Package (NuGet)](https://www.nuget.org/packages/Microsoft.Azure.EventHubs/) | [API reference documentation](https://docs.microsoft.com/dotnet/api/overview/azure/event-hubs?view=azure-dotnet) | [Product documentation](https://docs.microsoft.com/azure/event-hubs/)
 
 ## Getting started
 
-The complete Microsoft Azure SDK can be downloaded from the [Microsoft Azure Downloads Page](http://azure.microsoft.com/en-us/downloads/?sdk=net) and ships with support for building deployment packages, integrating with tooling, rich command line tooling, and more.
+The complete Microsoft Azure SDK can be downloaded from the [Microsoft Azure Downloads Page](https://azure.microsoft.com/downloads/?sdk=net) and ships with support for building deployment packages, integrating with tooling, rich command line tooling, and more.
 
-If you are not already familiar with Azure Event Hubs, please review: [What is Event Hubs?](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-about).
+If you are not already familiar with Azure Event Hubs, please review: [What is Event Hubs?](https://docs.microsoft.com/azure/event-hubs/event-hubs-about).
 
 For the best development experience, developers should use the official Microsoft NuGet packages for libraries. NuGet packages are regularly updated with new functionality and hotfixes.
 
@@ -45,8 +47,8 @@ For the best development experience, developers should use the official Microsof
 
 Code samples for the Azure Event Hubs client library that detail how to get started and how to implement common scenarios can be found in the following locations:
 
-- [Azure Code Samples](https://azure.microsoft.com/en-us/resources/samples/?sort=0&service=event-hubs&platform=dotnet)
-- [Azure Event Hubs Documentation](https://docs.microsoft.com/en-us/azure/event-hubs/)
+- [Azure Code Samples](https://azure.microsoft.com/resources/samples/?sort=0&service=event-hubs&platform=dotnet)
+- [Azure Event Hubs Documentation](https://docs.microsoft.com/azure/event-hubs/)
 - [Azure Event Hubs Sample Repository](https://github.com/Azure/azure-event-hubs/tree/master/samples)
 - [Azure Event Hubs Notification Sample](https://github.com/Azure-Samples/event-hubs-dotnet-user-notifications)
 - [Azure Event Hubs Publishing Sample](https://github.com/Azure-Samples/event-hubs-dotnet-ingest)
@@ -55,21 +57,47 @@ Code samples for the Azure Event Hubs client library that detail how to get star
 
 For information on building the Azure Event Hubs client library, please see [Building the Microsoft Azure SDK for .NET](https://github.com/azure/azure-sdk-for-net#to-build)
 
-## Running tests
+### Running tests
 
-1. Deploy the Azure Resource Manager template located at [/sdk/eventhub/Microsoft.Azure.EventHubs/assets/azure-deploy-test-dependencies.json](https://github.com/Azure/azure-sdk-for-net/blob/master/sdk/eventhub/Microsoft.Azure.EventHubs/assets/azure-deploy-test-dependencies.json) by clicking the following button:
+The Event Hubs client library tests may be executed using the `dotnet` CLI, or the test runner of your choice - such as Visual Studio or Visual Studio Code.  For those developers using Visual Studio, it is safe to use the Live Unit Testing feature, as any tests with external dependencies have been marked to be excluded.
 
-    <a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Fazure-sdk-for-net%2Fmaster%2Fsdk%2Feventhub%2FMicrosoft.Azure.EventHubs%2Fassets%2Fazure-deploy-test-dependencies.json" target="_blank">
-        <img src="http://azuredeploy.net/deploybutton.png"/>
-    </a>
+Tests in the Event Hubs client library are split into two categories:
 
-    *Running the above template will provision a standard Event Hubs namespace along with the required entities to successfully run the unit tests.*
+- **Unit tests** have no special considerations; these are self-contained and execute locally without any reliance on external resources.  Unit tests are considered the default test type in the Event Hubs client library and, thus, have no explicit category trait attached to them.
 
-1. Add an Environment Variable named `EVENT_HUBS_CONNECTION_STRING` and set the value as the connection string of the newly created namespace. **Please note that if you are using Visual Studio, you must restart Visual Studio in order to use new Environment Variables.**
+- **Integration tests** have dependencies on live Azure resources and require setting up your development environment prior to running.  Known in the Azure SDK project commonly as "Live" tests, these tests are decorated with a category trait of "LiveTest".  
 
-1. Add an Environment Variable named `EVENT_HUBS_STORAGE_CONNECTION_STRING` and set the value as the connection string of the newly created storage account. **Please note that if you are using Visual Studio, you must restart Visual Studio in order to use new Environment Variables.**
+The required Azure resources are defined in the [test resources ARM template](https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/eventhub/test-resources.json).  In addition to these resources, a Azure Active Directory service principal is needed.  The recommended approach is to use the Azure SDK [Test Resources](https://github.com/Azure/azure-sdk-tools/blob/main/eng/common/TestResources/README.md) tooling. 
 
-Once you have completed the above, you can run `dotnet test` from the `/sdk/eventhub/Microsoft.Azure.EventHubs/tests` directory.
+The following PowerShell commands will make use of `New-TestResources.ps1` to create the Event Hubs test resources, including the Azure Active Directory service principal.  The script uses the `BaseName` as a prefix when naming the service principal and other resources.  The full set of options for `New-TestResources.ps1` can be found in the [New-TestResources.ps1 documentation](https://github.com/Azure/azure-sdk-tools/blob/main/eng/common/TestResources/New-TestResources.ps1.md).
+
+```powershell
+Connect-AzAccount -Subscription '<< AZURE SUBSCRIPTION ID >>'
+
+<repository-root>/eng/common/TestResources/New-TestResources.ps1 `
+    -BaseName '<< MEMORABLE VALUE (example: azsdk) >>' `
+    -ServiceDirectory 'eventhub' `
+    -SubscriptionId '<< AZURE SUBSCRIPTION ID >>' `
+    -ResourceGroupName '<< NAME FOR RESOURCE GROUP >>' `
+    -Location '<< AZURE REGION CODE (example: eastus) >>'
+```
+
+The Live tests read information from the following environment variables:
+
+`EVENTHUB_RESOURCE_GROUP`  
+ The name of the Azure resource group that contains the Event Hubs namespace
+   
+`EVENTHUB_SUBSCRIPTION_ID`  
+ The identifier (GUID) of the Azure subscription to which the service principal belongs
+    
+`EVENTHUB_TENANT_ID`  
+ The identifier (GUID) of the Azure Active Directory tenant that contains the service principal
+
+`EVENTHUB_CLIENT_ID`  
+ The identifier (GUID) of the Azure Active Directory application that is associated with the service principal
+   
+`EVENTHUB_CLIENT_SECRET`  
+ The client secret (password) of the Azure Active Directory application that is associated with the service principal
 
 ## Development history
 
@@ -77,7 +105,7 @@ For additional insight and context, the development, release, and issue history 
 
 ## Versioning information
 
-The Azure Event Hubs client library uses [the semantic versioning scheme.](http://semver.org/)
+The Azure Event Hubs client library uses [the semantic versioning scheme.](https://semver.org/)
 
 ## Target frameworks
 
@@ -89,8 +117,8 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 
 ## Additional documentation
 
-- [Azure Event Hubs General Documentation](https://docs.microsoft.com/en-us/azure/event-hubs/)
-- [Azure Event Hubs REST API Reference](https://docs.microsoft.com/en-us/rest/api/eventhub/)
-- [Azure Event Hubs SDK for .NET Documentation](https://docs.microsoft.com/en-us/dotnet/api/overview/azure/event-hubs?view=azure-dotnet)
+- [Azure Event Hubs General Documentation](https://docs.microsoft.com/azure/event-hubs/)
+- [Azure Event Hubs REST API Reference](https://docs.microsoft.com/rest/api/eventhub/)
+- [Azure Event Hubs SDK for .NET Documentation](https://docs.microsoft.com/dotnet/api/overview/azure/event-hubs?view=azure-dotnet)
 
-![Impressions](https://azure-sdk-impressions.azurewebsites.net/api/impressions/azure-sdk-for-net%2Fsdk%2Feventhub%2FMicrosoft.Azure.EventHubs%2FFREADME.png)
+![Impressions](https://azure-sdk-impressions.azurewebsites.net/api/impressions/azure-sdk-for-net%2Fsdk%2Feventhub%2FMicrosoft.Azure.EventHubs%2FREADME.png)

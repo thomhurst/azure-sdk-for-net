@@ -17,10 +17,11 @@ namespace ApiManagement.Tests.ManagementApiTests
     public class UserTests : TestBase
     {
         [Fact]
+        [Trait("owner", "jikang")]
         public async Task CreateListUpdateDelete()
         {
             Environment.SetEnvironmentVariable("AZURE_TEST_MODE", "Playback");
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 var testBase = new ApiManagementTestBase(context);
                 testBase.TryCreateApiManagementService();
@@ -143,10 +144,11 @@ namespace ApiManagement.Tests.ManagementApiTests
         }
 
         [Fact]
+        [Trait("owner", "jikang")]
         public void UserIdentities()
         {
             Environment.SetEnvironmentVariable("AZURE_TEST_MODE", "Playback");
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 var testBase = new ApiManagementTestBase(context);
                 testBase.TryCreateApiManagementService();
@@ -180,14 +182,15 @@ namespace ApiManagement.Tests.ManagementApiTests
         }
 
         [Fact]
+        [Trait("owner", "jikang")]
         public void GroupsListAddRemove()
         {
             Environment.SetEnvironmentVariable("AZURE_TEST_MODE", "Playback");
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 var testBase = new ApiManagementTestBase(context);
                 testBase.TryCreateApiManagementService();
-                
+
                 // create new group
                 string gid = TestUtilities.GenerateName("groupId");
 
@@ -239,7 +242,7 @@ namespace ApiManagement.Tests.ManagementApiTests
                             null);
 
                         Assert.NotNull(listUserGroupsResponse);
-                        
+
                         // there should be 'Developers' group by default
                         Assert.Single(listUserGroupsResponse);
                         var group = listUserGroupsResponse.First();
@@ -277,7 +280,7 @@ namespace ApiManagement.Tests.ManagementApiTests
                             testBase.serviceName,
                             gid,
                             userId);
-                       
+
                         // list to make sure it was removed
                         listUserGroupsResponse = testBase.client.UserGroup.List(
                             testBase.rgName,
@@ -305,10 +308,11 @@ namespace ApiManagement.Tests.ManagementApiTests
         }
 
         [Fact]
+        [Trait("owner", "jikang")]
         public void SubscriptionsList()
         {
             Environment.SetEnvironmentVariable("AZURE_TEST_MODE", "Playback");
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 var testBase = new ApiManagementTestBase(context);
                 testBase.TryCreateApiManagementService();
@@ -326,6 +330,15 @@ namespace ApiManagement.Tests.ManagementApiTests
                 Assert.NotNull(listResponse);
                 Assert.True(listResponse.Count() >= 2);
                 Assert.Null(listResponse.NextPageLink);
+
+                var userSubscription = testBase.client.UserSubscription.Get(
+                    testBase.rgName,
+                    testBase.serviceName,
+                    user.Name,
+                    listResponse.First().Name);
+
+                Assert.NotNull(userSubscription);
+                Assert.NotNull(userSubscription.Name);
 
                 // list paged
                 listResponse = testBase.client.UserSubscription.List(

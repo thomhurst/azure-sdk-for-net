@@ -56,29 +56,70 @@ namespace Microsoft.Azure.Management.ApiManagement.Models
         /// API Management service.</param>
         /// <param name="scmUrl">SCM endpoint URL of the API Management
         /// service.</param>
+        /// <param name="developerPortalUrl">DEveloper Portal endpoint URL of
+        /// the API Management service.</param>
         /// <param name="hostnameConfigurations">Custom hostname configuration
         /// of the API Management service.</param>
         /// <param name="publicIPAddresses">Public Static Load Balanced IP
         /// addresses of the API Management service in Primary region.
-        /// Available only for Basic, Standard and Premium SKU.</param>
+        /// Available only for Basic, Standard, Premium and Isolated
+        /// SKU.</param>
         /// <param name="privateIPAddresses">Private Static Load Balanced IP
         /// addresses of the API Management service in Primary region which is
         /// deployed in an Internal Virtual Network. Available only for Basic,
-        /// Standard and Premium SKU.</param>
+        /// Standard, Premium and Isolated SKU.</param>
+        /// <param name="publicIpAddressId">Public Standard SKU IP V4 based IP
+        /// address to be associated with Virtual Network deployed service in
+        /// the region. Supported only for Developer and Premium SKU being
+        /// deployed in Virtual Network.</param>
+        /// <param name="publicNetworkAccess">Whether or not public endpoint
+        /// access is allowed for this API Management service.  Value is
+        /// optional but if passed in, must be 'Enabled' or 'Disabled'. If
+        /// 'Disabled', private endpoints are the exclusive access method.
+        /// Default value is 'Enabled'. Possible values include: 'Enabled',
+        /// 'Disabled'</param>
         /// <param name="virtualNetworkConfiguration">Virtual network
         /// configuration of the API Management service.</param>
         /// <param name="additionalLocations">Additional datacenter locations
         /// of the API Management service.</param>
         /// <param name="customProperties">Custom properties of the API
-        /// Management service. Setting
+        /// Management service.&lt;/br&gt;Setting
         /// `Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168`
         /// will disable the cipher TLS_RSA_WITH_3DES_EDE_CBC_SHA for all
-        /// TLS(1.0, 1.1 and 1.2). Setting
+        /// TLS(1.0, 1.1 and 1.2).&lt;/br&gt;Setting
         /// `Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11`
-        /// can be used to disable just TLS 1.1 and setting
+        /// can be used to disable just TLS 1.1.&lt;/br&gt;Setting
         /// `Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10`
         /// can be used to disable TLS 1.0 on an API Management
-        /// service.</param>
+        /// service.&lt;/br&gt;Setting
+        /// `Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11`
+        /// can be used to disable just TLS 1.1 for communications with
+        /// backends.&lt;/br&gt;Setting
+        /// `Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10`
+        /// can be used to disable TLS 1.0 for communications with
+        /// backends.&lt;/br&gt;Setting
+        /// `Microsoft.WindowsAzure.ApiManagement.Gateway.Protocols.Server.Http2`
+        /// can be used to enable HTTP2 protocol on an API Management
+        /// service.&lt;/br&gt;Not specifying any of these properties on PATCH
+        /// operation will reset omitted properties' values to their defaults.
+        /// For all the settings except Http2 the default value is `True` if
+        /// the service was created on or before April 1st 2018 and `False`
+        /// otherwise. Http2 setting's default value is
+        /// `False`.&lt;/br&gt;&lt;/br&gt;You can disable any of next ciphers
+        /// by using settings
+        /// `Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.[cipher_name]`:
+        /// TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,
+        /// TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,
+        /// TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
+        /// TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
+        /// TLS_RSA_WITH_AES_128_GCM_SHA256, TLS_RSA_WITH_AES_256_CBC_SHA256,
+        /// TLS_RSA_WITH_AES_128_CBC_SHA256, TLS_RSA_WITH_AES_256_CBC_SHA,
+        /// TLS_RSA_WITH_AES_128_CBC_SHA. For example,
+        /// `Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA256`:`false`.
+        /// The default value is `true` for them.  Note: next ciphers can't be
+        /// disabled since they are required by Azure CloudService internal
+        /// components:
+        /// TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384</param>
         /// <param name="certificates">List of Certificates that need to be
         /// installed in the API Management service. Max supported certificates
         /// that can be installed is 10.</param>
@@ -87,6 +128,9 @@ namespace Microsoft.Azure.Management.ApiManagement.Models
         /// certificate to be presented on each request to the gateway. This
         /// also enables the ability to authenticate the certificate in the
         /// policy on the gateway.</param>
+        /// <param name="disableGateway">Property only valid for an Api
+        /// Management service deployed in multiple locations. This can be used
+        /// to disable the gateway in master region.</param>
         /// <param name="virtualNetworkType">The type of VPN in which API
         /// Management service needs to be configured in. None (Default Value)
         /// means the API Management service is not part of any Virtual
@@ -95,7 +139,17 @@ namespace Microsoft.Azure.Management.ApiManagement.Models
         /// Internal means that API Management deployment is setup inside a
         /// Virtual Network having an Intranet Facing Endpoint only. Possible
         /// values include: 'None', 'External', 'Internal'</param>
-        public ApiManagementServiceBaseProperties(string notificationSenderEmail = default(string), string provisioningState = default(string), string targetProvisioningState = default(string), System.DateTime? createdAtUtc = default(System.DateTime?), string gatewayUrl = default(string), string gatewayRegionalUrl = default(string), string portalUrl = default(string), string managementApiUrl = default(string), string scmUrl = default(string), IList<HostnameConfiguration> hostnameConfigurations = default(IList<HostnameConfiguration>), IList<string> publicIPAddresses = default(IList<string>), IList<string> privateIPAddresses = default(IList<string>), VirtualNetworkConfiguration virtualNetworkConfiguration = default(VirtualNetworkConfiguration), IList<AdditionalLocation> additionalLocations = default(IList<AdditionalLocation>), IDictionary<string, string> customProperties = default(IDictionary<string, string>), IList<CertificateConfiguration> certificates = default(IList<CertificateConfiguration>), bool? enableClientCertificate = default(bool?), string virtualNetworkType = default(string))
+        /// <param name="apiVersionConstraint">Control Plane Apis version
+        /// constraint for the API Management service.</param>
+        /// <param name="restore">Undelete Api Management Service if it was
+        /// previously soft-deleted. If this flag is specified and set to True
+        /// all other properties will be ignored.</param>
+        /// <param name="privateEndpointConnections">List of Private Endpoint
+        /// Connections of this service.</param>
+        /// <param name="platformVersion">Compute Platform Version running the
+        /// service in this location. Possible values include: 'undetermined',
+        /// 'stv1', 'stv2', 'mtv1'</param>
+        public ApiManagementServiceBaseProperties(string notificationSenderEmail = default(string), string provisioningState = default(string), string targetProvisioningState = default(string), System.DateTime? createdAtUtc = default(System.DateTime?), string gatewayUrl = default(string), string gatewayRegionalUrl = default(string), string portalUrl = default(string), string managementApiUrl = default(string), string scmUrl = default(string), string developerPortalUrl = default(string), IList<HostnameConfiguration> hostnameConfigurations = default(IList<HostnameConfiguration>), IList<string> publicIPAddresses = default(IList<string>), IList<string> privateIPAddresses = default(IList<string>), string publicIpAddressId = default(string), string publicNetworkAccess = default(string), VirtualNetworkConfiguration virtualNetworkConfiguration = default(VirtualNetworkConfiguration), IList<AdditionalLocation> additionalLocations = default(IList<AdditionalLocation>), IDictionary<string, string> customProperties = default(IDictionary<string, string>), IList<CertificateConfiguration> certificates = default(IList<CertificateConfiguration>), bool? enableClientCertificate = default(bool?), bool? disableGateway = default(bool?), string virtualNetworkType = default(string), ApiVersionConstraint apiVersionConstraint = default(ApiVersionConstraint), bool? restore = default(bool?), IList<RemotePrivateEndpointConnectionWrapper> privateEndpointConnections = default(IList<RemotePrivateEndpointConnectionWrapper>), string platformVersion = default(string))
         {
             NotificationSenderEmail = notificationSenderEmail;
             ProvisioningState = provisioningState;
@@ -106,15 +160,23 @@ namespace Microsoft.Azure.Management.ApiManagement.Models
             PortalUrl = portalUrl;
             ManagementApiUrl = managementApiUrl;
             ScmUrl = scmUrl;
+            DeveloperPortalUrl = developerPortalUrl;
             HostnameConfigurations = hostnameConfigurations;
             PublicIPAddresses = publicIPAddresses;
             PrivateIPAddresses = privateIPAddresses;
+            PublicIpAddressId = publicIpAddressId;
+            PublicNetworkAccess = publicNetworkAccess;
             VirtualNetworkConfiguration = virtualNetworkConfiguration;
             AdditionalLocations = additionalLocations;
             CustomProperties = customProperties;
             Certificates = certificates;
             EnableClientCertificate = enableClientCertificate;
+            DisableGateway = disableGateway;
             VirtualNetworkType = virtualNetworkType;
+            ApiVersionConstraint = apiVersionConstraint;
+            Restore = restore;
+            PrivateEndpointConnections = privateEndpointConnections;
+            PlatformVersion = platformVersion;
             CustomInit();
         }
 
@@ -185,6 +247,12 @@ namespace Microsoft.Azure.Management.ApiManagement.Models
         public string ScmUrl { get; private set; }
 
         /// <summary>
+        /// Gets dEveloper Portal endpoint URL of the API Management service.
+        /// </summary>
+        [JsonProperty(PropertyName = "developerPortalUrl")]
+        public string DeveloperPortalUrl { get; private set; }
+
+        /// <summary>
         /// Gets or sets custom hostname configuration of the API Management
         /// service.
         /// </summary>
@@ -193,8 +261,8 @@ namespace Microsoft.Azure.Management.ApiManagement.Models
 
         /// <summary>
         /// Gets public Static Load Balanced IP addresses of the API Management
-        /// service in Primary region. Available only for Basic, Standard and
-        /// Premium SKU.
+        /// service in Primary region. Available only for Basic, Standard,
+        /// Premium and Isolated SKU.
         /// </summary>
         [JsonProperty(PropertyName = "publicIPAddresses")]
         public IList<string> PublicIPAddresses { get; private set; }
@@ -202,11 +270,30 @@ namespace Microsoft.Azure.Management.ApiManagement.Models
         /// <summary>
         /// Gets private Static Load Balanced IP addresses of the API
         /// Management service in Primary region which is deployed in an
-        /// Internal Virtual Network. Available only for Basic, Standard and
-        /// Premium SKU.
+        /// Internal Virtual Network. Available only for Basic, Standard,
+        /// Premium and Isolated SKU.
         /// </summary>
         [JsonProperty(PropertyName = "privateIPAddresses")]
         public IList<string> PrivateIPAddresses { get; private set; }
+
+        /// <summary>
+        /// Gets or sets public Standard SKU IP V4 based IP address to be
+        /// associated with Virtual Network deployed service in the region.
+        /// Supported only for Developer and Premium SKU being deployed in
+        /// Virtual Network.
+        /// </summary>
+        [JsonProperty(PropertyName = "publicIpAddressId")]
+        public string PublicIpAddressId { get; set; }
+
+        /// <summary>
+        /// Gets or sets whether or not public endpoint access is allowed for
+        /// this API Management service.  Value is optional but if passed in,
+        /// must be 'Enabled' or 'Disabled'. If 'Disabled', private endpoints
+        /// are the exclusive access method. Default value is 'Enabled'.
+        /// Possible values include: 'Enabled', 'Disabled'
+        /// </summary>
+        [JsonProperty(PropertyName = "publicNetworkAccess")]
+        public string PublicNetworkAccess { get; set; }
 
         /// <summary>
         /// Gets or sets virtual network configuration of the API Management
@@ -223,15 +310,44 @@ namespace Microsoft.Azure.Management.ApiManagement.Models
         public IList<AdditionalLocation> AdditionalLocations { get; set; }
 
         /// <summary>
-        /// Gets or sets custom properties of the API Management service.
-        /// Setting
+        /// Gets or sets custom properties of the API Management
+        /// service.&amp;lt;/br&amp;gt;Setting
         /// `Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168`
         /// will disable the cipher TLS_RSA_WITH_3DES_EDE_CBC_SHA for all
-        /// TLS(1.0, 1.1 and 1.2). Setting
+        /// TLS(1.0, 1.1 and 1.2).&amp;lt;/br&amp;gt;Setting
         /// `Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11`
-        /// can be used to disable just TLS 1.1 and setting
+        /// can be used to disable just TLS 1.1.&amp;lt;/br&amp;gt;Setting
         /// `Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10`
-        /// can be used to disable TLS 1.0 on an API Management service.
+        /// can be used to disable TLS 1.0 on an API Management
+        /// service.&amp;lt;/br&amp;gt;Setting
+        /// `Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11`
+        /// can be used to disable just TLS 1.1 for communications with
+        /// backends.&amp;lt;/br&amp;gt;Setting
+        /// `Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10`
+        /// can be used to disable TLS 1.0 for communications with
+        /// backends.&amp;lt;/br&amp;gt;Setting
+        /// `Microsoft.WindowsAzure.ApiManagement.Gateway.Protocols.Server.Http2`
+        /// can be used to enable HTTP2 protocol on an API Management
+        /// service.&amp;lt;/br&amp;gt;Not specifying any of these properties
+        /// on PATCH operation will reset omitted properties' values to their
+        /// defaults. For all the settings except Http2 the default value is
+        /// `True` if the service was created on or before April 1st 2018 and
+        /// `False` otherwise. Http2 setting's default value is
+        /// `False`.&amp;lt;/br&amp;gt;&amp;lt;/br&amp;gt;You can disable any
+        /// of next ciphers by using settings
+        /// `Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.[cipher_name]`:
+        /// TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,
+        /// TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,
+        /// TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
+        /// TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
+        /// TLS_RSA_WITH_AES_128_GCM_SHA256, TLS_RSA_WITH_AES_256_CBC_SHA256,
+        /// TLS_RSA_WITH_AES_128_CBC_SHA256, TLS_RSA_WITH_AES_256_CBC_SHA,
+        /// TLS_RSA_WITH_AES_128_CBC_SHA. For example,
+        /// `Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA256`:`false`.
+        /// The default value is `true` for them.  Note: next ciphers can't be
+        /// disabled since they are required by Azure CloudService internal
+        /// components:
+        /// TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384
         /// </summary>
         [JsonProperty(PropertyName = "customProperties")]
         public IDictionary<string, string> CustomProperties { get; set; }
@@ -254,6 +370,14 @@ namespace Microsoft.Azure.Management.ApiManagement.Models
         public bool? EnableClientCertificate { get; set; }
 
         /// <summary>
+        /// Gets or sets property only valid for an Api Management service
+        /// deployed in multiple locations. This can be used to disable the
+        /// gateway in master region.
+        /// </summary>
+        [JsonProperty(PropertyName = "disableGateway")]
+        public bool? DisableGateway { get; set; }
+
+        /// <summary>
         /// Gets or sets the type of VPN in which API Management service needs
         /// to be configured in. None (Default Value) means the API Management
         /// service is not part of any Virtual Network, External means the API
@@ -265,6 +389,34 @@ namespace Microsoft.Azure.Management.ApiManagement.Models
         /// </summary>
         [JsonProperty(PropertyName = "virtualNetworkType")]
         public string VirtualNetworkType { get; set; }
+
+        /// <summary>
+        /// Gets or sets control Plane Apis version constraint for the API
+        /// Management service.
+        /// </summary>
+        [JsonProperty(PropertyName = "apiVersionConstraint")]
+        public ApiVersionConstraint ApiVersionConstraint { get; set; }
+
+        /// <summary>
+        /// Gets or sets undelete Api Management Service if it was previously
+        /// soft-deleted. If this flag is specified and set to True all other
+        /// properties will be ignored.
+        /// </summary>
+        [JsonProperty(PropertyName = "restore")]
+        public bool? Restore { get; set; }
+
+        /// <summary>
+        /// Gets or sets list of Private Endpoint Connections of this service.
+        /// </summary>
+        [JsonProperty(PropertyName = "privateEndpointConnections")]
+        public IList<RemotePrivateEndpointConnectionWrapper> PrivateEndpointConnections { get; set; }
+
+        /// <summary>
+        /// Gets compute Platform Version running the service in this location.
+        /// Possible values include: 'undetermined', 'stv1', 'stv2', 'mtv1'
+        /// </summary>
+        [JsonProperty(PropertyName = "platformVersion")]
+        public string PlatformVersion { get; private set; }
 
         /// <summary>
         /// Validate the object.
@@ -312,6 +464,16 @@ namespace Microsoft.Azure.Management.ApiManagement.Models
                     if (element2 != null)
                     {
                         element2.Validate();
+                    }
+                }
+            }
+            if (PrivateEndpointConnections != null)
+            {
+                foreach (var element3 in PrivateEndpointConnections)
+                {
+                    if (element3 != null)
+                    {
+                        element3.Validate();
                     }
                 }
             }

@@ -10,11 +10,12 @@
 
 namespace Microsoft.Azure.Management.RecoveryServices.SiteRecovery.Models
 {
+    using Microsoft.Rest;
     using Newtonsoft.Json;
     using System.Linq;
 
     /// <summary>
-    /// Azure VM managed disk input details.
+    /// A2A managed disk input details.
     /// </summary>
     public partial class A2AVmManagedDiskInputDetails
     {
@@ -42,13 +43,19 @@ namespace Microsoft.Azure.Management.RecoveryServices.SiteRecovery.Models
         /// <param name="recoveryTargetDiskAccountType">The target disk type
         /// after failover. Its an optional value and will be same as source
         /// disk type if not user provided.</param>
-        public A2AVmManagedDiskInputDetails(string diskId = default(string), string primaryStagingAzureStorageAccountId = default(string), string recoveryResourceGroupId = default(string), string recoveryReplicaDiskAccountType = default(string), string recoveryTargetDiskAccountType = default(string))
+        /// <param name="recoveryDiskEncryptionSetId">The recovery disk
+        /// encryption set Id.</param>
+        /// <param name="diskEncryptionInfo">The recovery disk encryption
+        /// information (for one / single pass flows).</param>
+        public A2AVmManagedDiskInputDetails(string diskId, string primaryStagingAzureStorageAccountId, string recoveryResourceGroupId, string recoveryReplicaDiskAccountType = default(string), string recoveryTargetDiskAccountType = default(string), string recoveryDiskEncryptionSetId = default(string), DiskEncryptionInfo diskEncryptionInfo = default(DiskEncryptionInfo))
         {
             DiskId = diskId;
             PrimaryStagingAzureStorageAccountId = primaryStagingAzureStorageAccountId;
             RecoveryResourceGroupId = recoveryResourceGroupId;
             RecoveryReplicaDiskAccountType = recoveryReplicaDiskAccountType;
             RecoveryTargetDiskAccountType = recoveryTargetDiskAccountType;
+            RecoveryDiskEncryptionSetId = recoveryDiskEncryptionSetId;
+            DiskEncryptionInfo = diskEncryptionInfo;
             CustomInit();
         }
 
@@ -89,5 +96,39 @@ namespace Microsoft.Azure.Management.RecoveryServices.SiteRecovery.Models
         [JsonProperty(PropertyName = "recoveryTargetDiskAccountType")]
         public string RecoveryTargetDiskAccountType { get; set; }
 
+        /// <summary>
+        /// Gets or sets the recovery disk encryption set Id.
+        /// </summary>
+        [JsonProperty(PropertyName = "recoveryDiskEncryptionSetId")]
+        public string RecoveryDiskEncryptionSetId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the recovery disk encryption information (for one /
+        /// single pass flows).
+        /// </summary>
+        [JsonProperty(PropertyName = "diskEncryptionInfo")]
+        public DiskEncryptionInfo DiskEncryptionInfo { get; set; }
+
+        /// <summary>
+        /// Validate the object.
+        /// </summary>
+        /// <exception cref="ValidationException">
+        /// Thrown if validation fails
+        /// </exception>
+        public virtual void Validate()
+        {
+            if (DiskId == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "DiskId");
+            }
+            if (PrimaryStagingAzureStorageAccountId == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "PrimaryStagingAzureStorageAccountId");
+            }
+            if (RecoveryResourceGroupId == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "RecoveryResourceGroupId");
+            }
+        }
     }
 }

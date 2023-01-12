@@ -22,7 +22,7 @@ namespace Microsoft.Azure.Management.Compute
     public static partial class GalleryImageVersionsOperationsExtensions
     {
             /// <summary>
-            /// Create or update a gallery Image Version.
+            /// Create or update a gallery image version.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -34,17 +34,17 @@ namespace Microsoft.Azure.Management.Compute
             /// The name of the Shared Image Gallery in which the Image Definition resides.
             /// </param>
             /// <param name='galleryImageName'>
-            /// The name of the gallery Image Definition in which the Image Version is to
+            /// The name of the gallery image definition in which the Image Version is to
             /// be created.
             /// </param>
             /// <param name='galleryImageVersionName'>
-            /// The name of the gallery Image Version to be created. Needs to follow
+            /// The name of the gallery image version to be created. Needs to follow
             /// semantic version name pattern: The allowed characters are digit and period.
             /// Digits must be within the range of a 32-bit integer. Format:
             /// &lt;MajorVersion&gt;.&lt;MinorVersion&gt;.&lt;Patch&gt;
             /// </param>
             /// <param name='galleryImageVersion'>
-            /// Parameters supplied to the create or update gallery Image Version
+            /// Parameters supplied to the create or update gallery image version
             /// operation.
             /// </param>
             public static GalleryImageVersion CreateOrUpdate(this IGalleryImageVersionsOperations operations, string resourceGroupName, string galleryName, string galleryImageName, string galleryImageVersionName, GalleryImageVersion galleryImageVersion)
@@ -53,7 +53,7 @@ namespace Microsoft.Azure.Management.Compute
             }
 
             /// <summary>
-            /// Create or update a gallery Image Version.
+            /// Create or update a gallery image version.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -65,17 +65,17 @@ namespace Microsoft.Azure.Management.Compute
             /// The name of the Shared Image Gallery in which the Image Definition resides.
             /// </param>
             /// <param name='galleryImageName'>
-            /// The name of the gallery Image Definition in which the Image Version is to
+            /// The name of the gallery image definition in which the Image Version is to
             /// be created.
             /// </param>
             /// <param name='galleryImageVersionName'>
-            /// The name of the gallery Image Version to be created. Needs to follow
+            /// The name of the gallery image version to be created. Needs to follow
             /// semantic version name pattern: The allowed characters are digit and period.
             /// Digits must be within the range of a 32-bit integer. Format:
             /// &lt;MajorVersion&gt;.&lt;MinorVersion&gt;.&lt;Patch&gt;
             /// </param>
             /// <param name='galleryImageVersion'>
-            /// Parameters supplied to the create or update gallery Image Version
+            /// Parameters supplied to the create or update gallery image version
             /// operation.
             /// </param>
             /// <param name='cancellationToken'>
@@ -90,7 +90,7 @@ namespace Microsoft.Azure.Management.Compute
             }
 
             /// <summary>
-            /// Retrieves information about a gallery Image Version.
+            /// Update a gallery image version.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -102,11 +102,77 @@ namespace Microsoft.Azure.Management.Compute
             /// The name of the Shared Image Gallery in which the Image Definition resides.
             /// </param>
             /// <param name='galleryImageName'>
-            /// The name of the gallery Image Definition in which the Image Version
+            /// The name of the gallery image definition in which the Image Version is to
+            /// be updated.
+            /// </param>
+            /// <param name='galleryImageVersionName'>
+            /// The name of the gallery image version to be updated. Needs to follow
+            /// semantic version name pattern: The allowed characters are digit and period.
+            /// Digits must be within the range of a 32-bit integer. Format:
+            /// &lt;MajorVersion&gt;.&lt;MinorVersion&gt;.&lt;Patch&gt;
+            /// </param>
+            /// <param name='galleryImageVersion'>
+            /// Parameters supplied to the update gallery image version operation.
+            /// </param>
+            public static GalleryImageVersion Update(this IGalleryImageVersionsOperations operations, string resourceGroupName, string galleryName, string galleryImageName, string galleryImageVersionName, GalleryImageVersionUpdate galleryImageVersion)
+            {
+                return operations.UpdateAsync(resourceGroupName, galleryName, galleryImageName, galleryImageVersionName, galleryImageVersion).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Update a gallery image version.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='resourceGroupName'>
+            /// The name of the resource group.
+            /// </param>
+            /// <param name='galleryName'>
+            /// The name of the Shared Image Gallery in which the Image Definition resides.
+            /// </param>
+            /// <param name='galleryImageName'>
+            /// The name of the gallery image definition in which the Image Version is to
+            /// be updated.
+            /// </param>
+            /// <param name='galleryImageVersionName'>
+            /// The name of the gallery image version to be updated. Needs to follow
+            /// semantic version name pattern: The allowed characters are digit and period.
+            /// Digits must be within the range of a 32-bit integer. Format:
+            /// &lt;MajorVersion&gt;.&lt;MinorVersion&gt;.&lt;Patch&gt;
+            /// </param>
+            /// <param name='galleryImageVersion'>
+            /// Parameters supplied to the update gallery image version operation.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<GalleryImageVersion> UpdateAsync(this IGalleryImageVersionsOperations operations, string resourceGroupName, string galleryName, string galleryImageName, string galleryImageVersionName, GalleryImageVersionUpdate galleryImageVersion, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.UpdateWithHttpMessagesAsync(resourceGroupName, galleryName, galleryImageName, galleryImageVersionName, galleryImageVersion, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
+            /// Retrieves information about a gallery image version.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='resourceGroupName'>
+            /// The name of the resource group.
+            /// </param>
+            /// <param name='galleryName'>
+            /// The name of the Shared Image Gallery in which the Image Definition resides.
+            /// </param>
+            /// <param name='galleryImageName'>
+            /// The name of the gallery image definition in which the Image Version
             /// resides.
             /// </param>
             /// <param name='galleryImageVersionName'>
-            /// The name of the gallery Image Version to be retrieved.
+            /// The name of the gallery image version to be retrieved.
             /// </param>
             /// <param name='expand'>
             /// The expand expression to apply on the operation. Possible values include:
@@ -118,7 +184,7 @@ namespace Microsoft.Azure.Management.Compute
             }
 
             /// <summary>
-            /// Retrieves information about a gallery Image Version.
+            /// Retrieves information about a gallery image version.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -130,11 +196,11 @@ namespace Microsoft.Azure.Management.Compute
             /// The name of the Shared Image Gallery in which the Image Definition resides.
             /// </param>
             /// <param name='galleryImageName'>
-            /// The name of the gallery Image Definition in which the Image Version
+            /// The name of the gallery image definition in which the Image Version
             /// resides.
             /// </param>
             /// <param name='galleryImageVersionName'>
-            /// The name of the gallery Image Version to be retrieved.
+            /// The name of the gallery image version to be retrieved.
             /// </param>
             /// <param name='expand'>
             /// The expand expression to apply on the operation. Possible values include:
@@ -152,7 +218,7 @@ namespace Microsoft.Azure.Management.Compute
             }
 
             /// <summary>
-            /// Delete a gallery Image Version.
+            /// Delete a gallery image version.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -164,11 +230,11 @@ namespace Microsoft.Azure.Management.Compute
             /// The name of the Shared Image Gallery in which the Image Definition resides.
             /// </param>
             /// <param name='galleryImageName'>
-            /// The name of the gallery Image Definition in which the Image Version
+            /// The name of the gallery image definition in which the Image Version
             /// resides.
             /// </param>
             /// <param name='galleryImageVersionName'>
-            /// The name of the gallery Image Version to be deleted.
+            /// The name of the gallery image version to be deleted.
             /// </param>
             public static void Delete(this IGalleryImageVersionsOperations operations, string resourceGroupName, string galleryName, string galleryImageName, string galleryImageVersionName)
             {
@@ -176,7 +242,7 @@ namespace Microsoft.Azure.Management.Compute
             }
 
             /// <summary>
-            /// Delete a gallery Image Version.
+            /// Delete a gallery image version.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -188,11 +254,11 @@ namespace Microsoft.Azure.Management.Compute
             /// The name of the Shared Image Gallery in which the Image Definition resides.
             /// </param>
             /// <param name='galleryImageName'>
-            /// The name of the gallery Image Definition in which the Image Version
+            /// The name of the gallery image definition in which the Image Version
             /// resides.
             /// </param>
             /// <param name='galleryImageVersionName'>
-            /// The name of the gallery Image Version to be deleted.
+            /// The name of the gallery image version to be deleted.
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
@@ -203,7 +269,7 @@ namespace Microsoft.Azure.Management.Compute
             }
 
             /// <summary>
-            /// List gallery Image Versions in a gallery Image Definition.
+            /// List gallery image versions in a gallery image definition.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -224,7 +290,7 @@ namespace Microsoft.Azure.Management.Compute
             }
 
             /// <summary>
-            /// List gallery Image Versions in a gallery Image Definition.
+            /// List gallery image versions in a gallery image definition.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -251,7 +317,7 @@ namespace Microsoft.Azure.Management.Compute
             }
 
             /// <summary>
-            /// Create or update a gallery Image Version.
+            /// Create or update a gallery image version.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -263,17 +329,17 @@ namespace Microsoft.Azure.Management.Compute
             /// The name of the Shared Image Gallery in which the Image Definition resides.
             /// </param>
             /// <param name='galleryImageName'>
-            /// The name of the gallery Image Definition in which the Image Version is to
+            /// The name of the gallery image definition in which the Image Version is to
             /// be created.
             /// </param>
             /// <param name='galleryImageVersionName'>
-            /// The name of the gallery Image Version to be created. Needs to follow
+            /// The name of the gallery image version to be created. Needs to follow
             /// semantic version name pattern: The allowed characters are digit and period.
             /// Digits must be within the range of a 32-bit integer. Format:
             /// &lt;MajorVersion&gt;.&lt;MinorVersion&gt;.&lt;Patch&gt;
             /// </param>
             /// <param name='galleryImageVersion'>
-            /// Parameters supplied to the create or update gallery Image Version
+            /// Parameters supplied to the create or update gallery image version
             /// operation.
             /// </param>
             public static GalleryImageVersion BeginCreateOrUpdate(this IGalleryImageVersionsOperations operations, string resourceGroupName, string galleryName, string galleryImageName, string galleryImageVersionName, GalleryImageVersion galleryImageVersion)
@@ -282,7 +348,7 @@ namespace Microsoft.Azure.Management.Compute
             }
 
             /// <summary>
-            /// Create or update a gallery Image Version.
+            /// Create or update a gallery image version.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -294,17 +360,17 @@ namespace Microsoft.Azure.Management.Compute
             /// The name of the Shared Image Gallery in which the Image Definition resides.
             /// </param>
             /// <param name='galleryImageName'>
-            /// The name of the gallery Image Definition in which the Image Version is to
+            /// The name of the gallery image definition in which the Image Version is to
             /// be created.
             /// </param>
             /// <param name='galleryImageVersionName'>
-            /// The name of the gallery Image Version to be created. Needs to follow
+            /// The name of the gallery image version to be created. Needs to follow
             /// semantic version name pattern: The allowed characters are digit and period.
             /// Digits must be within the range of a 32-bit integer. Format:
             /// &lt;MajorVersion&gt;.&lt;MinorVersion&gt;.&lt;Patch&gt;
             /// </param>
             /// <param name='galleryImageVersion'>
-            /// Parameters supplied to the create or update gallery Image Version
+            /// Parameters supplied to the create or update gallery image version
             /// operation.
             /// </param>
             /// <param name='cancellationToken'>
@@ -319,7 +385,7 @@ namespace Microsoft.Azure.Management.Compute
             }
 
             /// <summary>
-            /// Delete a gallery Image Version.
+            /// Update a gallery image version.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -331,11 +397,77 @@ namespace Microsoft.Azure.Management.Compute
             /// The name of the Shared Image Gallery in which the Image Definition resides.
             /// </param>
             /// <param name='galleryImageName'>
-            /// The name of the gallery Image Definition in which the Image Version
+            /// The name of the gallery image definition in which the Image Version is to
+            /// be updated.
+            /// </param>
+            /// <param name='galleryImageVersionName'>
+            /// The name of the gallery image version to be updated. Needs to follow
+            /// semantic version name pattern: The allowed characters are digit and period.
+            /// Digits must be within the range of a 32-bit integer. Format:
+            /// &lt;MajorVersion&gt;.&lt;MinorVersion&gt;.&lt;Patch&gt;
+            /// </param>
+            /// <param name='galleryImageVersion'>
+            /// Parameters supplied to the update gallery image version operation.
+            /// </param>
+            public static GalleryImageVersion BeginUpdate(this IGalleryImageVersionsOperations operations, string resourceGroupName, string galleryName, string galleryImageName, string galleryImageVersionName, GalleryImageVersionUpdate galleryImageVersion)
+            {
+                return operations.BeginUpdateAsync(resourceGroupName, galleryName, galleryImageName, galleryImageVersionName, galleryImageVersion).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Update a gallery image version.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='resourceGroupName'>
+            /// The name of the resource group.
+            /// </param>
+            /// <param name='galleryName'>
+            /// The name of the Shared Image Gallery in which the Image Definition resides.
+            /// </param>
+            /// <param name='galleryImageName'>
+            /// The name of the gallery image definition in which the Image Version is to
+            /// be updated.
+            /// </param>
+            /// <param name='galleryImageVersionName'>
+            /// The name of the gallery image version to be updated. Needs to follow
+            /// semantic version name pattern: The allowed characters are digit and period.
+            /// Digits must be within the range of a 32-bit integer. Format:
+            /// &lt;MajorVersion&gt;.&lt;MinorVersion&gt;.&lt;Patch&gt;
+            /// </param>
+            /// <param name='galleryImageVersion'>
+            /// Parameters supplied to the update gallery image version operation.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<GalleryImageVersion> BeginUpdateAsync(this IGalleryImageVersionsOperations operations, string resourceGroupName, string galleryName, string galleryImageName, string galleryImageVersionName, GalleryImageVersionUpdate galleryImageVersion, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.BeginUpdateWithHttpMessagesAsync(resourceGroupName, galleryName, galleryImageName, galleryImageVersionName, galleryImageVersion, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
+            /// Delete a gallery image version.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='resourceGroupName'>
+            /// The name of the resource group.
+            /// </param>
+            /// <param name='galleryName'>
+            /// The name of the Shared Image Gallery in which the Image Definition resides.
+            /// </param>
+            /// <param name='galleryImageName'>
+            /// The name of the gallery image definition in which the Image Version
             /// resides.
             /// </param>
             /// <param name='galleryImageVersionName'>
-            /// The name of the gallery Image Version to be deleted.
+            /// The name of the gallery image version to be deleted.
             /// </param>
             public static void BeginDelete(this IGalleryImageVersionsOperations operations, string resourceGroupName, string galleryName, string galleryImageName, string galleryImageVersionName)
             {
@@ -343,7 +475,7 @@ namespace Microsoft.Azure.Management.Compute
             }
 
             /// <summary>
-            /// Delete a gallery Image Version.
+            /// Delete a gallery image version.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -355,11 +487,11 @@ namespace Microsoft.Azure.Management.Compute
             /// The name of the Shared Image Gallery in which the Image Definition resides.
             /// </param>
             /// <param name='galleryImageName'>
-            /// The name of the gallery Image Definition in which the Image Version
+            /// The name of the gallery image definition in which the Image Version
             /// resides.
             /// </param>
             /// <param name='galleryImageVersionName'>
-            /// The name of the gallery Image Version to be deleted.
+            /// The name of the gallery image version to be deleted.
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
@@ -370,7 +502,7 @@ namespace Microsoft.Azure.Management.Compute
             }
 
             /// <summary>
-            /// List gallery Image Versions in a gallery Image Definition.
+            /// List gallery image versions in a gallery image definition.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
@@ -384,7 +516,7 @@ namespace Microsoft.Azure.Management.Compute
             }
 
             /// <summary>
-            /// List gallery Image Versions in a gallery Image Definition.
+            /// List gallery image versions in a gallery image definition.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.

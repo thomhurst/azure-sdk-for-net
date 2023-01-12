@@ -30,7 +30,7 @@ namespace Management.HDInsight.Tests
         public static void ValidateCluster(string expectedClustername, ClusterCreateParametersExtended expectedParameters, Cluster actualCluster)
         {
             Assert.Equal(expectedClustername, actualCluster.Name);
-            Assert.Equal(expectedParameters.Properties.Tier, actualCluster.Properties.Tier);
+            Assert.Equal(expectedParameters.Properties.Tier, actualCluster.Properties.Tier, ignoreCase:true);
             Assert.NotNull(actualCluster.Etag);
             Assert.EndsWith(expectedClustername, actualCluster.Id);
             Assert.Equal("Running", actualCluster.Properties.ClusterState);
@@ -59,6 +59,57 @@ namespace Management.HDInsight.Tests
             Assert.Equal("true", actualGatewaySettings.IsCredentialEnabled);
             Assert.Equal(expectedUserName, actualGatewaySettings.UserName);
             Assert.Equal(expectedUserPassword, actualGatewaySettings.Password);
+        }
+
+        /// <summary>
+        /// Validate auto scale configuration
+        /// </summary>
+        /// <param name="expectedAutoscaleConfiguration"></param>
+        /// <param name="actualAutoscaleConfiguration"></param>
+        public static void ValidateAutoScaleConfig(Autoscale expectedAutoscaleConfiguration, Autoscale actualAutoscaleConfiguration)
+        {
+            Assert.NotNull(actualAutoscaleConfiguration);
+            if (actualAutoscaleConfiguration.Capacity != null && expectedAutoscaleConfiguration.Capacity != null)
+            {
+                Assert.Equal(expectedAutoscaleConfiguration.Capacity.MinInstanceCount, actualAutoscaleConfiguration.Capacity.MinInstanceCount);
+                Assert.Equal(expectedAutoscaleConfiguration.Capacity.MaxInstanceCount, actualAutoscaleConfiguration.Capacity.MaxInstanceCount);
+            }
+            else
+            {
+                Assert.Equal(expectedAutoscaleConfiguration.Capacity, actualAutoscaleConfiguration.Capacity);
+            }
+
+            if (actualAutoscaleConfiguration.Recurrence != null && expectedAutoscaleConfiguration.Recurrence != null)
+            {
+                Assert.Equal(expectedAutoscaleConfiguration.Recurrence.TimeZone, actualAutoscaleConfiguration.Recurrence.TimeZone);
+                Assert.NotNull(expectedAutoscaleConfiguration.Recurrence.Schedule);
+                Assert.NotNull(actualAutoscaleConfiguration.Recurrence.Schedule);
+
+                Assert.Equal(expectedAutoscaleConfiguration.Recurrence.Schedule.Count, actualAutoscaleConfiguration.Recurrence.Schedule.Count);
+                Assert.NotEmpty(expectedAutoscaleConfiguration.Recurrence.Schedule);
+
+                for (int i = 0; i < expectedAutoscaleConfiguration.Recurrence.Schedule.Count; i++)
+                {
+                    var expectedSchedule = expectedAutoscaleConfiguration.Recurrence.Schedule[i];
+                    var actualSchedule = actualAutoscaleConfiguration.Recurrence.Schedule[i];
+                    Assert.Equal(expectedSchedule.Days, actualSchedule.Days);
+                    Assert.NotNull(expectedSchedule.TimeAndCapacity);
+                    Assert.NotNull(actualSchedule.TimeAndCapacity);
+                    Assert.Equal(expectedSchedule.TimeAndCapacity.Time, actualSchedule.TimeAndCapacity.Time);
+                    Assert.Equal(expectedSchedule.TimeAndCapacity.MinInstanceCount, actualSchedule.TimeAndCapacity.MinInstanceCount);
+                    /*
+                     * Note: You may find that we don't compare expectedSchedule.TimeAndCapacity.MaxInstanceCount with actualSchedule.TimeAndCapacity.MaxInstanceCount here.
+                     * This is not an error. We do this intentionally.
+                     * The reason is that now RP will not make use of the parameter "expectedSchedule.TimeAndCapacity.MaxInstanceCount" when create cluster.
+                     * And the actualSchedule.TimeAndCapacity.MaxInstanceCount is equal with expectedSchedule.TimeAndCapacity.MinInstanceCount now.
+                     * We are not sure whether RP will change this design or not in the future. So We decided not to compare.
+                     */
+                }
+            }
+            else
+            {
+                Assert.Equal(expectedAutoscaleConfiguration.Recurrence, actualAutoscaleConfiguration.Recurrence);
+            }
         }
 
         /// <summary>
@@ -134,9 +185,9 @@ namespace Management.HDInsight.Tests
             var identity = new ClusterIdentity
             {
                 Type = ResourceIdentityType.UserAssigned,
-                UserAssignedIdentities = new Dictionary<string, ClusterIdentityUserAssignedIdentitiesValue>
+                UserAssignedIdentities = new Dictionary<string, UserAssignedIdentity>
                 {
-                    { msiResourceId, new ClusterIdentityUserAssignedIdentitiesValue() }
+                    { msiResourceId, new UserAssignedIdentity() }
                 }
             };
 

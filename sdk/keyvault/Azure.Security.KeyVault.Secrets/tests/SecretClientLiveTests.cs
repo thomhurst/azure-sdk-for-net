@@ -1,377 +1,483 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See License.txt in the project root for
-// license information.
+// Licensed under the MIT License.
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Azure.Security.KeyVault.Secrets;
-using Azure.Core.Testing;
-using System.Text;
+using Azure.Core;
+using Azure.Core.TestFramework;
+using NUnit.Framework.Constraints;
 
-namespace Azure.Security.KeyVault.Test
+namespace Azure.Security.KeyVault.Secrets.Tests
 {
-    public class SecretClientLiveTests : KeyVaultTestBase
+    public class SecretClientLiveTests : SecretsTestBase
     {
         private const int PagedSecretCount = 50;
 
-        public SecretClientLiveTests(bool isAsync) : base(isAsync)
+        public SecretClientLiveTests(bool isAsync, SecretClientOptions.ServiceVersion serviceVersion)
+            : base(isAsync, serviceVersion, null /* RecordedTestMode.Record /* to re-record */)
         {
         }
 
-        [Test]
+        [SetUp]
+        public void ClearChallengeCacheforRecord()
+        {
+            // in record mode we reset the challenge cache before each test so that the challenge call
+            // is always made.  This allows tests to be replayed independently and in any order
+            if (Mode == RecordedTestMode.Record || Mode == RecordedTestMode.Playback)
+            {
+                Client = GetClient();
+
+                ChallengeBasedAuthenticationPolicy.ClearCache();
+            }
+        }
+
+        [RecordedTest]
         public async Task SetSecret()
         {
             string secretName = Recording.GenerateId();
 
-            SecretBase version1 = await Client.SetAsync(secretName, "value1");
-            RegisterForCleanup(version1);
-            SecretBase version2 = await Client.SetAsync(secretName, "value2");
-            await Client.SetAsync(secretName, "value3");
+            KeyVaultSecret version1 = await Client.SetSecretAsync(secretName, "value1");
+            RegisterForCleanup(version1.Name);
+            KeyVaultSecret version2 = await Client.SetSecretAsync(secretName, "value2");
+            await Client.SetSecretAsync(secretName, "value3");
 
-            Secret secret = await Client.GetAsync(secretName, version2.Version);
+            KeyVaultSecret secret = await Client.GetSecretAsync(secretName, version2.Properties.Version);
 
             Assert.AreEqual("value2", secret.Value);
         }
 
-        [Test]
+        [RecordedTest]
         public async Task SetSecretWithExtendedProps()
         {
             string secretName = Recording.GenerateId();
 
-            Secret setResult = null;
+            // TODO: Update this value whenever you re-record tests. Both the sync and async JSON recordings need to use the same value.
+            IResolveConstraint createdUpdatedConstraint = Is.EqualTo(DateTimeOffset.FromUnixTimeSeconds(1648054293));
+
+            KeyVaultSecret setResult = null;
 
             try
             {
-                var exp = new DateTimeOffset(new DateTime(637027248124480000, DateTimeKind.Utc));
-                var nbf = exp.AddDays(-30);
+                var exp = new DateTimeOffset(new DateTime(637027248120000000, DateTimeKind.Utc));
+                DateTimeOffset nbf = exp.AddDays(-30);
 
-                var secret = new Secret(secretName, "CrudWithExtendedPropsValue1")
+                var secret = new KeyVaultSecret(secretName, "CrudWithExtendedPropsValue1")
                 {
-                    ContentType = "password",
-                    NotBefore = nbf,
-                    Expires = exp,
-                    Tags =
+                    Properties =
                     {
-                        {"tag1", "value1"},
-                        {"tag2", "value2"}
+                        ContentType = "password",
+                        NotBefore = nbf,
+                        ExpiresOn = exp,
+                        Tags =
+                        {
+                            {"tag1", "value1"},
+                            {"tag2", "value2"}
+                        },
                     },
                 };
 
-                setResult = await Client.SetAsync(secret);
+                setResult = await Client.SetSecretAsync(secret);
+                if (Mode != RecordedTestMode.Playback)
+                {
+                    DateTimeOffset now = DateTimeOffset.UtcNow;
+                    createdUpdatedConstraint = Is.InRange(now.AddMinutes(-5), now.AddMinutes(5));
+                }
 
-                RegisterForCleanup(secret, delete: false);
+                RegisterForCleanup(secret.Name);
 
-                Assert.IsNotEmpty(setResult.Version);
-                Assert.AreEqual("password", setResult.ContentType);
-                Assert.AreEqual(nbf, setResult.NotBefore);
-                Assert.AreEqual(exp, setResult.Expires);
-                Assert.AreEqual(2, setResult.Tags.Count);
-                Assert.AreEqual("value1", setResult.Tags["tag1"]);
-                Assert.AreEqual("value2", setResult.Tags["tag2"]);
+                Assert.IsNotEmpty(setResult.Properties.Version);
+                Assert.AreEqual("password", setResult.Properties.ContentType);
+                Assert.AreEqual(nbf, setResult.Properties.NotBefore);
+                Assert.AreEqual(exp, setResult.Properties.ExpiresOn);
+                Assert.AreEqual(2, setResult.Properties.Tags.Count);
+                Assert.AreEqual("value1", setResult.Properties.Tags["tag1"]);
+                Assert.AreEqual("value2", setResult.Properties.Tags["tag2"]);
                 Assert.AreEqual(secretName, setResult.Name);
                 Assert.AreEqual("CrudWithExtendedPropsValue1", setResult.Value);
-                Assert.AreEqual(VaultUri, setResult.Vault);
-                Assert.AreEqual("Recoverable+Purgeable", setResult.RecoveryLevel);
-                Assert.NotNull(setResult.Created);
-                Assert.NotNull(setResult.Updated);
+                Assert.AreEqual(VaultUri, setResult.Properties.VaultUri);
+                Assert.IsNotNull(setResult.Properties.RecoveryLevel); // Value changes based on how the Key Vault is configured.
+                Assert.That(setResult.Properties.CreatedOn, Is.Not.Null);
+                Assert.That(setResult.Properties.UpdatedOn, Is.Not.Null);
 
-                Secret getResult = await Client.GetAsync(secretName);
+                KeyVaultSecret getResult = await Client.GetSecretAsync(secretName);
 
                 AssertSecretsEqual(setResult, getResult);
             }
             finally
             {
-                DeletedSecret deleteResult = await Client.DeleteAsync(secretName);
+                DeleteSecretOperation deleteOperation = await Client.StartDeleteSecretAsync(secretName);
+                DeletedSecret deleteResult = deleteOperation.Value;
 
-                AssertSecretsEqual(setResult, deleteResult);
+                AssertSecretPropertiesEqual(setResult.Properties, deleteResult.Properties);
             }
         }
 
-        [Test]
+        [RecordedTest]
         public async Task UpdateEnabled()
         {
             string secretName = Recording.GenerateId();
 
-            Secret secret = await Client.SetAsync(secretName, "CrudBasicValue1");
+            KeyVaultSecret secret = await Client.SetSecretAsync(secretName, "CrudBasicValue1");
 
-            RegisterForCleanup(secret);
+            RegisterForCleanup(secret.Name);
 
-            secret.Enabled = false;
+            secret.Properties.Enabled = false;
 
-            SecretBase updateResult = await Client.UpdateAsync(secret);
+            SecretProperties updateResult = await Client.UpdateSecretPropertiesAsync(secret.Properties);
 
-            AssertSecretsEqual(secret, updateResult);
+            AssertSecretPropertiesEqual(secret.Properties, updateResult);
 
-            Assert.ThrowsAsync<RequestFailedException>(() => Client.GetAsync(secretName));
+            Assert.ThrowsAsync<RequestFailedException>(() => Client.GetSecretAsync(secretName));
 
-            secret.Enabled = true;
+            secret.Properties.Enabled = true;
 
-            await Client.UpdateAsync(secret);
+            await Client.UpdateSecretPropertiesAsync(secret.Properties);
         }
 
-        [Test]
+        [RecordedTest]
         public async Task UpdateSecret()
         {
             string secretName = Recording.GenerateId();
 
-            Secret secret = await Client.SetAsync(secretName, "CrudBasicValue1");
+            KeyVaultSecret secret = await Client.SetSecretAsync(secretName, "CrudBasicValue1");
 
-            RegisterForCleanup(secret);
+            RegisterForCleanup(secret.Name);
 
-            secret.Expires = secret.Created;
+            secret.Properties.ExpiresOn = secret.Properties.CreatedOn;
 
-            SecretBase updateResult = await Client.UpdateAsync(secret);
+            SecretProperties updateResult = await Client.UpdateSecretPropertiesAsync(secret.Properties);
 
-            AssertSecretsEqual(secret, updateResult);
+            AssertSecretPropertiesEqual(secret.Properties, updateResult);
         }
 
-        [Test]
+        [RecordedTest]
+        public async Task UpdateTags()
+        {
+            string secretName = Recording.GenerateId();
+
+            KeyVaultSecret secret = new KeyVaultSecret(secretName, "test")
+            {
+                Properties =
+                {
+                    Tags =
+                    {
+                        ["A"] = "1",
+                        ["B"] = "2",
+                    },
+                },
+            };
+
+            secret = await Client.SetSecretAsync(secret);
+            RegisterForCleanup(secret.Name);
+
+            IDictionary<string, string> expectedTags = new Dictionary<string, string>
+            {
+                ["A"] = "1",
+                ["B"] = "2",
+            };
+
+            AssertAreEqual(expectedTags, secret.Properties.Tags);
+
+            secret.Properties.Tags["B"] = "3";
+            secret.Properties.Tags["C"] = "4";
+
+            SecretProperties updateResult = await Client.UpdateSecretPropertiesAsync(secret.Properties);
+
+            expectedTags = new Dictionary<string, string>
+            {
+                ["A"] = "1",
+                ["B"] = "3",
+                ["C"] = "4",
+            };
+
+            AssertAreEqual(expectedTags, updateResult.Tags);
+
+            updateResult.Tags.Clear();
+            updateResult.Tags["D"] = "5";
+
+            updateResult = await Client.UpdateSecretPropertiesAsync(updateResult);
+
+            expectedTags = new Dictionary<string, string>
+            {
+                ["D"] = "5",
+            };
+
+            AssertAreEqual(expectedTags, updateResult.Tags);
+        }
+
+        [RecordedTest]
         public async Task GetSecret()
         {
             string secretName = Recording.GenerateId();
 
-            SecretBase setSecret = await Client.SetAsync(secretName, "value");
-            RegisterForCleanup(setSecret);
-            
-            Secret secret = await Client.GetAsync(secretName);
+            KeyVaultSecret setSecret = await Client.SetSecretAsync(secretName, "value");
+            RegisterForCleanup(setSecret.Name);
+
+            KeyVaultSecret secret = await Client.GetSecretAsync(secretName);
 
             AssertSecretsEqual(setSecret, secret);
         }
 
-        [Test]
+        [RecordedTest]
         public async Task GetSecretWithVersion()
         {
             string secretName = Recording.GenerateId();
 
-            SecretBase version1 = await Client.SetAsync(secretName, "value1");
-            RegisterForCleanup(version1);
-            SecretBase version2 = await Client.SetAsync(secretName, "value2");
-            await Client.SetAsync(secretName, "value3");
+            KeyVaultSecret version1 = await Client.SetSecretAsync(secretName, "value1");
+            RegisterForCleanup(version1.Name);
+            KeyVaultSecret version2 = await Client.SetSecretAsync(secretName, "value2");
+            await Client.SetSecretAsync(secretName, "value3");
 
-            Secret secret = await Client.GetAsync(secretName, version2.Version);
+            KeyVaultSecret secret = await Client.GetSecretAsync(secretName, version2.Properties.Version);
 
             Assert.AreEqual("value2", secret.Value);
         }
 
-        [Test]
+        [RecordedTest]
         public async Task GetSecretVersionsNonExisting()
         {
-            List<Response<SecretBase>> allSecrets = await Client.GetSecretVersionsAsync(Recording.GenerateId()).ToEnumerableAsync();
-            
+            List<SecretProperties> allSecrets = await Client.GetPropertiesOfSecretVersionsAsync(Recording.GenerateId()).ToEnumerableAsync();
+
             Assert.AreEqual(0, allSecrets.Count);
         }
 
-        [Test]
+        [RecordedTest]
         public async Task BackupSecret()
         {
             string secretName = Recording.GenerateId();
 
-            Secret secret = await Client.SetAsync(secretName, "BackupRestore");
+            KeyVaultSecret secret = await Client.SetSecretAsync(secretName, "BackupRestore");
 
-            RegisterForCleanup(secret);
+            RegisterForCleanup(secret.Name);
 
-            byte[] backup = await Client.BackupAsync(secretName);
+            byte[] backup = await Client.BackupSecretAsync(secretName);
 
             Assert.NotNull(backup);
         }
 
-        [Test]
+        [RecordedTest]
         public void BackupSecretNonExisting()
         {
-            Assert.ThrowsAsync<RequestFailedException>(() => Client.BackupAsync(Recording.GenerateId()));
+            Assert.ThrowsAsync<RequestFailedException>(() => Client.BackupSecretAsync(Recording.GenerateId()));
         }
 
-        [Test]
+        [RecordedTest]
         [Ignore("https://github.com/Azure/azure-sdk-for-net/issues/6514")]
-        public async Task RestoreSecret()
+        public async Task RestoreSecretBackup()
         {
             string secretName = Recording.GenerateId();
 
-            Secret secret = await Client.SetAsync(secretName, "BackupRestore");
+            KeyVaultSecret secret = await Client.SetSecretAsync(secretName, "BackupRestore");
 
-            RegisterForCleanup(secret);
+            RegisterForCleanup(secret.Name);
 
-            byte[] backup = await Client.BackupAsync(secretName);
+            byte[] backup = await Client.BackupSecretAsync(secretName);
 
-            await Client.DeleteAsync(secretName);
+            await Client.StartDeleteSecretAsync(secretName);
             await WaitForDeletedSecret(secretName);
 
-            await Client.PurgeDeletedAsync(secretName);
+            await Client.PurgeDeletedSecretAsync(secretName);
             await WaitForPurgedSecret(secretName);
 
-            Assert.ThrowsAsync<RequestFailedException>(() => Client.GetAsync(secretName));
-            Assert.ThrowsAsync<RequestFailedException>(() => Client.GetDeletedAsync(secretName));
+            Assert.ThrowsAsync<RequestFailedException>(() => Client.GetSecretAsync(secretName));
+            Assert.ThrowsAsync<RequestFailedException>(() => Client.GetDeletedSecretAsync(secretName));
 
-            SecretBase restoreResult = await Client.RestoreAsync(backup);
+            SecretProperties restoreResult = await Client.RestoreSecretBackupAsync(backup);
 
-            AssertSecretsEqual(secret, restoreResult);
+            AssertSecretPropertiesEqual(secret.Properties, restoreResult);
         }
 
-        [Test]
+        [RecordedTest]
         public void RestoreMalformedBackup()
         {
             byte[] backupMalformed = Encoding.ASCII.GetBytes("non-existing");
-            Assert.ThrowsAsync<RequestFailedException>(() => Client.RestoreAsync(backupMalformed));
+            Assert.ThrowsAsync<RequestFailedException>(() => Client.RestoreSecretBackupAsync(backupMalformed));
         }
 
-        [Test]
-        public async Task DeleteSecret()
+        [RecordedTest]
+        public async Task StartDeleteSecret()
         {
             string secretName = Recording.GenerateId();
 
-            Secret secret = await Client.SetAsync(secretName, "value");
+            KeyVaultSecret secret = await Client.SetSecretAsync(secretName, "value");
 
-            RegisterForCleanup(secret, delete: false);
+            RegisterForCleanup(secret.Name);
 
-            DeletedSecret deletedSecret = await Client.DeleteAsync(secretName);
+            DeleteSecretOperation deleteOperation = await Client.StartDeleteSecretAsync(secretName);
+            DeletedSecret deletedSecret = deleteOperation.Value;
 
-            AssertSecretsEqual(secret, deletedSecret);
+            AssertSecretPropertiesEqual(secret.Properties, deletedSecret.Properties);
+            Assert.NotNull(deletedSecret.DeletedOn);
+            Assert.NotNull(deletedSecret.ScheduledPurgeDate);
 
-            Assert.ThrowsAsync<RequestFailedException>(() => Client.GetAsync(secretName));
+            Assert.ThrowsAsync<RequestFailedException>(() => Client.GetSecretAsync(secretName));
         }
 
-        [Test]
-        public void DeleteSecretNonExisting()
+        [RecordedTest]
+        public void StartDeleteSecretNonExisting()
         {
-            Assert.ThrowsAsync<RequestFailedException>(() => Client.DeleteAsync(Recording.GenerateId()));
+            Assert.ThrowsAsync<RequestFailedException>(() => Client.StartDeleteSecretAsync(Recording.GenerateId()));
         }
 
-        [Test]
+        [RecordedTest]
         public async Task GetDeletedSecret()
         {
             string secretName = Recording.GenerateId();
 
-            Secret secret = await Client.SetAsync(secretName, "value");
+            KeyVaultSecret secret = await Client.SetSecretAsync(secretName, "value");
 
-            RegisterForCleanup(secret, delete: false);
+            RegisterForCleanup(secret.Name);
 
-            DeletedSecret deletedSecret = await Client.DeleteAsync(secretName);
+            DeleteSecretOperation deleteOperation = await Client.StartDeleteSecretAsync(secretName);
+            DeletedSecret deletedSecret = deleteOperation.Value;
 
             await WaitForDeletedSecret(secretName);
 
-            DeletedSecret polledSecret = await Client.GetDeletedAsync(secretName);
+            DeletedSecret polledSecret = await Client.GetDeletedSecretAsync(secretName);
 
-            Assert.NotNull(deletedSecret.DeletedDate);
+            Assert.NotNull(deletedSecret.DeletedOn);
             Assert.NotNull(deletedSecret.RecoveryId);
             Assert.NotNull(deletedSecret.ScheduledPurgeDate);
 
-            AssertSecretsEqual(deletedSecret, polledSecret);
-            AssertSecretsEqual(secret, polledSecret);
+            AssertSecretPropertiesEqual(deletedSecret.Properties, polledSecret.Properties);
+            AssertSecretPropertiesEqual(secret.Properties, polledSecret.Properties);
         }
 
-        [Test]
+        [RecordedTest]
         public void GetDeletedSecretNonExisting()
         {
-            Assert.ThrowsAsync<RequestFailedException>(() => Client.GetDeletedAsync(Recording.GenerateId()));
+            Assert.ThrowsAsync<RequestFailedException>(() => Client.GetDeletedSecretAsync(Recording.GenerateId()));
         }
 
-        [Test]
-        public async Task RecoverSecret()
+        [RecordedTest]
+        public async Task StartRecoverDeletedSecret()
         {
             string secretName = Recording.GenerateId();
 
-            Secret secret = await Client.SetAsync(secretName, "value");
+            KeyVaultSecret secret = await Client.SetSecretAsync(secretName, "value");
 
-            RegisterForCleanup(secret);
+            RegisterForCleanup(secret.Name);
 
-            DeletedSecret deletedSecret = await Client.DeleteAsync(secretName);
+            DeleteSecretOperation deleteOperation = await Client.StartDeleteSecretAsync(secretName);
+            DeletedSecret deletedSecret = deleteOperation.Value;
 
             await WaitForDeletedSecret(secretName);
 
-            SecretBase recoverSecretResult = await Client.RecoverDeletedAsync(secretName);
+            RecoverDeletedSecretOperation operation = await Client.StartRecoverDeletedSecretAsync(secretName);
+            SecretProperties recoverSecretResult = operation.Value;
 
-            await PollForSecret(secretName);
+            await operation.WaitForCompletionAsync(); ;
 
-            Secret recoveredSecret = await Client.GetAsync(secretName);
+            KeyVaultSecret recoveredSecret = await Client.GetSecretAsync(secretName);
 
-            AssertSecretsEqual(secret, deletedSecret);
-            AssertSecretsEqual(secret, recoverSecretResult);
+            AssertSecretPropertiesEqual(secret.Properties, deletedSecret.Properties);
+            AssertSecretPropertiesEqual(secret.Properties, recoverSecretResult);
             AssertSecretsEqual(secret, recoveredSecret);
         }
 
-        [Test]
-        public void RecoverSecretNonExisting()
+        [RecordedTest]
+        public void StartRecoverDeletedSecretNonExisting()
         {
-            Assert.ThrowsAsync<RequestFailedException>(() => Client.RecoverDeletedAsync(Recording.GenerateId()));
+            Assert.ThrowsAsync<RequestFailedException>(() => Client.StartRecoverDeletedSecretAsync(Recording.GenerateId()));
         }
 
-        [Test]
-        public async Task GetSecrets()
-        {
-            string secretName = Recording.GenerateId();
-
-            List<Secret> createdSecrets = new List<Secret>();
-            for (int i = 0; i < PagedSecretCount; i++)
-            {
-                Secret secret = await Client.SetAsync(secretName + i, i.ToString());
-                createdSecrets.Add(secret);
-                RegisterForCleanup(secret);
-            }
-
-            List<Response<SecretBase>> allSecrets = await Client.GetSecretsAsync().ToEnumerableAsync();
-
-            foreach (Secret createdSecret in createdSecrets)
-            {
-                SecretBase returnedSecret = allSecrets.Single(s => s.Value.Name == createdSecret.Name);
-                AssertSecretsEqual(createdSecret, returnedSecret, compareId: false);
-            }
-        }
-
-        [Test]
-        public async Task GetSecretsVersions()
+        [RecordedTest]
+        public async Task GetPropertiesOfSecrets()
         {
             string secretName = Recording.GenerateId();
 
-            List<Secret> createdSecrets = new List<Secret>();
+            List<KeyVaultSecret> createdSecrets = new List<KeyVaultSecret>();
             for (int i = 0; i < PagedSecretCount; i++)
             {
-                Secret secret = await Client.SetAsync(secretName, i.ToString());
+                KeyVaultSecret secret = await Client.SetSecretAsync(secretName + i, i.ToString());
                 createdSecrets.Add(secret);
+                RegisterForCleanup(secret.Name);
             }
 
-            RegisterForCleanup(createdSecrets.First());
+            List<SecretProperties> allSecrets = await Client.GetPropertiesOfSecretsAsync().ToEnumerableAsync();
 
-            List<Response<SecretBase>> allSecrets = await Client.GetSecretVersionsAsync(secretName).ToEnumerableAsync();
-
-            foreach (Secret createdSecret in createdSecrets)
+            foreach (KeyVaultSecret createdSecret in createdSecrets)
             {
-                SecretBase returnedSecret = allSecrets.Single(s => s.Value.Id == createdSecret.Id);
-                AssertSecretsEqual(createdSecret, returnedSecret);
+                SecretProperties returnedSecret = allSecrets.Single(s => s.Name == createdSecret.Name);
+                AssertSecretPropertiesEqual(createdSecret.Properties, returnedSecret, compareId: false);
             }
         }
 
+        [RecordedTest]
+        public async Task GetPropertiesOfSecretVersions()
+        {
+            string secretName = Recording.GenerateId();
 
-        [Test]
+            List<KeyVaultSecret> createdSecrets = new List<KeyVaultSecret>();
+            for (int i = 0; i < PagedSecretCount; i++)
+            {
+                KeyVaultSecret secret = await Client.SetSecretAsync(secretName, i.ToString());
+                createdSecrets.Add(secret);
+            }
+
+            RegisterForCleanup(createdSecrets.First().Name);
+
+            List<SecretProperties> allSecrets = await Client.GetPropertiesOfSecretVersionsAsync(secretName).ToEnumerableAsync();
+
+            foreach (KeyVaultSecret createdSecret in createdSecrets)
+            {
+                SecretProperties returnedSecret = allSecrets.Single(s => s.Id == createdSecret.Id);
+                AssertSecretPropertiesEqual(createdSecret.Properties, returnedSecret);
+            }
+        }
+
+        [RecordedTest]
         public async Task GetDeletedSecrets()
         {
             string secretName = Recording.GenerateId();
 
-            List<Secret> deletedSecrets = new List<Secret>();
+            List<KeyVaultSecret> deletedSecrets = new List<KeyVaultSecret>();
             for (int i = 0; i < PagedSecretCount; i++)
             {
-                Secret secret = await Client.SetAsync(secretName + i, i.ToString());
+                KeyVaultSecret secret = await Client.SetSecretAsync(secretName + i, i.ToString());
+                RegisterForCleanup(secret.Name);
+
                 deletedSecrets.Add(secret);
-                await Client.DeleteAsync(secret.Name);
-
-                RegisterForCleanup(secret, delete: false);
+                await TestRetryHelper.RetryAsync(async () =>
+                {
+                    // Try a few times since it sometimes fails when trying to delete right away.
+                    return await Client.StartDeleteSecretAsync(secret.Name);
+                }, maxIterations: 3);
             }
 
-            foreach (Secret deletedSecret in deletedSecrets)
+            List<Task> deletingSecrets = new List<Task>();
+            foreach (KeyVaultSecret deletedSecret in deletedSecrets)
             {
-                await WaitForDeletedSecret(deletedSecret.Name);
+                // WaitForDeletedSecret disables recording, so we can wait concurrently.
+                deletingSecrets.Add(WaitForDeletedSecret(deletedSecret.Name));
             }
 
-            List<Response<DeletedSecret>> allSecrets = await Client.GetDeletedSecretsAsync().ToEnumerableAsync();
+            await Task.WhenAll(deletingSecrets);
 
-            foreach (Secret deletedSecret in deletedSecrets)
+            List<DeletedSecret> allSecrets = await Client.GetDeletedSecretsAsync().ToEnumerableAsync();
+            foreach (KeyVaultSecret deletedSecret in deletedSecrets)
             {
-                SecretBase returnedSecret = allSecrets.Single(s => s.Value.Name == deletedSecret.Name);
-                AssertSecretsEqual(deletedSecret, returnedSecret, compareId: false);
+                KeyVaultSecret returnedSecret = allSecrets.Single(s => s.Name == deletedSecret.Name);
+                AssertSecretPropertiesEqual(deletedSecret.Properties, returnedSecret.Properties, compareId: false);
             }
+        }
+
+        [RecordedTest]
+        public async Task AuthenticateCrossTenant()
+        {
+            TokenCredential credential = GetCredential(Recording.Random.NewGuid().ToString());
+            SecretClient client = GetClient(credential);
+
+            string secretName = Recording.GenerateId();
+
+            Response<KeyVaultSecret> response = await client.SetSecretAsync(secretName, "secret");
+            RegisterForCleanup(secretName);
+
+            Assert.AreEqual(200, response.GetRawResponse().Status);
         }
     }
 }

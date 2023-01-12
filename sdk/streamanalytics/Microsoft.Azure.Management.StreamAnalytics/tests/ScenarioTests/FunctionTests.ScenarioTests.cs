@@ -21,7 +21,7 @@ namespace StreamAnalytics.Tests
         [Fact(Skip = "ReRecord due to CR change")]
         public async Task FunctionOperationsTest_Scalar_AzureMLWebService()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 string resourceGroupName = TestUtilities.GenerateName("sjrg");
                 string jobName = TestUtilities.GenerateName("sj");
@@ -169,7 +169,7 @@ namespace StreamAnalytics.Tests
         [Fact]
         public async Task FunctionOperationsTest_Scalar_JavaScript()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 string resourceGroupName = TestUtilities.GenerateName("sjrg");
                 string jobName = TestUtilities.GenerateName("sj");
@@ -218,10 +218,10 @@ namespace StreamAnalytics.Tests
                     Script = javaScriptFunctionCode
 
                 };
-                CloudException cloudException = Assert.Throws<CloudException>(
+                ErrorException errorException = Assert.Throws<ErrorException>(
                     () => streamAnalyticsManagementClient.Functions.RetrieveDefaultDefinition(resourceGroupName, jobName, functionName, retrieveDefaultDefinitionParameters));
-                Assert.Equal(HttpStatusCode.InternalServerError, cloudException.Response.StatusCode);
-                Assert.Contains(@"Retrieve default definition is not supported for function type: Microsoft.StreamAnalytics/JavascriptUdf", cloudException.Response.Content);
+                Assert.Equal(HttpStatusCode.InternalServerError, errorException.Response.StatusCode);
+                Assert.Contains(@"Retrieve default definition is not supported for function type: Microsoft.StreamAnalytics/JavascriptUdf", errorException.Response.Content);
 
                 // PUT function
                 var putResponse = await streamAnalyticsManagementClient.Functions.CreateOrReplaceWithHttpMessagesAsync(function, resourceGroupName, jobName, functionName);

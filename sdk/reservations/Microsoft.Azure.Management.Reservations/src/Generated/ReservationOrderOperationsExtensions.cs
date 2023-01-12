@@ -155,9 +155,12 @@ namespace Microsoft.Azure.Management.Reservations
             /// <param name='reservationOrderId'>
             /// Order Id of the reservation
             /// </param>
-            public static ReservationOrderResponse Get(this IReservationOrderOperations operations, string reservationOrderId)
+            /// <param name='expand'>
+            /// May be used to expand the planInformation.
+            /// </param>
+            public static ReservationOrderResponse Get(this IReservationOrderOperations operations, string reservationOrderId, string expand = default(string))
             {
-                return operations.GetAsync(reservationOrderId).GetAwaiter().GetResult();
+                return operations.GetAsync(reservationOrderId, expand).GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -172,12 +175,63 @@ namespace Microsoft.Azure.Management.Reservations
             /// <param name='reservationOrderId'>
             /// Order Id of the reservation
             /// </param>
+            /// <param name='expand'>
+            /// May be used to expand the planInformation.
+            /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task<ReservationOrderResponse> GetAsync(this IReservationOrderOperations operations, string reservationOrderId, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<ReservationOrderResponse> GetAsync(this IReservationOrderOperations operations, string reservationOrderId, string expand = default(string), CancellationToken cancellationToken = default(CancellationToken))
             {
-                using (var _result = await operations.GetWithHttpMessagesAsync(reservationOrderId, null, cancellationToken).ConfigureAwait(false))
+                using (var _result = await operations.GetWithHttpMessagesAsync(reservationOrderId, expand, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
+            /// Change directory of `ReservationOrder`.
+            /// </summary>
+            /// <remarks>
+            /// Change directory (tenant) of `ReservationOrder` and all `Reservation` under
+            /// it to specified tenant id
+            /// </remarks>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='reservationOrderId'>
+            /// Order Id of the reservation
+            /// </param>
+            /// <param name='body'>
+            /// Information needed to change directory of reservation order
+            /// </param>
+            public static ChangeDirectoryResponse ChangeDirectory(this IReservationOrderOperations operations, string reservationOrderId, ChangeDirectoryRequest body)
+            {
+                return operations.ChangeDirectoryAsync(reservationOrderId, body).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Change directory of `ReservationOrder`.
+            /// </summary>
+            /// <remarks>
+            /// Change directory (tenant) of `ReservationOrder` and all `Reservation` under
+            /// it to specified tenant id
+            /// </remarks>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='reservationOrderId'>
+            /// Order Id of the reservation
+            /// </param>
+            /// <param name='body'>
+            /// Information needed to change directory of reservation order
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<ChangeDirectoryResponse> ChangeDirectoryAsync(this IReservationOrderOperations operations, string reservationOrderId, ChangeDirectoryRequest body, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.ChangeDirectoryWithHttpMessagesAsync(reservationOrderId, body, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }

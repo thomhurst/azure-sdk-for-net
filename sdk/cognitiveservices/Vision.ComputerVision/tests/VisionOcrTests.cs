@@ -9,12 +9,12 @@ namespace ComputerVisionSDK.Tests
 {
     public class VisionOcrTests : BaseTests
     {
-        [Fact(Skip = "https://github.com/Azure/azure-sdk-for-net/issues/6214")]
+        [Fact]
         public void OcrImageInStreamTest()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
-                HttpMockServer.Initialize(this.GetType().FullName, "OcrImageInStreamTest");
+                HttpMockServer.Initialize(this.GetType(), "OcrImageInStreamTest");
 
                 using (IComputerVisionClient client = GetComputerVisionClient(HttpMockServer.CreateInstance()))
                 using (FileStream stream = new FileStream(GetTestImagePath("signage.jpg"), FileMode.Open))
@@ -22,6 +22,7 @@ namespace ComputerVisionSDK.Tests
                     const bool DetectOrientation = true;
                     OcrResult result = client.RecognizePrintedTextInStreamAsync(DetectOrientation, stream).Result;
 
+                    Assert.Matches("^\\d{4}-\\d{2}-\\d{2}(-preview)?$", result.ModelVersion);
                     Assert.Equal("en", result.Language);
                     Assert.Equal("Up", result.Orientation);
                     Assert.True(result.TextAngle < 0);
@@ -35,12 +36,12 @@ namespace ComputerVisionSDK.Tests
             }
         }
 
-        [Fact(Skip = "https://github.com/Azure/azure-sdk-for-net/issues/6214")]
+        [Fact]
         public void OcrImageTest()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
-                HttpMockServer.Initialize(this.GetType().FullName, "OcrImageTest");
+                HttpMockServer.Initialize(this.GetType(), "OcrImageTest");
 
                 string germanTextUrl = GetTestImageUrl("achtung.jpg");
 
@@ -49,6 +50,7 @@ namespace ComputerVisionSDK.Tests
                     const bool DetectOrientation = true;
                     OcrResult result = client.RecognizePrintedTextAsync(DetectOrientation, germanTextUrl, OcrLanguages.De).Result;
 
+                    Assert.Matches("^\\d{4}-\\d{2}-\\d{2}(-preview)?$", result.ModelVersion);
                     Assert.Equal("de", result.Language);
                     Assert.Equal("Up", result.Orientation);
                     Assert.True(result.TextAngle > 0);
@@ -57,6 +59,29 @@ namespace ComputerVisionSDK.Tests
                     Assert.Equal(1, result.Regions[0].Lines[0].Words.Count);
                     Assert.Equal("ACHTUNG", result.Regions[0].Lines[0].Words[0].Text);
                     Assert.True(result.Regions[0].BoundingBox == result.Regions[0].Lines[0].BoundingBox);
+                }
+            }
+        }
+
+        [Fact]
+        public void OcrImageModelVersionTest()
+        {
+            using (MockContext context = MockContext.Start(this.GetType()))
+            {
+                HttpMockServer.Initialize(this.GetType(), "OcrImageModelVersionTest");
+
+                using (IComputerVisionClient client = GetComputerVisionClient(HttpMockServer.CreateInstance()))
+                using (FileStream stream = new FileStream(GetTestImagePath("signage.jpg"), FileMode.Open))
+                {
+                    const bool DetectOrientation = true;
+                    const string targetModelVersion = "2021-04-01";
+
+                    OcrResult result = client.RecognizePrintedTextInStreamAsync(
+                        DetectOrientation,
+                        stream,
+                        modelVersion: targetModelVersion).Result;
+
+                    Assert.Equal(targetModelVersion, result.ModelVersion);
                 }
             }
         }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using Microsoft.Azure.Management.Media;
@@ -20,7 +20,7 @@ namespace Media.Tests.ScenarioTests
         [Fact]
         public void AssetFilterComboTest()
         {
-            using (MockContext context = this.StartMockContextAndInitializeClients(this.GetType().FullName))
+            using (MockContext context = this.StartMockContextAndInitializeClients(this.GetType()))
             {
                 try
                 {
@@ -36,8 +36,7 @@ namespace Media.Tests.ScenarioTests
                     Asset createdAsset = MediaClient.Assets.CreateOrUpdate(ResourceGroup, AccountName, assetName, inputForAsset);
 
                     // Get AssetFilter, which should not exist
-                    AssetFilter assetFilter = MediaClient.AssetFilters.Get(ResourceGroup, AccountName, assetName, filterName);
-                    Assert.Null(assetFilter);
+                    Assert.Equal(System.Net.HttpStatusCode.NotFound, Assert.Throws<ErrorResponseException>(() => MediaClient.AssetFilters.Get(ResourceGroup, AccountName, assetName, filterName)).Response.StatusCode);
 
                     // List AssetFilters, which should be empty
                     var assetFilters = MediaClient.AssetFilters.List(ResourceGroup, AccountName, assetName);
@@ -55,7 +54,7 @@ namespace Media.Tests.ScenarioTests
                     ValidateAssetFilter(assetFilters.First(), expectedFirstQuality: null, expectedName: filterName, expectedPresentationTimeRange: ptr, expectedTracks: null);
 
                     // Get the newly created asset
-                    assetFilter = MediaClient.AssetFilters.Get(ResourceGroup, AccountName, assetName, filterName);
+                    AssetFilter assetFilter = MediaClient.AssetFilters.Get(ResourceGroup, AccountName, assetName, filterName);
                     Assert.NotNull(assetFilter);
                     ValidateAssetFilter(assetFilter, expectedFirstQuality: null, expectedName: filterName, expectedPresentationTimeRange: ptr, expectedTracks: null);
 
@@ -98,8 +97,7 @@ namespace Media.Tests.ScenarioTests
                     Assert.Empty(assetFilters);
 
                     // Get the asset filter, which should not exist
-                    assetFilter = MediaClient.AssetFilters.Get(ResourceGroup, AccountName, assetName, filterName);
-                    Assert.Null(assetFilter);
+                    Assert.Equal(System.Net.HttpStatusCode.NotFound, Assert.Throws<ErrorResponseException>(() => MediaClient.AssetFilters.Get(ResourceGroup, AccountName, assetName, filterName)).Response.StatusCode);
 
                     // Delete the asset
                     MediaClient.Assets.Delete(ResourceGroup, AccountName, assetName);
@@ -114,7 +112,7 @@ namespace Media.Tests.ScenarioTests
         [Fact]
         public void AssetFilterOptionalPropertiesTest()
         {
-            using (MockContext context = this.StartMockContextAndInitializeClients(this.GetType().FullName))
+            using (MockContext context = this.StartMockContextAndInitializeClients(this.GetType()))
             {
                 try
                 {
@@ -130,8 +128,7 @@ namespace Media.Tests.ScenarioTests
                     Asset createdAsset = MediaClient.Assets.CreateOrUpdate(ResourceGroup, AccountName, assetName, inputForAsset);
 
                     // Get AssetFilter, which should not exist
-                    AssetFilter assetFilter = MediaClient.AssetFilters.Get(ResourceGroup, AccountName, assetName, filterName);
-                    Assert.Null(assetFilter);
+                    Assert.Equal(System.Net.HttpStatusCode.NotFound, Assert.Throws<ErrorResponseException>(() => MediaClient.AssetFilters.Get(ResourceGroup, AccountName, assetName, filterName)).Response.StatusCode);
 
                     // List AssetFilters, which should be empty
                     var assetFilters = MediaClient.AssetFilters.List(ResourceGroup, AccountName, assetName);
@@ -150,7 +147,7 @@ namespace Media.Tests.ScenarioTests
                     ValidateAssetFilter(assetFilters.First(), expectedFirstQuality: null, expectedName: filterName, expectedPresentationTimeRange: ptr, expectedTracks: null);
 
                     // Get the newly created asset
-                    assetFilter = MediaClient.AssetFilters.Get(ResourceGroup, AccountName, assetName, filterName);
+                    AssetFilter assetFilter = MediaClient.AssetFilters.Get(ResourceGroup, AccountName, assetName, filterName);
                     Assert.NotNull(assetFilter);
                     ValidateAssetFilter(assetFilter, expectedFirstQuality: null, expectedName: filterName, expectedPresentationTimeRange: ptr, expectedTracks: null);
 
@@ -162,8 +159,7 @@ namespace Media.Tests.ScenarioTests
                     Assert.Empty(assetFilters);
 
                     // Get the asset filter, which should not exist
-                    assetFilter = MediaClient.AssetFilters.Get(ResourceGroup, AccountName, assetName, filterName);
-                    Assert.Null(assetFilter);
+                    Assert.Equal(System.Net.HttpStatusCode.NotFound, Assert.Throws<ErrorResponseException>(() => MediaClient.AssetFilters.Get(ResourceGroup, AccountName, assetName, filterName)).Response.StatusCode);
 
                     // Delete the asset
                     MediaClient.Assets.Delete(ResourceGroup, AccountName, assetName);
@@ -220,3 +216,4 @@ namespace Media.Tests.ScenarioTests
         }
     }
 }
+

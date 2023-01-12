@@ -46,14 +46,21 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         /// <param name="maxConcurrentConnections">The maximum concurrent
         /// connection count for the sink data store. Type: integer (or
         /// Expression with resultType integer).</param>
+        /// <param name="disableMetricsCollection">If true, disable data store
+        /// metrics collection. Default is false. Type: boolean (or Expression
+        /// with resultType boolean).</param>
         /// <param name="ignoreNullValues">The flag indicating whether ignore
         /// null values from input dataset (except key fields) during write
         /// operation. Default is false. Type: boolean (or Expression with
         /// resultType boolean).</param>
-        public DynamicsSink(IDictionary<string, object> additionalProperties = default(IDictionary<string, object>), object writeBatchSize = default(object), object writeBatchTimeout = default(object), object sinkRetryCount = default(object), object sinkRetryWait = default(object), object maxConcurrentConnections = default(object), object ignoreNullValues = default(object))
-            : base(additionalProperties, writeBatchSize, writeBatchTimeout, sinkRetryCount, sinkRetryWait, maxConcurrentConnections)
+        /// <param name="alternateKeyName">The logical name of the alternate
+        /// key which will be used when upserting records. Type: string (or
+        /// Expression with resultType string).</param>
+        public DynamicsSink(IDictionary<string, object> additionalProperties = default(IDictionary<string, object>), object writeBatchSize = default(object), object writeBatchTimeout = default(object), object sinkRetryCount = default(object), object sinkRetryWait = default(object), object maxConcurrentConnections = default(object), object disableMetricsCollection = default(object), object ignoreNullValues = default(object), object alternateKeyName = default(object))
+            : base(additionalProperties, writeBatchSize, writeBatchTimeout, sinkRetryCount, sinkRetryWait, maxConcurrentConnections, disableMetricsCollection)
         {
             IgnoreNullValues = ignoreNullValues;
+            AlternateKeyName = alternateKeyName;
             CustomInit();
         }
         /// <summary>
@@ -61,7 +68,7 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         /// </summary>
         static DynamicsSink()
         {
-            WriteBehavior = Upsert;
+            WriteBehavior = "Upsert";
         }
 
         /// <summary>
@@ -78,10 +85,18 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         public object IgnoreNullValues { get; set; }
 
         /// <summary>
+        /// Gets or sets the logical name of the alternate key which will be
+        /// used when upserting records. Type: string (or Expression with
+        /// resultType string).
+        /// </summary>
+        [JsonProperty(PropertyName = "alternateKeyName")]
+        public object AlternateKeyName { get; set; }
+
+        /// <summary>
         /// The write behavior for the operation.
         /// </summary>
         [JsonProperty(PropertyName = "writeBehavior")]
-        public static object WriteBehavior { get; private set; }
+        public static string WriteBehavior { get; private set; }
 
     }
 }

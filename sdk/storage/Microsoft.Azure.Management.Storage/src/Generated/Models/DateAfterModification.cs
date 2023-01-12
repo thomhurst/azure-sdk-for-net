@@ -15,7 +15,13 @@ namespace Microsoft.Azure.Management.Storage.Models
     using System.Linq;
 
     /// <summary>
-    /// Object to define the number of days after last modification.
+    /// Object to define the base blob action conditions. Properties
+    /// daysAfterModificationGreaterThan, daysAfterLastAccessTimeGreaterThan
+    /// and daysAfterCreationGreaterThan are mutually exclusive. The
+    /// daysAfterLastTierChangeGreaterThan property is only applicable for
+    /// tierToArchive actions which requires daysAfterModificationGreaterThan
+    /// to be set, also it cannot be used in conjunction with
+    /// daysAfterLastAccessTimeGreaterThan or daysAfterCreationGreaterThan.
     /// </summary>
     public partial class DateAfterModification
     {
@@ -30,11 +36,25 @@ namespace Microsoft.Azure.Management.Storage.Models
         /// <summary>
         /// Initializes a new instance of the DateAfterModification class.
         /// </summary>
-        /// <param name="daysAfterModificationGreaterThan">Integer value
-        /// indicating the age in days after last modification</param>
-        public DateAfterModification(int daysAfterModificationGreaterThan)
+        /// <param name="daysAfterModificationGreaterThan">Value indicating the
+        /// age in days after last modification</param>
+        /// <param name="daysAfterLastAccessTimeGreaterThan">Value indicating
+        /// the age in days after last blob access. This property can only be
+        /// used in conjunction with last access time tracking policy</param>
+        /// <param name="daysAfterLastTierChangeGreaterThan">Value indicating
+        /// the age in days after last blob tier change time. This property is
+        /// only applicable for tierToArchive actions and requires
+        /// daysAfterModificationGreaterThan to be set for baseBlobs based
+        /// actions. The blob will be archived if both the conditions are
+        /// satisfied.</param>
+        /// <param name="daysAfterCreationGreaterThan">Value indicating the age
+        /// in days after blob creation.</param>
+        public DateAfterModification(double? daysAfterModificationGreaterThan = default(double?), double? daysAfterLastAccessTimeGreaterThan = default(double?), double? daysAfterLastTierChangeGreaterThan = default(double?), double? daysAfterCreationGreaterThan = default(double?))
         {
             DaysAfterModificationGreaterThan = daysAfterModificationGreaterThan;
+            DaysAfterLastAccessTimeGreaterThan = daysAfterLastAccessTimeGreaterThan;
+            DaysAfterLastTierChangeGreaterThan = daysAfterLastTierChangeGreaterThan;
+            DaysAfterCreationGreaterThan = daysAfterCreationGreaterThan;
             CustomInit();
         }
 
@@ -44,11 +64,35 @@ namespace Microsoft.Azure.Management.Storage.Models
         partial void CustomInit();
 
         /// <summary>
-        /// Gets or sets integer value indicating the age in days after last
+        /// Gets or sets value indicating the age in days after last
         /// modification
         /// </summary>
         [JsonProperty(PropertyName = "daysAfterModificationGreaterThan")]
-        public int DaysAfterModificationGreaterThan { get; set; }
+        public double? DaysAfterModificationGreaterThan { get; set; }
+
+        /// <summary>
+        /// Gets or sets value indicating the age in days after last blob
+        /// access. This property can only be used in conjunction with last
+        /// access time tracking policy
+        /// </summary>
+        [JsonProperty(PropertyName = "daysAfterLastAccessTimeGreaterThan")]
+        public double? DaysAfterLastAccessTimeGreaterThan { get; set; }
+
+        /// <summary>
+        /// Gets or sets value indicating the age in days after last blob tier
+        /// change time. This property is only applicable for tierToArchive
+        /// actions and requires daysAfterModificationGreaterThan to be set for
+        /// baseBlobs based actions. The blob will be archived if both the
+        /// conditions are satisfied.
+        /// </summary>
+        [JsonProperty(PropertyName = "daysAfterLastTierChangeGreaterThan")]
+        public double? DaysAfterLastTierChangeGreaterThan { get; set; }
+
+        /// <summary>
+        /// Gets or sets value indicating the age in days after blob creation.
+        /// </summary>
+        [JsonProperty(PropertyName = "daysAfterCreationGreaterThan")]
+        public double? DaysAfterCreationGreaterThan { get; set; }
 
         /// <summary>
         /// Validate the object.
@@ -58,9 +102,49 @@ namespace Microsoft.Azure.Management.Storage.Models
         /// </exception>
         public virtual void Validate()
         {
-            if (DaysAfterModificationGreaterThan < 0)
+            if (DaysAfterModificationGreaterThan != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "DaysAfterModificationGreaterThan", 0);
+                if (DaysAfterModificationGreaterThan < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "DaysAfterModificationGreaterThan", 0);
+                }
+                if (DaysAfterModificationGreaterThan % 1 != 0)
+                {
+                    throw new ValidationException(ValidationRules.MultipleOf, "DaysAfterModificationGreaterThan", 1);
+                }
+            }
+            if (DaysAfterLastAccessTimeGreaterThan != null)
+            {
+                if (DaysAfterLastAccessTimeGreaterThan < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "DaysAfterLastAccessTimeGreaterThan", 0);
+                }
+                if (DaysAfterLastAccessTimeGreaterThan % 1 != 0)
+                {
+                    throw new ValidationException(ValidationRules.MultipleOf, "DaysAfterLastAccessTimeGreaterThan", 1);
+                }
+            }
+            if (DaysAfterLastTierChangeGreaterThan != null)
+            {
+                if (DaysAfterLastTierChangeGreaterThan < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "DaysAfterLastTierChangeGreaterThan", 0);
+                }
+                if (DaysAfterLastTierChangeGreaterThan % 1 != 0)
+                {
+                    throw new ValidationException(ValidationRules.MultipleOf, "DaysAfterLastTierChangeGreaterThan", 1);
+                }
+            }
+            if (DaysAfterCreationGreaterThan != null)
+            {
+                if (DaysAfterCreationGreaterThan < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "DaysAfterCreationGreaterThan", 0);
+                }
+                if (DaysAfterCreationGreaterThan % 1 != 0)
+                {
+                    throw new ValidationException(ValidationRules.MultipleOf, "DaysAfterCreationGreaterThan", 1);
+                }
             }
         }
     }

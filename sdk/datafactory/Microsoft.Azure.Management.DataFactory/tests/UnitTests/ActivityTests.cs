@@ -2,14 +2,14 @@
 // Licensed under the MIT License. See License.txt in the project root for
 // license information.
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
 using DataFactory.Tests.JsonSamples;
 using DataFactory.Tests.Utils;
 using Microsoft.Azure.Management.DataFactory.Models;
 using Microsoft.Rest.Serialization;
 using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Sdk;
@@ -34,7 +34,7 @@ namespace DataFactory.Tests.UnitTests
         {
             TestJsonSample<Activity>(jsonSample);
         }
-        
+
         [Fact]
         public void ExecutePipelineActivity_SDKSample()
         {
@@ -45,7 +45,8 @@ namespace DataFactory.Tests.UnitTests
                 Description = "Execute pipeline activity",
                 Pipeline = new PipelineReference(triggeredPipelineName),
                 Parameters = new Dictionary<string, object>(),
-                WaitOnCompletion = true
+                WaitOnCompletion = true,
+                Policy = new ExecutePipelineActivityPolicy()
             };
 
             var handler = new RecordedDelegatingHandler();
@@ -86,6 +87,7 @@ namespace DataFactory.Tests.UnitTests
             packageCMs["MyOledbCM"]["passWord"] = new SSISExecutionParameter() { Value = new SecureString() { Value = "123" } };
             var propertyOverrides = new Dictionary<string, SSISPropertyOverride>();
             propertyOverrides["\\package.dtsx\\maxparralcount"] = new SSISPropertyOverride() { Value = 3, IsSensitive = false };
+            var accessCredential = new SSISAccessCredential() { UserName = "user", Domain = "domain", Password = new SecureString() { Value = "123" } };
             ExecuteSSISPackageActivity activity = new ExecuteSSISPackageActivity
             {
                 Name = triggeredPipelineName,
@@ -95,7 +97,11 @@ namespace DataFactory.Tests.UnitTests
                 EnvironmentPath = "./test",
                 PackageLocation = new SSISPackageLocation
                 {
-                    PackagePath = "myfolder/myproject/mypackage.dtsx"
+                    Type = "File",
+                    PackagePath = "\\\\Host\\share\\mypackage.dtsx",
+                    ConfigurationPath = "\\\\Host\\share\\config.dtsConfig",
+                    AccessCredential = accessCredential,
+                    PackagePassword = new SecureString() { Value = "123" }
                 },
                 ConnectVia = new IntegrationRuntimeReference
                 {
@@ -105,7 +111,13 @@ namespace DataFactory.Tests.UnitTests
                 PackageParameters = packageParameters,
                 ProjectConnectionManagers = projectCMs,
                 PackageConnectionManagers = packageCMs,
-                PropertyOverrides = propertyOverrides
+                PropertyOverrides = propertyOverrides,
+                LogLocation = new SSISLogLocation()
+                {
+                    LogPath = "\\\\Host\\share\\log",
+                    AccessCredential = accessCredential,
+                    LogRefreshInterval = "00:01:00"
+                }
             };
             var handler = new RecordedDelegatingHandler();
             var client = this.CreateWorkflowClient(handler);
@@ -128,7 +140,8 @@ namespace DataFactory.Tests.UnitTests
                     Username = "test",
                     Password = new SecureString("fake"),
                     Type = "Basic"
-                }
+                },
+                DisableCertValidation = false
             };
 
             var handler = new RecordedDelegatingHandler();

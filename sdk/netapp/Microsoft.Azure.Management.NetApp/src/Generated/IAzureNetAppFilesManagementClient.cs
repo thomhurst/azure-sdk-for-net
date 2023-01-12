@@ -14,13 +14,9 @@ namespace Microsoft.Azure.Management.NetApp
     using Microsoft.Rest.Azure;
     using Models;
     using Newtonsoft.Json;
-    using System.Collections;
-    using System.Collections.Generic;
-    using System.Threading;
-    using System.Threading.Tasks;
 
     /// <summary>
-    /// Microsoft NetApp Azure Resource Provider specification
+    /// Microsoft NetApp Files Azure Resource Provider specification
     /// </summary>
     public partial interface IAzureNetAppFilesManagementClient : System.IDisposable
     {
@@ -52,7 +48,7 @@ namespace Microsoft.Azure.Management.NetApp
         string SubscriptionId { get; set; }
 
         /// <summary>
-        /// Version of the API to be used with the client request.
+        /// The API version to use for this operation.
         /// </summary>
         string ApiVersion { get; }
 
@@ -81,6 +77,16 @@ namespace Microsoft.Azure.Management.NetApp
         IOperations Operations { get; }
 
         /// <summary>
+        /// Gets the INetAppResourceOperations.
+        /// </summary>
+        INetAppResourceOperations NetAppResource { get; }
+
+        /// <summary>
+        /// Gets the INetAppResourceQuotaLimitsOperations.
+        /// </summary>
+        INetAppResourceQuotaLimitsOperations NetAppResourceQuotaLimits { get; }
+
+        /// <summary>
         /// Gets the IAccountsOperations.
         /// </summary>
         IAccountsOperations Accounts { get; }
@@ -96,48 +102,44 @@ namespace Microsoft.Azure.Management.NetApp
         IVolumesOperations Volumes { get; }
 
         /// <summary>
-        /// Gets the IMountTargetsOperations.
-        /// </summary>
-        IMountTargetsOperations MountTargets { get; }
-
-        /// <summary>
         /// Gets the ISnapshotsOperations.
         /// </summary>
         ISnapshotsOperations Snapshots { get; }
 
         /// <summary>
-        /// Check resource name availability
+        /// Gets the ISnapshotPoliciesOperations.
         /// </summary>
-        /// <remarks>
-        /// Check if a resource name is available.
-        /// </remarks>
-        /// <param name='location'>
-        /// The location
-        /// </param>
-        /// <param name='customHeaders'>
-        /// The headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        Task<AzureOperationResponse<ResourceNameAvailability>> CheckNameAvailabilityWithHttpMessagesAsync(string location, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        ISnapshotPoliciesOperations SnapshotPolicies { get; }
 
         /// <summary>
-        /// Check file path availability
+        /// Gets the IBackupsOperations.
         /// </summary>
-        /// <remarks>
-        /// Check if a file path is available.
-        /// </remarks>
-        /// <param name='location'>
-        /// The location
-        /// </param>
-        /// <param name='customHeaders'>
-        /// The headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        Task<AzureOperationResponse<ResourceNameAvailability>> CheckFilePathAvailabilityWithHttpMessagesAsync(string location, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken));
+        IBackupsOperations Backups { get; }
+
+        /// <summary>
+        /// Gets the IAccountBackupsOperations.
+        /// </summary>
+        IAccountBackupsOperations AccountBackups { get; }
+
+        /// <summary>
+        /// Gets the IBackupPoliciesOperations.
+        /// </summary>
+        IBackupPoliciesOperations BackupPolicies { get; }
+
+        /// <summary>
+        /// Gets the IVaultsOperations.
+        /// </summary>
+        IVaultsOperations Vaults { get; }
+
+        /// <summary>
+        /// Gets the IVolumeGroupsOperations.
+        /// </summary>
+        IVolumeGroupsOperations VolumeGroups { get; }
+
+        /// <summary>
+        /// Gets the ISubvolumesOperations.
+        /// </summary>
+        ISubvolumesOperations Subvolumes { get; }
 
     }
 }

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using Microsoft.Azure.Management.Media;
@@ -16,12 +16,13 @@ namespace Media.Tests.ScenarioTests
         [Fact]
         public void OperationListTest()
         {
-            using (MockContext context = this.StartMockContextAndInitializeClients(this.GetType().FullName))
+            using (MockContext context = this.StartMockContextAndInitializeClients(this.GetType()))
             {
                 // Do a basic verification that the operations are returned
                 var operations = MediaClient.Operations.List();
-                Assert.NotEmpty(operations);
+                Assert.NotEmpty(operations.Value);
             }
         }
     }
 }
+

@@ -36,11 +36,15 @@ namespace Microsoft.Azure.Management.Batch.Models
         /// container create command.</param>
         /// <param name="registry">The private registry which contains the
         /// container image.</param>
-        public TaskContainerSettings(string imageName, string containerRunOptions = default(string), ContainerRegistry registry = default(ContainerRegistry))
+        /// <param name="workingDirectory">A flag to indicate where the
+        /// container task working directory is. The default is
+        /// 'taskWorkingDirectory'.</param>
+        public TaskContainerSettings(string imageName, string containerRunOptions = default(string), ContainerRegistry registry = default(ContainerRegistry), ContainerWorkingDirectory? workingDirectory = default(ContainerWorkingDirectory?))
         {
             ContainerRunOptions = containerRunOptions;
             ImageName = imageName;
             Registry = registry;
+            WorkingDirectory = workingDirectory;
             CustomInit();
         }
 
@@ -84,6 +88,17 @@ namespace Microsoft.Azure.Management.Batch.Models
         public ContainerRegistry Registry { get; set; }
 
         /// <summary>
+        /// Gets or sets a flag to indicate where the container task working
+        /// directory is. The default is 'taskWorkingDirectory'.
+        /// </summary>
+        /// <remarks>
+        /// Possible values include: 'TaskWorkingDirectory',
+        /// 'ContainerImageDefault'
+        /// </remarks>
+        [JsonProperty(PropertyName = "workingDirectory")]
+        public ContainerWorkingDirectory? WorkingDirectory { get; set; }
+
+        /// <summary>
         /// Validate the object.
         /// </summary>
         /// <exception cref="ValidationException">
@@ -94,10 +109,6 @@ namespace Microsoft.Azure.Management.Batch.Models
             if (ImageName == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "ImageName");
-            }
-            if (Registry != null)
-            {
-                Registry.Validate();
             }
         }
     }

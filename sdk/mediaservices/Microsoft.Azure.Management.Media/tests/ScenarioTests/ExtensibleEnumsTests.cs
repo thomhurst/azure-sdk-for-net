@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using Microsoft.Azure.Management.Media;
@@ -16,7 +16,7 @@ namespace Media.Tests.ScenarioTests
         [Fact]
         public void ExtensibleEnumsSetTest()
         {
-            using (MockContext context = this.StartMockContextAndInitializeClients(this.GetType().FullName))
+            using (MockContext context = this.StartMockContextAndInitializeClients(this.GetType()))
             {
                 TrackPropertyType x = "NewProperty";
                 Assert.True(x.GetType() == typeof(TrackPropertyType));
@@ -28,7 +28,7 @@ namespace Media.Tests.ScenarioTests
         [Fact]
         public void ExtensibleEnumsGetTest()
         {
-            using (MockContext context = this.StartMockContextAndInitializeClients(this.GetType().FullName))
+            using (MockContext context = this.StartMockContextAndInitializeClients(this.GetType()))
             {
                 try
                 {
@@ -42,8 +42,7 @@ namespace Media.Tests.ScenarioTests
                     string assetDescription = "A test asset";
 
                     // Get asset, which should not exist
-                    Asset asset = MediaClient.Assets.Get(ResourceGroup, AccountName, assetName);
-                    Assert.Null(asset);
+                    Assert.Equal(System.Net.HttpStatusCode.NotFound, Assert.Throws<ErrorResponseException>(() => MediaClient.Assets.Get(ResourceGroup, AccountName, assetName)).Response.StatusCode);
 
                     // Create an asset
                     Asset input = new Asset(description: assetDescription);
@@ -54,7 +53,7 @@ namespace Media.Tests.ScenarioTests
                     //  was edited after being recorded so we could test an unexpected value being sent by the service and the client code
                     //  correctly deserializing the unexpected value.
 
-                    asset = MediaClient.Assets.Get(ResourceGroup, AccountName, assetName);
+                    Asset asset = MediaClient.Assets.Get(ResourceGroup, AccountName, assetName);
 
                     //  If we get here, the edited AssetStorageEncryptionFormat deserialized.
                     Assert.NotNull(asset);
@@ -84,3 +83,4 @@ namespace Media.Tests.ScenarioTests
         }
     }
 }
+

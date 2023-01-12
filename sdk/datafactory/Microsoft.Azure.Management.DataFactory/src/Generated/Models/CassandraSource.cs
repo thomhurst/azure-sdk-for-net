@@ -18,7 +18,7 @@ namespace Microsoft.Azure.Management.DataFactory.Models
     /// <summary>
     /// A copy activity source for a Cassandra database.
     /// </summary>
-    public partial class CassandraSource : CopySource
+    public partial class CassandraSource : TabularSource
     {
         /// <summary>
         /// Initializes a new instance of the CassandraSource class.
@@ -41,6 +41,15 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         /// <param name="maxConcurrentConnections">The maximum concurrent
         /// connection count for the source data store. Type: integer (or
         /// Expression with resultType integer).</param>
+        /// <param name="disableMetricsCollection">If true, disable data store
+        /// metrics collection. Default is false. Type: boolean (or Expression
+        /// with resultType boolean).</param>
+        /// <param name="queryTimeout">Query timeout. Type: string (or
+        /// Expression with resultType string), pattern:
+        /// ((\d+)\.)?(\d\d):(60|([0-5][0-9])):(60|([0-5][0-9])).</param>
+        /// <param name="additionalColumns">Specifies the additional columns to
+        /// be added to source data. Type: array of objects(AdditionalColumns)
+        /// (or Expression with resultType array of objects).</param>
         /// <param name="query">Database query. Should be a SQL-92 query
         /// expression or Cassandra Query Language (CQL) command. Type: string
         /// (or Expression with resultType string).</param>
@@ -49,9 +58,11 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         /// returning data to the client application. Cassandra checks the
         /// specified number of Cassandra servers for data to satisfy the read
         /// request. Must be one of cassandraSourceReadConsistencyLevels. The
-        /// default value is 'ONE'. It is case-insensitive.</param>
-        public CassandraSource(IDictionary<string, object> additionalProperties = default(IDictionary<string, object>), object sourceRetryCount = default(object), object sourceRetryWait = default(object), object maxConcurrentConnections = default(object), object query = default(object), object consistencyLevel = default(object))
-            : base(additionalProperties, sourceRetryCount, sourceRetryWait, maxConcurrentConnections)
+        /// default value is 'ONE'. It is case-insensitive. Possible values
+        /// include: 'ALL', 'EACH_QUORUM', 'QUORUM', 'LOCAL_QUORUM', 'ONE',
+        /// 'TWO', 'THREE', 'LOCAL_ONE', 'SERIAL', 'LOCAL_SERIAL'</param>
+        public CassandraSource(IDictionary<string, object> additionalProperties = default(IDictionary<string, object>), object sourceRetryCount = default(object), object sourceRetryWait = default(object), object maxConcurrentConnections = default(object), object disableMetricsCollection = default(object), object queryTimeout = default(object), object additionalColumns = default(object), object query = default(object), string consistencyLevel = default(string))
+            : base(additionalProperties, sourceRetryCount, sourceRetryWait, maxConcurrentConnections, disableMetricsCollection, queryTimeout, additionalColumns)
         {
             Query = query;
             ConsistencyLevel = consistencyLevel;
@@ -77,10 +88,12 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         /// client application. Cassandra checks the specified number of
         /// Cassandra servers for data to satisfy the read request. Must be one
         /// of cassandraSourceReadConsistencyLevels. The default value is
-        /// 'ONE'. It is case-insensitive.
+        /// 'ONE'. It is case-insensitive. Possible values include: 'ALL',
+        /// 'EACH_QUORUM', 'QUORUM', 'LOCAL_QUORUM', 'ONE', 'TWO', 'THREE',
+        /// 'LOCAL_ONE', 'SERIAL', 'LOCAL_SERIAL'
         /// </summary>
         [JsonProperty(PropertyName = "consistencyLevel")]
-        public object ConsistencyLevel { get; set; }
+        public string ConsistencyLevel { get; set; }
 
     }
 }

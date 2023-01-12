@@ -8,6 +8,7 @@ namespace Microsoft.Azure.ServiceBus.UnitTests.API
     using System.IO;
     using System.Linq;
     using ApprovalTests;
+    using PublicApiGenerator;
     using Xunit;
 
     public class ApiApprovals
@@ -19,16 +20,12 @@ namespace Microsoft.Azure.ServiceBus.UnitTests.API
         ///   If the expected assembly output from generation changes, that file will need to be updated with the new expectation in order for this test
         ///   to pass.
         /// </remarks>
-        ///
-        #if WINDOWS
+#if !NETCOREAPP // We don't ship NETCOREAPP specific target of the library and PublicApiGenerator have a problem with API generation when running netcoreapp3+
         [Fact]
-        #else
-        [Fact(Skip ="This test is only relevant on Windows due to non-deterministic behavior of a third-party library. The ApiGenerator output differs by platform.  The generated code is semantically equivilent, but line ordering is inconsistent.  Skipping for this platform.")]
-        #endif
         public void ApproveAzureServiceBus()
         {
             var assembly = typeof(Message).Assembly;
-            var publicApi = Filter(PublicApiGenerator.ApiGenerator.GeneratePublicApi(assembly, whitelistedNamespacePrefixes: new[] { "Microsoft.Azure.ServiceBus." }));
+            var publicApi = Filter(assembly.GeneratePublicApi(new ApiGeneratorOptions { WhitelistedNamespacePrefixes = new[] { "Microsoft.Azure.ServiceBus." } }));
 
             try
             {
@@ -40,11 +37,12 @@ namespace Microsoft.Azure.ServiceBus.UnitTests.API
                 CleanApprovalsTempFiles(ApprovalUtilities.Utilities.PathUtilities.GetDirectoryForCaller());
             }
         }
+#endif
 
         string Filter(string text)
         {
             return string.Join(Environment.NewLine, text.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries)
-                .Where(l => !l.StartsWith("[assembly: System.Runtime.Versioning.TargetFrameworkAttribute"))
+                .Where(l => !l.StartsWith("[assembly: System.Runtime.Versioning.TargetFramework"))
             );
         }
 

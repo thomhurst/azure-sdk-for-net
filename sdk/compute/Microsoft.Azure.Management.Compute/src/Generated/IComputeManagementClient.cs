@@ -72,49 +72,14 @@ namespace Microsoft.Azure.Management.Compute
         IOperations Operations { get; }
 
         /// <summary>
-        /// Gets the IAvailabilitySetsOperations.
-        /// </summary>
-        IAvailabilitySetsOperations AvailabilitySets { get; }
-
-        /// <summary>
-        /// Gets the IProximityPlacementGroupsOperations.
-        /// </summary>
-        IProximityPlacementGroupsOperations ProximityPlacementGroups { get; }
-
-        /// <summary>
-        /// Gets the IVirtualMachineExtensionImagesOperations.
-        /// </summary>
-        IVirtualMachineExtensionImagesOperations VirtualMachineExtensionImages { get; }
-
-        /// <summary>
-        /// Gets the IVirtualMachineExtensionsOperations.
-        /// </summary>
-        IVirtualMachineExtensionsOperations VirtualMachineExtensions { get; }
-
-        /// <summary>
-        /// Gets the IVirtualMachineImagesOperations.
-        /// </summary>
-        IVirtualMachineImagesOperations VirtualMachineImages { get; }
-
-        /// <summary>
         /// Gets the IUsageOperations.
         /// </summary>
         IUsageOperations Usage { get; }
 
         /// <summary>
-        /// Gets the IVirtualMachinesOperations.
-        /// </summary>
-        IVirtualMachinesOperations VirtualMachines { get; }
-
-        /// <summary>
         /// Gets the IVirtualMachineSizesOperations.
         /// </summary>
         IVirtualMachineSizesOperations VirtualMachineSizes { get; }
-
-        /// <summary>
-        /// Gets the IImagesOperations.
-        /// </summary>
-        IImagesOperations Images { get; }
 
         /// <summary>
         /// Gets the IVirtualMachineScaleSetsOperations.
@@ -132,9 +97,89 @@ namespace Microsoft.Azure.Management.Compute
         IVirtualMachineScaleSetRollingUpgradesOperations VirtualMachineScaleSetRollingUpgrades { get; }
 
         /// <summary>
+        /// Gets the IVirtualMachineScaleSetVMExtensionsOperations.
+        /// </summary>
+        IVirtualMachineScaleSetVMExtensionsOperations VirtualMachineScaleSetVMExtensions { get; }
+
+        /// <summary>
         /// Gets the IVirtualMachineScaleSetVMsOperations.
         /// </summary>
         IVirtualMachineScaleSetVMsOperations VirtualMachineScaleSetVMs { get; }
+
+        /// <summary>
+        /// Gets the IVirtualMachineExtensionsOperations.
+        /// </summary>
+        IVirtualMachineExtensionsOperations VirtualMachineExtensions { get; }
+
+        /// <summary>
+        /// Gets the IVirtualMachinesOperations.
+        /// </summary>
+        IVirtualMachinesOperations VirtualMachines { get; }
+
+        /// <summary>
+        /// Gets the IVirtualMachineImagesOperations.
+        /// </summary>
+        IVirtualMachineImagesOperations VirtualMachineImages { get; }
+
+        /// <summary>
+        /// Gets the IVirtualMachineImagesEdgeZoneOperations.
+        /// </summary>
+        IVirtualMachineImagesEdgeZoneOperations VirtualMachineImagesEdgeZone { get; }
+
+        /// <summary>
+        /// Gets the IVirtualMachineExtensionImagesOperations.
+        /// </summary>
+        IVirtualMachineExtensionImagesOperations VirtualMachineExtensionImages { get; }
+
+        /// <summary>
+        /// Gets the IAvailabilitySetsOperations.
+        /// </summary>
+        IAvailabilitySetsOperations AvailabilitySets { get; }
+
+        /// <summary>
+        /// Gets the IProximityPlacementGroupsOperations.
+        /// </summary>
+        IProximityPlacementGroupsOperations ProximityPlacementGroups { get; }
+
+        /// <summary>
+        /// Gets the IDedicatedHostGroupsOperations.
+        /// </summary>
+        IDedicatedHostGroupsOperations DedicatedHostGroups { get; }
+
+        /// <summary>
+        /// Gets the IDedicatedHostsOperations.
+        /// </summary>
+        IDedicatedHostsOperations DedicatedHosts { get; }
+
+        /// <summary>
+        /// Gets the ISshPublicKeysOperations.
+        /// </summary>
+        ISshPublicKeysOperations SshPublicKeys { get; }
+
+        /// <summary>
+        /// Gets the IImagesOperations.
+        /// </summary>
+        IImagesOperations Images { get; }
+
+        /// <summary>
+        /// Gets the IRestorePointCollectionsOperations.
+        /// </summary>
+        IRestorePointCollectionsOperations RestorePointCollections { get; }
+
+        /// <summary>
+        /// Gets the IRestorePointsOperations.
+        /// </summary>
+        IRestorePointsOperations RestorePoints { get; }
+
+        /// <summary>
+        /// Gets the ICapacityReservationGroupsOperations.
+        /// </summary>
+        ICapacityReservationGroupsOperations CapacityReservationGroups { get; }
+
+        /// <summary>
+        /// Gets the ICapacityReservationsOperations.
+        /// </summary>
+        ICapacityReservationsOperations CapacityReservations { get; }
 
         /// <summary>
         /// Gets the ILogAnalyticsOperations.
@@ -147,9 +192,9 @@ namespace Microsoft.Azure.Management.Compute
         IVirtualMachineRunCommandsOperations VirtualMachineRunCommands { get; }
 
         /// <summary>
-        /// Gets the IResourceSkusOperations.
+        /// Gets the IVirtualMachineScaleSetVMRunCommandsOperations.
         /// </summary>
-        IResourceSkusOperations ResourceSkus { get; }
+        IVirtualMachineScaleSetVMRunCommandsOperations VirtualMachineScaleSetVMRunCommands { get; }
 
         /// <summary>
         /// Gets the IDisksOperations.
@@ -157,9 +202,29 @@ namespace Microsoft.Azure.Management.Compute
         IDisksOperations Disks { get; }
 
         /// <summary>
+        /// Gets the IDiskAccessesOperations.
+        /// </summary>
+        IDiskAccessesOperations DiskAccesses { get; }
+
+        /// <summary>
+        /// Gets the IDiskEncryptionSetsOperations.
+        /// </summary>
+        IDiskEncryptionSetsOperations DiskEncryptionSets { get; }
+
+        /// <summary>
+        /// Gets the IDiskRestorePointOperations.
+        /// </summary>
+        IDiskRestorePointOperations DiskRestorePoint { get; }
+
+        /// <summary>
         /// Gets the ISnapshotsOperations.
         /// </summary>
         ISnapshotsOperations Snapshots { get; }
+
+        /// <summary>
+        /// Gets the IResourceSkusOperations.
+        /// </summary>
+        IResourceSkusOperations ResourceSkus { get; }
 
         /// <summary>
         /// Gets the IGalleriesOperations.
@@ -177,9 +242,74 @@ namespace Microsoft.Azure.Management.Compute
         IGalleryImageVersionsOperations GalleryImageVersions { get; }
 
         /// <summary>
-        /// Gets the IContainerServicesOperations.
+        /// Gets the IGalleryApplicationsOperations.
         /// </summary>
-        IContainerServicesOperations ContainerServices { get; }
+        IGalleryApplicationsOperations GalleryApplications { get; }
+
+        /// <summary>
+        /// Gets the IGalleryApplicationVersionsOperations.
+        /// </summary>
+        IGalleryApplicationVersionsOperations GalleryApplicationVersions { get; }
+
+        /// <summary>
+        /// Gets the IGallerySharingProfileOperations.
+        /// </summary>
+        IGallerySharingProfileOperations GallerySharingProfile { get; }
+
+        /// <summary>
+        /// Gets the ISharedGalleriesOperations.
+        /// </summary>
+        ISharedGalleriesOperations SharedGalleries { get; }
+
+        /// <summary>
+        /// Gets the ISharedGalleryImagesOperations.
+        /// </summary>
+        ISharedGalleryImagesOperations SharedGalleryImages { get; }
+
+        /// <summary>
+        /// Gets the ISharedGalleryImageVersionsOperations.
+        /// </summary>
+        ISharedGalleryImageVersionsOperations SharedGalleryImageVersions { get; }
+
+        /// <summary>
+        /// Gets the ICommunityGalleriesOperations.
+        /// </summary>
+        ICommunityGalleriesOperations CommunityGalleries { get; }
+
+        /// <summary>
+        /// Gets the ICommunityGalleryImagesOperations.
+        /// </summary>
+        ICommunityGalleryImagesOperations CommunityGalleryImages { get; }
+
+        /// <summary>
+        /// Gets the ICommunityGalleryImageVersionsOperations.
+        /// </summary>
+        ICommunityGalleryImageVersionsOperations CommunityGalleryImageVersions { get; }
+
+        /// <summary>
+        /// Gets the ICloudServiceRoleInstancesOperations.
+        /// </summary>
+        ICloudServiceRoleInstancesOperations CloudServiceRoleInstances { get; }
+
+        /// <summary>
+        /// Gets the ICloudServiceRolesOperations.
+        /// </summary>
+        ICloudServiceRolesOperations CloudServiceRoles { get; }
+
+        /// <summary>
+        /// Gets the ICloudServicesOperations.
+        /// </summary>
+        ICloudServicesOperations CloudServices { get; }
+
+        /// <summary>
+        /// Gets the ICloudServicesUpdateDomainOperations.
+        /// </summary>
+        ICloudServicesUpdateDomainOperations CloudServicesUpdateDomain { get; }
+
+        /// <summary>
+        /// Gets the ICloudServiceOperatingSystemsOperations.
+        /// </summary>
+        ICloudServiceOperatingSystemsOperations CloudServiceOperatingSystems { get; }
 
     }
 }

@@ -175,7 +175,10 @@ namespace Microsoft.Azure.ServiceBus.Amqp
             return new ServiceBusException(true, message);
         }
 
-        public static Exception GetClientException(Exception exception, string referenceId = null, Exception innerException = null, bool connectionError = false)
+        // In some cases, we don't store the input exception as an inner exception of the returned exception.  This means we will lose the input exception's stacktrace.  One fix is to always store it.
+        // However, this changes the type of exception we throw, and could break clients who were depending on the exception type.  Instead, we will log the input exception's stacktrace.
+        // This behavior will be controlled by the flag 'logExceptionIfNotWrapped', since some callers already log the input exception.
+        public static Exception GetClientException(Exception exception, bool logExceptionIfNotWrapped, string referenceId = null, Exception innerException = null, bool connectionError = false)
         {
             var stringBuilder = new StringBuilder();
             stringBuilder.AppendFormat(CultureInfo.InvariantCulture, exception.Message);
@@ -206,11 +209,30 @@ namespace Microsoft.Azure.ServiceBus.Amqp
                 case OperationCanceledException operationCanceledException when operationCanceledException.InnerException is AmqpException amqpException:
                     return amqpException.Error.ToMessagingContractException(connectionError);
 
+                case OperationCanceledException _ when connectionError:
+                    return new ServiceBusCommunicationException(message, aggregateException);
+
                 case OperationCanceledException _:
                     return new ServiceBusException(true, message, aggregateException);
 
                 case TimeoutException _:
                     return new ServiceBusTimeoutException(message, aggregateException);
+
+                case InvalidOperationException ex when ex.Message.IndexOf("connection is closing", StringComparison.OrdinalIgnoreCase) != -1:
+                    return new ServiceBusException(true, aggregateException);
+
+                case InvalidOperationException _ when connectionError:
+                    return new ServiceBusCommunicationException(message, aggregateException);
+            }
+
+            if (connectionError)
+            {
+                return new ServiceBusCommunicationException(message, aggregateException);
+            }
+
+            if (aggregateException == exception && logExceptionIfNotWrapped)
+            {
+                MessagingEventSource.Log.Error($"{message}: {aggregateException}");
             }
 
             return aggregateException;
@@ -250,7 +272,7 @@ namespace Microsoft.Azure.ServiceBus.Amqp
                     return null;
             }
 
-            return innerException == null ? null : GetClientException(innerException, null, null, connectionError);
+            return innerException == null ? null : GetClientException(innerException, true, null, null, connectionError);
         }
     }
 }

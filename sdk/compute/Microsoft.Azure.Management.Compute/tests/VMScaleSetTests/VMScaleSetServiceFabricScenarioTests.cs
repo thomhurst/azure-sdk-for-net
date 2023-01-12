@@ -1,4 +1,4 @@
-﻿using Microsoft.Azure.Management.Compute;
+using Microsoft.Azure.Management.Compute;
 using Microsoft.Rest.ClientRuntime.Azure.TestFramework;
 using Xunit;
 
@@ -13,7 +13,7 @@ namespace Compute.Tests
         [Fact(Skip = "ReRecord due to CR change")]
         public void TestVMScaleSetServiceFabric()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 TestVMScaleSetServiceFabricImpl(context);
             }
@@ -32,25 +32,26 @@ namespace Compute.Tests
             string rgName = "crptestrgr97ryo0ni";
             string vmssName = "crptesthtn39hve";
 
-            var response = m_CrpClient.VirtualMachineScaleSets.ForceRecoveryServiceFabricPlatformUpdateDomainWalk(rgName, vmssName, 0);
+            var response = m_CrpClient.VirtualMachineScaleSets.ForceRecoveryServiceFabricPlatformUpdateDomainWalk(rgName, vmssName, 0, string.Empty, string.Empty);
 
             Assert.True(response.WalkPerformed);
             Assert.Equal(1, response.NextPlatformUpdateDomain);
-            response = m_CrpClient.VirtualMachineScaleSets.ForceRecoveryServiceFabricPlatformUpdateDomainWalk(rgName, vmssName, 1);
+            response = m_CrpClient.VirtualMachineScaleSets.ForceRecoveryServiceFabricPlatformUpdateDomainWalk(rgName, vmssName, 1, string.Empty, string.Empty);
             Assert.True(response.WalkPerformed);
             Assert.Equal(2, response.NextPlatformUpdateDomain);
-            response = m_CrpClient.VirtualMachineScaleSets.ForceRecoveryServiceFabricPlatformUpdateDomainWalk(rgName, vmssName, 2);
+            response = m_CrpClient.VirtualMachineScaleSets.ForceRecoveryServiceFabricPlatformUpdateDomainWalk(rgName, vmssName, 2, string.Empty, string.Empty);
             Assert.True(response.WalkPerformed);
             Assert.Equal(3, response.NextPlatformUpdateDomain);
-            response= m_CrpClient.VirtualMachineScaleSets.ForceRecoveryServiceFabricPlatformUpdateDomainWalk(rgName, vmssName, 3);
+            response= m_CrpClient.VirtualMachineScaleSets.ForceRecoveryServiceFabricPlatformUpdateDomainWalk(rgName, vmssName, 3, string.Empty, string.Empty);
             Assert.True(response.WalkPerformed);
             Assert.Equal(4, response.NextPlatformUpdateDomain);
-            response = m_CrpClient.VirtualMachineScaleSets.ForceRecoveryServiceFabricPlatformUpdateDomainWalk(rgName, vmssName, 4);
+            response = m_CrpClient.VirtualMachineScaleSets.ForceRecoveryServiceFabricPlatformUpdateDomainWalk(rgName, vmssName, 4, string.Empty, string.Empty);
             Assert.True(response.WalkPerformed);
             Assert.Equal(5, response.NextPlatformUpdateDomain);
-            response = m_CrpClient.VirtualMachineScaleSets.ForceRecoveryServiceFabricPlatformUpdateDomainWalk(rgName, vmssName, 5);
+            response = m_CrpClient.VirtualMachineScaleSets.ForceRecoveryServiceFabricPlatformUpdateDomainWalk(rgName, vmssName, 5, string.Empty, string.Empty);
             Assert.True(response.WalkPerformed);
             Assert.Null(response.NextPlatformUpdateDomain);
         }
     }
 }
+

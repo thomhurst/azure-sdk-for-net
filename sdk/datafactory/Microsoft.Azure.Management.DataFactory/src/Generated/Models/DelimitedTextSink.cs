@@ -46,10 +46,13 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         /// <param name="maxConcurrentConnections">The maximum concurrent
         /// connection count for the sink data store. Type: integer (or
         /// Expression with resultType integer).</param>
+        /// <param name="disableMetricsCollection">If true, disable data store
+        /// metrics collection. Default is false. Type: boolean (or Expression
+        /// with resultType boolean).</param>
         /// <param name="storeSettings">DelimitedText store settings.</param>
         /// <param name="formatSettings">DelimitedText format settings.</param>
-        public DelimitedTextSink(IDictionary<string, object> additionalProperties = default(IDictionary<string, object>), object writeBatchSize = default(object), object writeBatchTimeout = default(object), object sinkRetryCount = default(object), object sinkRetryWait = default(object), object maxConcurrentConnections = default(object), ConnectorWriteSetting storeSettings = default(ConnectorWriteSetting), DelimitedTextWriteSetting formatSettings = default(DelimitedTextWriteSetting))
-            : base(additionalProperties, writeBatchSize, writeBatchTimeout, sinkRetryCount, sinkRetryWait, maxConcurrentConnections)
+        public DelimitedTextSink(IDictionary<string, object> additionalProperties = default(IDictionary<string, object>), object writeBatchSize = default(object), object writeBatchTimeout = default(object), object sinkRetryCount = default(object), object sinkRetryWait = default(object), object maxConcurrentConnections = default(object), object disableMetricsCollection = default(object), StoreWriteSettings storeSettings = default(StoreWriteSettings), DelimitedTextWriteSettings formatSettings = default(DelimitedTextWriteSettings))
+            : base(additionalProperties, writeBatchSize, writeBatchTimeout, sinkRetryCount, sinkRetryWait, maxConcurrentConnections, disableMetricsCollection)
         {
             StoreSettings = storeSettings;
             FormatSettings = formatSettings;
@@ -65,13 +68,13 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         /// Gets or sets delimitedText store settings.
         /// </summary>
         [JsonProperty(PropertyName = "storeSettings")]
-        public ConnectorWriteSetting StoreSettings { get; set; }
+        public StoreWriteSettings StoreSettings { get; set; }
 
         /// <summary>
         /// Gets or sets delimitedText format settings.
         /// </summary>
         [JsonProperty(PropertyName = "formatSettings")]
-        public DelimitedTextWriteSetting FormatSettings { get; set; }
+        public DelimitedTextWriteSettings FormatSettings { get; set; }
 
         /// <summary>
         /// Validate the object.
@@ -81,10 +84,6 @@ namespace Microsoft.Azure.Management.DataFactory.Models
         /// </exception>
         public virtual void Validate()
         {
-            if (StoreSettings != null)
-            {
-                StoreSettings.Validate();
-            }
             if (FormatSettings != null)
             {
                 FormatSettings.Validate();

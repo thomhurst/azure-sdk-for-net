@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using Microsoft.Azure.Management.Compute;
@@ -82,7 +82,8 @@ namespace Compute.Tests
                                 CertificateUrl = winRMCertificateUrl,
                             }
                         }
-                }
+                },
+                EnableVMAgentPlatformUpdates = true
             };
             osProfile.Secrets = new List<VaultSecretGroup>
                 {
@@ -112,6 +113,7 @@ namespace Compute.Tests
 
             Assert.True(osProfile.WindowsConfiguration.ProvisionVMAgent != null && osProfile.WindowsConfiguration.ProvisionVMAgent.Value);
             Assert.True(osProfile.WindowsConfiguration.EnableAutomaticUpdates != null && !osProfile.WindowsConfiguration.EnableAutomaticUpdates.Value);
+            Assert.True(osProfile.WindowsConfiguration.EnableVMAgentPlatformUpdates != null && !osProfile.WindowsConfiguration.EnableVMAgentPlatformUpdates.Value);
 
             // TimeZone
             Assert.Equal(PacificStandardTime, osProfile.WindowsConfiguration.TimeZone);
@@ -155,7 +157,7 @@ namespace Compute.Tests
         [Fact(Skip = "Secret Vault")]
         public void TestVMWithWindowsOSProfile()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 EnsureClientsInitialized(context);
 
@@ -194,7 +196,7 @@ namespace Compute.Tests
         [Fact]
         public void TestVMWithLinuxOSProfile()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 EnsureClientsInitialized(context);
 
@@ -208,18 +210,19 @@ namespace Compute.Tests
                     osProfile.CustomData = CustomData;
                     osProfile.LinuxConfiguration = new LinuxConfiguration
                     {
-                        DisablePasswordAuthentication = false,
+                        DisablePasswordAuthentication = true,
                         Ssh = new SshConfiguration
                         {
                             PublicKeys = new List<SshPublicKey>
-                        {
-                            new SshPublicKey
                             {
-                                Path = sshPath,
-                                KeyData = DefaultSshPublicKey,
+                                new SshPublicKey
+                                {
+                                    Path = sshPath,
+                                    KeyData = DefaultSshPublicKey,
+                                }
                             }
-                        }
-                        }
+                        },
+                        EnableVMAgentPlatformUpdates = true
                     };
                 };
 
@@ -234,11 +237,12 @@ namespace Compute.Tests
                     var publicKeys = osProfile.LinuxConfiguration.Ssh.PublicKeys;
                     Assert.NotNull(osProfile.LinuxConfiguration.Ssh.PublicKeys);
 
-                    Assert.True(osProfile.LinuxConfiguration.DisablePasswordAuthentication != null && !osProfile.LinuxConfiguration.DisablePasswordAuthentication.Value);
+                    Assert.True(osProfile.LinuxConfiguration.DisablePasswordAuthentication != null && osProfile.LinuxConfiguration.DisablePasswordAuthentication.Value);
 
                     Assert.Equal(1, publicKeys.Count);
                     Assert.Equal(sshPath, publicKeys[0].Path);
                     Assert.Equal(DefaultSshPublicKey, publicKeys[0].KeyData);
+                    Assert.True(osProfile.LinuxConfiguration.EnableVMAgentPlatformUpdates);
                 };
 
                 TestVMWithOSProfile(
@@ -347,3 +351,4 @@ namespace Compute.Tests
 #pragma warning restore 1998
     }
 }
+

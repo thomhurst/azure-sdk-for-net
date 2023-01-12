@@ -34,25 +34,38 @@ namespace Microsoft.Azure.Management.Reservations.Models
         /// <param name="location">The Azure Region where the reserved resource
         /// lives.</param>
         /// <param name="reservedResourceType">Possible values include:
-        /// 'VirtualMachines', 'SqlDatabases', 'SuseLinux', 'CosmosDb'</param>
-        /// <param name="term">Possible values include: 'P1Y', 'P3Y'</param>
+        /// 'VirtualMachines', 'SqlDatabases', 'SuseLinux', 'CosmosDb',
+        /// 'RedHat', 'SqlDataWarehouse', 'VMwareCloudSimple', 'RedHatOsa',
+        /// 'Databricks', 'AppService', 'ManagedDisk', 'BlockBlob',
+        /// 'RedisCache', 'AzureDataExplorer', 'MySql', 'MariaDb',
+        /// 'PostgreSql', 'DedicatedHost', 'SapHana', 'SqlAzureHybridBenefit',
+        /// 'AVS', 'DataFactory', 'NetAppStorage', 'AzureFiles', 'SqlEdge',
+        /// 'VirtualMachineSoftware'</param>
+        /// <param name="term">Possible values include: 'P1Y', 'P3Y',
+        /// 'P5Y'</param>
+        /// <param name="billingPlan">Possible values include: 'Upfront',
+        /// 'Monthly'</param>
+        /// <param name="quantity">Quantity of the SKUs that are part of the
+        /// Reservation.</param>
         /// <param name="displayName">Friendly name of the Reservation</param>
         /// <param name="appliedScopeType">Possible values include: 'Single',
         /// 'Shared'</param>
         /// <param name="reservedResourceProperties">Properties specific to
         /// each reserved resource type. Not required if not
         /// applicable.</param>
-        public PurchaseRequest(SkuName sku = default(SkuName), string location = default(string), string reservedResourceType = default(string), string billingScopeId = default(string), string term = default(string), int? quantity = default(int?), string displayName = default(string), string appliedScopeType = default(string), IList<string> appliedScopes = default(IList<string>), PurchaseRequestPropertiesReservedResourceProperties reservedResourceProperties = default(PurchaseRequestPropertiesReservedResourceProperties))
+        public PurchaseRequest(SkuName sku = default(SkuName), string location = default(string), string reservedResourceType = default(string), string billingScopeId = default(string), string term = default(string), string billingPlan = default(string), int? quantity = default(int?), string displayName = default(string), string appliedScopeType = default(string), IList<string> appliedScopes = default(IList<string>), bool? renew = default(bool?), PurchaseRequestPropertiesReservedResourceProperties reservedResourceProperties = default(PurchaseRequestPropertiesReservedResourceProperties))
         {
             Sku = sku;
             Location = location;
             ReservedResourceType = reservedResourceType;
             BillingScopeId = billingScopeId;
             Term = term;
+            BillingPlan = billingPlan;
             Quantity = quantity;
             DisplayName = displayName;
             AppliedScopeType = appliedScopeType;
             AppliedScopes = appliedScopes;
+            Renew = renew;
             ReservedResourceProperties = reservedResourceProperties;
             CustomInit();
         }
@@ -75,7 +88,13 @@ namespace Microsoft.Azure.Management.Reservations.Models
 
         /// <summary>
         /// Gets or sets possible values include: 'VirtualMachines',
-        /// 'SqlDatabases', 'SuseLinux', 'CosmosDb'
+        /// 'SqlDatabases', 'SuseLinux', 'CosmosDb', 'RedHat',
+        /// 'SqlDataWarehouse', 'VMwareCloudSimple', 'RedHatOsa', 'Databricks',
+        /// 'AppService', 'ManagedDisk', 'BlockBlob', 'RedisCache',
+        /// 'AzureDataExplorer', 'MySql', 'MariaDb', 'PostgreSql',
+        /// 'DedicatedHost', 'SapHana', 'SqlAzureHybridBenefit', 'AVS',
+        /// 'DataFactory', 'NetAppStorage', 'AzureFiles', 'SqlEdge',
+        /// 'VirtualMachineSoftware'
         /// </summary>
         [JsonProperty(PropertyName = "properties.reservedResourceType")]
         public string ReservedResourceType { get; set; }
@@ -86,12 +105,19 @@ namespace Microsoft.Azure.Management.Reservations.Models
         public string BillingScopeId { get; set; }
 
         /// <summary>
-        /// Gets or sets possible values include: 'P1Y', 'P3Y'
+        /// Gets or sets possible values include: 'P1Y', 'P3Y', 'P5Y'
         /// </summary>
         [JsonProperty(PropertyName = "properties.term")]
         public string Term { get; set; }
 
         /// <summary>
+        /// Gets or sets possible values include: 'Upfront', 'Monthly'
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.billingPlan")]
+        public string BillingPlan { get; set; }
+
+        /// <summary>
+        /// Gets or sets quantity of the SKUs that are part of the Reservation.
         /// </summary>
         [JsonProperty(PropertyName = "properties.quantity")]
         public int? Quantity { get; set; }
@@ -112,6 +138,11 @@ namespace Microsoft.Azure.Management.Reservations.Models
         /// </summary>
         [JsonProperty(PropertyName = "properties.appliedScopes")]
         public IList<string> AppliedScopes { get; set; }
+
+        /// <summary>
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.renew")]
+        public bool? Renew { get; set; }
 
         /// <summary>
         /// Gets or sets properties specific to each reserved resource type.

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using Microsoft.Azure.Management.Media;
@@ -18,7 +18,7 @@ namespace Media.Tests.ScenarioTests
         [Fact]
         public void StreamingLocatorComboTest()
         {
-            using (MockContext context = this.StartMockContextAndInitializeClients(this.GetType().FullName))
+            using (MockContext context = this.StartMockContextAndInitializeClients(this.GetType()))
             {
                 try
                 {
@@ -31,8 +31,7 @@ namespace Media.Tests.ScenarioTests
                     string locatorName = TestUtilities.GenerateName("StreamingLocator");
 
                     // Get the StreamingLocator, which should not exist
-                    StreamingLocator locator = MediaClient.StreamingLocators.Get(ResourceGroup, AccountName, locatorName);
-                    Assert.Null(locator);
+                    Assert.Equal(System.Net.HttpStatusCode.NotFound, Assert.Throws<ErrorResponseException>(() => MediaClient.StreamingLocators.Get(ResourceGroup, AccountName, locatorName)).Response.StatusCode);
 
                     // Create an Asset for the StreamingLocator to point to
                     string assetName = TestUtilities.GenerateName("assetToPublish");
@@ -68,7 +67,7 @@ namespace Media.Tests.ScenarioTests
                     ValidateLocator(locators.First(), locatorName, assetName, policyName, PredefinedStreamingPolicy.ClearKey);
 
                     // Get the newly created StreamingLocator
-                    locator = MediaClient.StreamingLocators.Get(ResourceGroup, AccountName, locatorName);
+                    StreamingLocator locator = MediaClient.StreamingLocators.Get(ResourceGroup, AccountName, locatorName);
                     Assert.NotNull(locator);
                     ValidateLocator(locator, locatorName, assetName, policyName, PredefinedStreamingPolicy.ClearKey, filters);
 
@@ -80,8 +79,7 @@ namespace Media.Tests.ScenarioTests
                     Assert.Empty(locators);
 
                     // Get the StreamingLocator, which should not exist
-                    locator = MediaClient.StreamingLocators.Get(ResourceGroup, AccountName, locatorName);
-                    Assert.Null(locator);
+                    Assert.Equal(System.Net.HttpStatusCode.NotFound, Assert.Throws<ErrorResponseException>(() => MediaClient.StreamingLocators.Get(ResourceGroup, AccountName, locatorName)).Response.StatusCode);
 
                     MediaClient.Assets.Delete(ResourceGroup, AccountName, assetName);
                     MediaClient.ContentKeyPolicies.Delete(ResourceGroup, AccountName, policyName);
@@ -121,4 +119,5 @@ namespace Media.Tests.ScenarioTests
         }
     }
 }
+
 

@@ -33,28 +33,31 @@ namespace Microsoft.Azure.Management.RecoveryServices.SiteRecovery.Models
         /// Initializes a new instance of the
         /// UpdateReplicationProtectedItemInputProperties class.
         /// </summary>
-        /// <param name="recoveryAzureVMName">Target azure VM name given by the
+        /// <param name="recoveryAzureVMName">Target Azure VM name given by the
         /// user.</param>
-        /// <param name="recoveryAzureVMSize">Target Azure Vm size.</param>
+        /// <param name="recoveryAzureVMSize">Target Azure VM size.</param>
         /// <param name="selectedRecoveryAzureNetworkId">Target Azure Network
         /// Id.</param>
+        /// <param name="selectedTfoAzureNetworkId">The Azure Network Id for
+        /// test failover.</param>
         /// <param name="selectedSourceNicId">The selected source nic Id which
         /// will be used as the primary nic during failover.</param>
         /// <param name="enableRdpOnTargetOption">The selected option to enable
         /// RDP\SSH on target vm after failover. String value of
-        /// {SrsDataContract.EnableRDPOnTargetOption} enum.</param>
-        /// <param name="vmNics">The list of vm nic details.</param>
+        /// SrsDataContract.EnableRDPOnTargetOption enum.</param>
+        /// <param name="vmNics">The list of VM nic details.</param>
         /// <param name="licenseType">License type. Possible values include:
         /// 'NotSpecified', 'NoLicenseType', 'WindowsServer'</param>
         /// <param name="recoveryAvailabilitySetId">The target availability set
-        /// id.</param>
+        /// Id.</param>
         /// <param name="providerSpecificDetails">The provider specific input
         /// to update replication protected item.</param>
-        public UpdateReplicationProtectedItemInputProperties(string recoveryAzureVMName = default(string), string recoveryAzureVMSize = default(string), string selectedRecoveryAzureNetworkId = default(string), string selectedSourceNicId = default(string), string enableRdpOnTargetOption = default(string), IList<VMNicInputDetails> vmNics = default(IList<VMNicInputDetails>), string licenseType = default(string), string recoveryAvailabilitySetId = default(string), UpdateReplicationProtectedItemProviderInput providerSpecificDetails = default(UpdateReplicationProtectedItemProviderInput))
+        public UpdateReplicationProtectedItemInputProperties(string recoveryAzureVMName = default(string), string recoveryAzureVMSize = default(string), string selectedRecoveryAzureNetworkId = default(string), string selectedTfoAzureNetworkId = default(string), string selectedSourceNicId = default(string), string enableRdpOnTargetOption = default(string), IList<VMNicInputDetails> vmNics = default(IList<VMNicInputDetails>), string licenseType = default(string), string recoveryAvailabilitySetId = default(string), UpdateReplicationProtectedItemProviderInput providerSpecificDetails = default(UpdateReplicationProtectedItemProviderInput))
         {
             RecoveryAzureVMName = recoveryAzureVMName;
             RecoveryAzureVMSize = recoveryAzureVMSize;
             SelectedRecoveryAzureNetworkId = selectedRecoveryAzureNetworkId;
+            SelectedTfoAzureNetworkId = selectedTfoAzureNetworkId;
             SelectedSourceNicId = selectedSourceNicId;
             EnableRdpOnTargetOption = enableRdpOnTargetOption;
             VmNics = vmNics;
@@ -70,13 +73,13 @@ namespace Microsoft.Azure.Management.RecoveryServices.SiteRecovery.Models
         partial void CustomInit();
 
         /// <summary>
-        /// Gets or sets target azure VM name given by the user.
+        /// Gets or sets target Azure VM name given by the user.
         /// </summary>
         [JsonProperty(PropertyName = "recoveryAzureVMName")]
         public string RecoveryAzureVMName { get; set; }
 
         /// <summary>
-        /// Gets or sets target Azure Vm size.
+        /// Gets or sets target Azure VM size.
         /// </summary>
         [JsonProperty(PropertyName = "recoveryAzureVMSize")]
         public string RecoveryAzureVMSize { get; set; }
@@ -88,6 +91,12 @@ namespace Microsoft.Azure.Management.RecoveryServices.SiteRecovery.Models
         public string SelectedRecoveryAzureNetworkId { get; set; }
 
         /// <summary>
+        /// Gets or sets the Azure Network Id for test failover.
+        /// </summary>
+        [JsonProperty(PropertyName = "selectedTfoAzureNetworkId")]
+        public string SelectedTfoAzureNetworkId { get; set; }
+
+        /// <summary>
         /// Gets or sets the selected source nic Id which will be used as the
         /// primary nic during failover.
         /// </summary>
@@ -97,13 +106,13 @@ namespace Microsoft.Azure.Management.RecoveryServices.SiteRecovery.Models
         /// <summary>
         /// Gets or sets the selected option to enable RDP\SSH on target vm
         /// after failover. String value of
-        /// {SrsDataContract.EnableRDPOnTargetOption} enum.
+        /// SrsDataContract.EnableRDPOnTargetOption enum.
         /// </summary>
         [JsonProperty(PropertyName = "enableRdpOnTargetOption")]
         public string EnableRdpOnTargetOption { get; set; }
 
         /// <summary>
-        /// Gets or sets the list of vm nic details.
+        /// Gets or sets the list of VM nic details.
         /// </summary>
         [JsonProperty(PropertyName = "vmNics")]
         public IList<VMNicInputDetails> VmNics { get; set; }
@@ -116,7 +125,7 @@ namespace Microsoft.Azure.Management.RecoveryServices.SiteRecovery.Models
         public string LicenseType { get; set; }
 
         /// <summary>
-        /// Gets or sets the target availability set id.
+        /// Gets or sets the target availability set Id.
         /// </summary>
         [JsonProperty(PropertyName = "recoveryAvailabilitySetId")]
         public string RecoveryAvailabilitySetId { get; set; }

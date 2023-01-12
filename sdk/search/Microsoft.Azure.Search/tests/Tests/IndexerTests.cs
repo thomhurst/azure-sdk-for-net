@@ -15,10 +15,11 @@ namespace Microsoft.Azure.Search.Tests
     using Microsoft.Azure.Search.Tests.Utilities;
     using Microsoft.Rest.Azure;
     using Xunit;
+    using Index = Microsoft.Azure.Search.Models.Index;
 
     public sealed class IndexerTests : SearchTestBase<IndexerFixture>
     {
-        [Fact]
+        [Fact(Skip = "Needs AzureSqlReadOnlyConnectionString to be set")]
         public void CreateIndexerReturnsCorrectDefinition()
         {
             Run(() =>
@@ -43,7 +44,7 @@ namespace Microsoft.Azure.Search.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "Needs AzureSqlReadOnlyConnectionString to be set")]
         public void CreateIndexerFailsWithUsefulMessageOnUserError()
         {
             Run(() =>
@@ -60,7 +61,7 @@ namespace Microsoft.Azure.Search.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "Needs AzureSqlReadOnlyConnectionString to be set")]
         public void GetIndexerThrowsOnNotFound()
         {
             Run(() =>
@@ -70,7 +71,7 @@ namespace Microsoft.Azure.Search.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "Needs AzureSqlReadOnlyConnectionString to be set")]
         public void CanUpdateIndexer()
         {
             Run(() =>
@@ -91,7 +92,7 @@ namespace Microsoft.Azure.Search.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "Needs AzureSqlReadOnlyConnectionString to be set")]
         public void CreateOrUpdateCreatesWhenIndexerDoesNotExist()
         {
             Run(() =>
@@ -106,7 +107,7 @@ namespace Microsoft.Azure.Search.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "Needs AzureSqlReadOnlyConnectionString to be set")]
         public void CreateOrUpdateCreatesWhenIndexerWithSkillsetDoesNotExist()
         {
             Run(() =>
@@ -131,7 +132,7 @@ namespace Microsoft.Azure.Search.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "Needs AzureSqlReadOnlyConnectionString to be set")]
         public void CreateOrUpdateIndexerIfNotExistsFailsOnExistingResource()
         {
             Run(() =>
@@ -143,7 +144,7 @@ namespace Microsoft.Azure.Search.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "Needs AzureSqlReadOnlyConnectionString to be set")]
         public void CreateOrUpdateIndexerIfNotExistsSucceedsOnNoResource()
         {
             Run(() =>
@@ -154,7 +155,7 @@ namespace Microsoft.Azure.Search.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "Needs AzureSqlReadOnlyConnectionString to be set")]
         public void UpdateIndexerIfExistsSucceedsOnExistingResource()
         {
             Run(() =>
@@ -166,7 +167,7 @@ namespace Microsoft.Azure.Search.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "Needs AzureSqlReadOnlyConnectionString to be set")]
         public void UpdateIndexerIfExistsFailsOnNoResource()
         {
             Run(() =>
@@ -177,7 +178,7 @@ namespace Microsoft.Azure.Search.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "Needs AzureSqlReadOnlyConnectionString to be set")]
         public void UpdateIndexerIfNotChangedSucceedsWhenResourceUnchanged()
         {
             Run(() =>
@@ -189,7 +190,7 @@ namespace Microsoft.Azure.Search.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "Needs AzureSqlReadOnlyConnectionString to be set")]
         public void UpdateIndexerIfNotChangedFailsWhenResourceChanged()
         {
             Run(() =>
@@ -201,7 +202,7 @@ namespace Microsoft.Azure.Search.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "Needs AzureSqlReadOnlyConnectionString to be set")]
         public void DeleteIndexerIfNotChangedWorksOnlyOnCurrentResource()
         {
             Run(() =>
@@ -218,7 +219,7 @@ namespace Microsoft.Azure.Search.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "Needs AzureSqlReadOnlyConnectionString to be set")]
         public void DeleteIndexerIfExistsWorksOnlyWhenResourceExists()
         {
             Run(() =>
@@ -234,7 +235,7 @@ namespace Microsoft.Azure.Search.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "Needs AzureSqlReadOnlyConnectionString to be set")]
         public void DeleteIndexerIsIdempotent()
         {
             Run(() =>
@@ -259,7 +260,7 @@ namespace Microsoft.Azure.Search.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "Needs AzureSqlReadOnlyConnectionString to be set")]
         public void CanCreateAndListIndexers()
         {
             Run(() =>
@@ -281,12 +282,12 @@ namespace Microsoft.Azure.Search.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "Needs AzureSqlReadOnlyConnectionString to be set")]
         public void CanRunIndexerAndGetIndexerStatus()
         {
             Run(() =>
             {
-                // Set handler that injects mock_status query string, which results in service 
+                // Set handler that injects mock_status query string, which results in service
                 // returning a well-known mock response
                 SearchServiceClient searchClient = Data.GetSearchServiceClient(new MockStatusDelegatingHandler());
 
@@ -306,6 +307,11 @@ namespace Microsoft.Azure.Search.Tests
 
                 Assert.Equal(IndexerExecutionStatus.InProgress, info.LastResult.Status);
                 Assert.Equal(3, info.ExecutionHistory.Count);
+
+                Assert.NotNull(info.Limits);
+                Assert.Equal(100000, info.Limits.MaxDocumentContentCharactersToExtract);
+                Assert.Equal(1000, info.Limits.MaxDocumentExtractionSize);
+                Assert.Equal(TimeSpan.FromDays(1), info.Limits.MaxRunTime);
 
                 IndexerExecutionResult newestResult = info.ExecutionHistory[0];
                 IndexerExecutionResult middleResult = info.ExecutionHistory[1];
@@ -329,17 +335,26 @@ namespace Microsoft.Azure.Search.Tests
 
                 Assert.Equal("1", oldestResult.Errors[0].Key);
                 Assert.Equal("Key field contains unsafe characters", oldestResult.Errors[0].ErrorMessage);
+                Assert.Equal("DocumentExtraction.AzureBlob.MyDataSource", oldestResult.Errors[0].Name);
+                Assert.Equal("The file could not be parsed.", oldestResult.Errors[0].Details);
+                Assert.Equal("https://go.microsoft.com/fwlink/?linkid=2049388", oldestResult.Errors[0].DocumentationLink);
 
                 Assert.Equal("121713", oldestResult.Errors[1].Key);
                 Assert.Equal("Item is too large", oldestResult.Errors[1].ErrorMessage);
+                Assert.Equal("DocumentExtraction.AzureBlob.DataReader", oldestResult.Errors[1].Name);
+                Assert.Equal("Blob size cannot exceed 256 MB.", oldestResult.Errors[1].Details);
+                Assert.Equal("https://go.microsoft.com/fwlink/?linkid=2049388", oldestResult.Errors[1].DocumentationLink);
 
                 Assert.Equal(1, oldestResult.Warnings.Count);
                 Assert.Equal("2", oldestResult.Warnings[0].Key);
-                Assert.Equal("This is the first and last warning", oldestResult.Warnings[0].Message);
+                Assert.Equal("Document was truncated to 50000 characters.", oldestResult.Warnings[0].Message);
+                Assert.Equal("Enrichment.LanguageDetectionSkill.#4", oldestResult.Warnings[0].Name);
+                Assert.Equal("Try to split the input into smaller chunks using Split skill.", oldestResult.Warnings[0].Details);
+                Assert.Equal("https://go.microsoft.com/fwlink/?linkid=2099692", oldestResult.Warnings[0].DocumentationLink);
             });
         }
 
-        [Fact]
+        [Fact(Skip = "Needs AzureSqlReadOnlyConnectionString to be set")]
         public void CanResetIndexerAndGetIndexerStatus()
         {
             Run(() =>
@@ -357,7 +372,7 @@ namespace Microsoft.Azure.Search.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "Needs AzureSqlReadOnlyConnectionString to be set")]
         public void ExistsReturnsTrueForExistingIndexer()
         {
             Run(() =>
@@ -370,7 +385,7 @@ namespace Microsoft.Azure.Search.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "Needs AzureSqlReadOnlyConnectionString to be set")]
         public void ExistsReturnsFalseForNonExistingIndexer()
         {
             Run(() =>
@@ -380,7 +395,7 @@ namespace Microsoft.Azure.Search.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "Needs AzureSqlReadOnlyConnectionString to be set")]
         public void CanCreateBlobIndexerWithConfigurationParameters()
         {
             Run(() =>
@@ -408,7 +423,7 @@ namespace Microsoft.Azure.Search.Tests
             });
         }
 
-        [Fact]
+        [Fact(Skip = "Needs AzureSqlReadOnlyConnectionString to be set")]
         public void CanRoundtripIndexerWithFieldMappingFunctions() =>
             Run(() =>
             {
@@ -422,7 +437,9 @@ namespace Microsoft.Azure.Search.Tests
                         new FieldMapping("feature_id", "c", FieldMappingFunction.ExtractTokenAtPosition(delimiter: " ", position: 0)),
                         new FieldMapping("feature_id", "d", FieldMappingFunction.Base64Decode()),
                         new FieldMapping("feature_id", "e", FieldMappingFunction.Base64Decode(useHttpServerUtilityUrlTokenDecode: false)),
-                        new FieldMapping("feature_id", "f", FieldMappingFunction.JsonArrayToStringCollection())
+                        new FieldMapping("feature_id", "f", FieldMappingFunction.JsonArrayToStringCollection()),
+                        new FieldMapping("feature_id", "g", FieldMappingFunction.UrlEncode()),
+                        new FieldMapping("feature_id", "h", FieldMappingFunction.UrlDecode()),
                     }
                 };
 
@@ -430,7 +447,7 @@ namespace Microsoft.Azure.Search.Tests
 
                 // We need to add desired fields to the index before those fields can be referenced by the field mappings
                 Index index = searchClient.Indexes.Get(Data.TargetIndexName);
-                string[] fieldNames = new[] { "a", "b", "c", "d", "e", "f" };
+                string[] fieldNames = new[] { "a", "b", "c", "d", "e", "f", "g", "h" };
                 index.Fields = index.Fields.Concat(fieldNames.Select(name => new Field(name, DataType.String))).ToList();
                 searchClient.Indexes.CreateOrUpdate(index);
 

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using Microsoft.Azure.Management.Media;
@@ -16,7 +16,7 @@ namespace Media.Tests.ScenarioTests
         [Fact]
         public void TransformComboTest()
         {
-            using (MockContext context = this.StartMockContextAndInitializeClients(this.GetType().FullName))
+            using (MockContext context = this.StartMockContextAndInitializeClients(this.GetType()))
             {
                 try
                 {
@@ -30,8 +30,7 @@ namespace Media.Tests.ScenarioTests
                     string transformDescription = "A test transform";
 
                     // Get the transform, which should not exist
-                    Transform transform = MediaClient.Transforms.Get(ResourceGroup, AccountName, transformName);
-                    Assert.Null(transform);
+                    Assert.Equal(System.Net.HttpStatusCode.NotFound, Assert.Throws<ErrorResponseException>(() => MediaClient.Transforms.Get(ResourceGroup, AccountName, transformName)).Response.StatusCode);
 
                     // Create a transform
                     TransformOutput[] outputs = new TransformOutput[]
@@ -48,7 +47,7 @@ namespace Media.Tests.ScenarioTests
                     ValidateTransform(transforms.First(), transformName, transformDescription, outputs);
 
                     // Get the newly created transform
-                    transform = MediaClient.Transforms.Get(ResourceGroup, AccountName, transformName);
+                    Transform transform = MediaClient.Transforms.Get(ResourceGroup, AccountName, transformName);
                     Assert.NotNull(transform);
                     ValidateTransform(transform, transformName, transformDescription, outputs);
 
@@ -100,8 +99,7 @@ namespace Media.Tests.ScenarioTests
                     Assert.Empty(transforms);
 
                     // Get the transform, which should not exist
-                    transform = MediaClient.Transforms.Get(ResourceGroup, AccountName, transformName);
-                    Assert.Null(transform);
+                    Assert.Equal(System.Net.HttpStatusCode.NotFound, Assert.Throws<ErrorResponseException>(() => MediaClient.Transforms.Get(ResourceGroup, AccountName, transformName)).Response.StatusCode);
                 }
                 finally
                 {
@@ -151,3 +149,4 @@ namespace Media.Tests.ScenarioTests
         }
     }
 }
+

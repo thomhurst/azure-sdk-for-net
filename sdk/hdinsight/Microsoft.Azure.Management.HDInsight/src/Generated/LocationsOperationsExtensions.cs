@@ -22,13 +22,47 @@ namespace Microsoft.Azure.Management.HDInsight
     public static partial class LocationsOperationsExtensions
     {
             /// <summary>
+            /// Gets the capabilities for the specified location.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='location'>
+            /// The Azure location (region) for which to make the request.
+            /// </param>
+            public static CapabilitiesResult GetCapabilities(this ILocationsOperations operations, string location)
+            {
+                return operations.GetCapabilitiesAsync(location).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Gets the capabilities for the specified location.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='location'>
+            /// The Azure location (region) for which to make the request.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<CapabilitiesResult> GetCapabilitiesAsync(this ILocationsOperations operations, string location, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.GetCapabilitiesWithHttpMessagesAsync(location, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
             /// Lists the usages for the specified location.
             /// </summary>
             /// <param name='operations'>
             /// The operations group for this extension method.
             /// </param>
             /// <param name='location'>
-            /// The location to get capabilities for.
+            /// The Azure location (region) for which to make the request.
             /// </param>
             public static UsagesListResult ListUsages(this ILocationsOperations operations, string location)
             {
@@ -42,7 +76,7 @@ namespace Microsoft.Azure.Management.HDInsight
             /// The operations group for this extension method.
             /// </param>
             /// <param name='location'>
-            /// The location to get capabilities for.
+            /// The Azure location (region) for which to make the request.
             /// </param>
             /// <param name='cancellationToken'>
             /// The cancellation token.
@@ -50,6 +84,156 @@ namespace Microsoft.Azure.Management.HDInsight
             public static async Task<UsagesListResult> ListUsagesAsync(this ILocationsOperations operations, string location, CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.ListUsagesWithHttpMessagesAsync(location, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
+            /// Lists the billingSpecs for the specified subscription and location.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='location'>
+            /// The Azure location (region) for which to make the request.
+            /// </param>
+            public static BillingResponseListResult ListBillingSpecs(this ILocationsOperations operations, string location)
+            {
+                return operations.ListBillingSpecsAsync(location).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Lists the billingSpecs for the specified subscription and location.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='location'>
+            /// The Azure location (region) for which to make the request.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<BillingResponseListResult> ListBillingSpecsAsync(this ILocationsOperations operations, string location, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.ListBillingSpecsWithHttpMessagesAsync(location, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
+            /// Get the async operation status.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='location'>
+            /// The Azure location (region) for which to make the request.
+            /// </param>
+            /// <param name='operationId'>
+            /// The long running operation id.
+            /// </param>
+            public static AsyncOperationResult GetAzureAsyncOperationStatus(this ILocationsOperations operations, string location, string operationId)
+            {
+                return operations.GetAzureAsyncOperationStatusAsync(location, operationId).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Get the async operation status.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='location'>
+            /// The Azure location (region) for which to make the request.
+            /// </param>
+            /// <param name='operationId'>
+            /// The long running operation id.
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<AsyncOperationResult> GetAzureAsyncOperationStatusAsync(this ILocationsOperations operations, string location, string operationId, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.GetAzureAsyncOperationStatusWithHttpMessagesAsync(location, operationId, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
+            /// Check the cluster name is available or not.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='location'>
+            /// The Azure location (region) for which to make the request.
+            /// </param>
+            /// <param name='parameters'>
+            /// </param>
+            public static NameAvailabilityCheckResult CheckNameAvailability(this ILocationsOperations operations, string location, NameAvailabilityCheckRequestParameters parameters)
+            {
+                return operations.CheckNameAvailabilityAsync(location, parameters).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Check the cluster name is available or not.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='location'>
+            /// The Azure location (region) for which to make the request.
+            /// </param>
+            /// <param name='parameters'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<NameAvailabilityCheckResult> CheckNameAvailabilityAsync(this ILocationsOperations operations, string location, NameAvailabilityCheckRequestParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.CheckNameAvailabilityWithHttpMessagesAsync(location, parameters, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Body;
+                }
+            }
+
+            /// <summary>
+            /// Validate the cluster create request spec is valid or not.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='location'>
+            /// The Azure location (region) for which to make the request.
+            /// </param>
+            /// <param name='parameters'>
+            /// </param>
+            public static ClusterCreateValidationResult ValidateClusterCreateRequest(this ILocationsOperations operations, string location, ClusterCreateRequestValidationParameters parameters)
+            {
+                return operations.ValidateClusterCreateRequestAsync(location, parameters).GetAwaiter().GetResult();
+            }
+
+            /// <summary>
+            /// Validate the cluster create request spec is valid or not.
+            /// </summary>
+            /// <param name='operations'>
+            /// The operations group for this extension method.
+            /// </param>
+            /// <param name='location'>
+            /// The Azure location (region) for which to make the request.
+            /// </param>
+            /// <param name='parameters'>
+            /// </param>
+            /// <param name='cancellationToken'>
+            /// The cancellation token.
+            /// </param>
+            public static async Task<ClusterCreateValidationResult> ValidateClusterCreateRequestAsync(this ILocationsOperations operations, string location, ClusterCreateRequestValidationParameters parameters, CancellationToken cancellationToken = default(CancellationToken))
+            {
+                using (var _result = await operations.ValidateClusterCreateRequestWithHttpMessagesAsync(location, parameters, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }

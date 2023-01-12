@@ -19,14 +19,12 @@ namespace ServiceBus.Tests.ScenarioTests
         [Fact]
         public void StandardToPremiumMigration_withentities()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 InitializeClients(context);
 
                 var location2 = "West Central US";
                 var location = "West Central US";
-
-                var testRegions = this.ServiceBusManagementClient.PremiumMessagingRegions.List();
 
                 var namespaceNameStandrad = TestUtilities.GenerateName(ServiceBusManagementHelper.NamespacePrefix); 
                 var namespaceNamePremium = TestUtilities.GenerateName(ServiceBusManagementHelper.NamespacePrefix);
@@ -150,10 +148,10 @@ namespace ServiceBus.Tests.ScenarioTests
                     TestUtilities.Wait(TimeSpan.FromSeconds(30));
                 }
 
-                this.ServiceBusManagementClient.Namespaces.Delete(resourceGroup, namespaceNamePremium);
+                ServiceBusManagementClient.Namespaces.DeleteWithHttpMessagesAsync(resourceGroup, namespaceNamePremium, null, new CancellationToken()).ConfigureAwait(false);
 
-                this.ServiceBusManagementClient.Namespaces.Delete(resourceGroup, namespaceNameStandrad);
-                
+                ServiceBusManagementClient.Namespaces.DeleteWithHttpMessagesAsync(resourceGroup, namespaceNameStandrad, null, new CancellationToken()).ConfigureAwait(false);
+
             }
         }
     }

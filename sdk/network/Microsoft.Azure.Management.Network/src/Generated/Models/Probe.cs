@@ -55,18 +55,25 @@ namespace Microsoft.Azure.Management.Network.Models
         /// delivered to the endpoint. This values allows endpoints to be taken
         /// out of rotation faster or slower than the typical times used in
         /// Azure.</param>
+        /// <param name="probeThreshold">The number of consecutive successful
+        /// or failed probes in order to allow or deny traffic from being
+        /// delivered to this endpoint. After failing the number of consecutive
+        /// probes equal to this value, the endpoint will be taken out of
+        /// rotation and require the same number of successful consecutive
+        /// probes to be placed back in rotation.</param>
         /// <param name="requestPath">The URI used for requesting health status
         /// from the VM. Path is required if a protocol is set to http.
         /// Otherwise, it is not allowed. There is no default value.</param>
-        /// <param name="provisioningState">Gets the provisioning state of the
-        /// public IP resource. Possible values are: 'Updating', 'Deleting',
-        /// and 'Failed'.</param>
-        /// <param name="name">Gets name of the resource that is unique within
-        /// a resource group. This name can be used to access the
-        /// resource.</param>
+        /// <param name="provisioningState">The provisioning state of the probe
+        /// resource. Possible values include: 'Succeeded', 'Updating',
+        /// 'Deleting', 'Failed'</param>
+        /// <param name="name">The name of the resource that is unique within
+        /// the set of probes used by the load balancer. This name can be used
+        /// to access the resource.</param>
         /// <param name="etag">A unique read-only string that changes whenever
         /// the resource is updated.</param>
-        public Probe(string protocol, int port, string id = default(string), IList<SubResource> loadBalancingRules = default(IList<SubResource>), int? intervalInSeconds = default(int?), int? numberOfProbes = default(int?), string requestPath = default(string), string provisioningState = default(string), string name = default(string), string etag = default(string))
+        /// <param name="type">Type of the resource.</param>
+        public Probe(string protocol, int port, string id = default(string), IList<SubResource> loadBalancingRules = default(IList<SubResource>), int? intervalInSeconds = default(int?), int? numberOfProbes = default(int?), int? probeThreshold = default(int?), string requestPath = default(string), string provisioningState = default(string), string name = default(string), string etag = default(string), string type = default(string))
             : base(id)
         {
             LoadBalancingRules = loadBalancingRules;
@@ -74,10 +81,12 @@ namespace Microsoft.Azure.Management.Network.Models
             Port = port;
             IntervalInSeconds = intervalInSeconds;
             NumberOfProbes = numberOfProbes;
+            ProbeThreshold = probeThreshold;
             RequestPath = requestPath;
             ProvisioningState = provisioningState;
             Name = name;
             Etag = etag;
+            Type = type;
             CustomInit();
         }
 
@@ -129,6 +138,17 @@ namespace Microsoft.Azure.Management.Network.Models
         public int? NumberOfProbes { get; set; }
 
         /// <summary>
+        /// Gets or sets the number of consecutive successful or failed probes
+        /// in order to allow or deny traffic from being delivered to this
+        /// endpoint. After failing the number of consecutive probes equal to
+        /// this value, the endpoint will be taken out of rotation and require
+        /// the same number of successful consecutive probes to be placed back
+        /// in rotation.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.probeThreshold")]
+        public int? ProbeThreshold { get; set; }
+
+        /// <summary>
         /// Gets or sets the URI used for requesting health status from the VM.
         /// Path is required if a protocol is set to http. Otherwise, it is not
         /// allowed. There is no default value.
@@ -137,25 +157,32 @@ namespace Microsoft.Azure.Management.Network.Models
         public string RequestPath { get; set; }
 
         /// <summary>
-        /// Gets the provisioning state of the public IP resource. Possible
-        /// values are: 'Updating', 'Deleting', and 'Failed'.
+        /// Gets the provisioning state of the probe resource. Possible values
+        /// include: 'Succeeded', 'Updating', 'Deleting', 'Failed'
         /// </summary>
         [JsonProperty(PropertyName = "properties.provisioningState")]
-        public string ProvisioningState { get; set; }
+        public string ProvisioningState { get; private set; }
 
         /// <summary>
-        /// Gets name of the resource that is unique within a resource group.
-        /// This name can be used to access the resource.
+        /// Gets or sets the name of the resource that is unique within the set
+        /// of probes used by the load balancer. This name can be used to
+        /// access the resource.
         /// </summary>
         [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets a unique read-only string that changes whenever the
-        /// resource is updated.
+        /// Gets a unique read-only string that changes whenever the resource
+        /// is updated.
         /// </summary>
         [JsonProperty(PropertyName = "etag")]
-        public string Etag { get; set; }
+        public string Etag { get; private set; }
+
+        /// <summary>
+        /// Gets type of the resource.
+        /// </summary>
+        [JsonProperty(PropertyName = "type")]
+        public string Type { get; private set; }
 
         /// <summary>
         /// Validate the object.

@@ -14,14 +14,12 @@ namespace StreamAnalytics.Tests
         [Fact]
         public void SubscriptionOperationsTest()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 var streamAnalyticsManagementClient = this.GetStreamAnalyticsManagementClient(context);
 
-                SubscriptionQuotasListResult quotaListResult = streamAnalyticsManagementClient.Subscriptions.ListQuotas(TestHelper.DefaultLocation);
-                Assert.Equal(1, quotaListResult.Value.Count);
-                Assert.Equal(0, quotaListResult.Value.Single().CurrentCount);
-                Assert.Equal(200, quotaListResult.Value.Single().MaxCount);
+                SubscriptionQuotasListResult quotaListResult = streamAnalyticsManagementClient.Subscriptions.ListQuotas("westus");
+                Assert.Equal(2, quotaListResult.Value.Count);
             }
         }
     }

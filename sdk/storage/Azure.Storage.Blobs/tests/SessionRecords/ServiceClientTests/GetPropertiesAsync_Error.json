@@ -1,39 +1,44 @@
-{
+﻿{
   "Entries": [
     {
-      "RequestUri": "http://storageteglazatesting.blob.core.windows.net/?restype=service\u0026comp=properties",
+      "RequestUri": "https://seanmcccanary3.blob.core.windows.net/?restype=service&comp=properties",
       "RequestMethod": "GET",
       "RequestHeaders": {
+        "Accept": "application/xml",
+        "traceparent": "00-d9304fcea9f41042a3dae6621afb4aac-14831b565027e54d-00",
         "User-Agent": [
-          "azsdk-net-storage-blobs/1.0.0.0",
-          "(.NET Core 4.6.27414.06; Microsoft Windows 10.0.18362 )"
+          "azsdk-net-Storage.Blobs/12.9.0-alpha.20210216.1",
+          "(.NET 5.0.3; Microsoft Windows 10.0.19042)"
         ],
-        "x-ms-client-request-id": "5cabc9e808883614bff8a243a861453f",
+        "x-ms-client-request-id": "ab775ae0-2185-af66-d6b5-fe501e46dce9",
         "x-ms-return-client-request-id": "true",
-        "x-ms-version": "2018-11-09"
+        "x-ms-version": "2021-06-08"
       },
       "RequestBody": null,
-      "StatusCode": 404,
+      "StatusCode": 401,
       "ResponseHeaders": {
-        "Content-Length": "223",
+        "Content-Length": "302",
         "Content-Type": "application/xml",
-        "Date": "Mon, 17 Jun 2019 20:58:30 GMT",
+        "Date": "Wed, 17 Feb 2021 02:19:24 GMT",
         "Server": [
           "Windows-Azure-Blob/1.0",
           "Microsoft-HTTPAPI/2.0"
         ],
-        "x-ms-error-code": "ResourceNotFound",
-        "x-ms-request-id": "510ec2f9-101e-002d-684f-25fe7d000000",
-        "x-ms-version": "2018-11-09"
+        "WWW-Authenticate": "Bearer authorization_uri=https://login.microsoftonline.com/72f988bf-86f1-41af-91ab-2d7cd011db47/oauth2/authorize resource_id=https://storage.azure.com",
+        "x-ms-client-request-id": "ab775ae0-2185-af66-d6b5-fe501e46dce9",
+        "x-ms-error-code": "NoAuthenticationInformation",
+        "x-ms-request-id": "bc8574ab-901e-0036-1cd3-0457b2000000",
+        "x-ms-version": "2021-06-08"
       },
       "ResponseBody": [
-        "\ufeff\u003c?xml version=\u00221.0\u0022 encoding=\u0022utf-8\u0022?\u003e\u003cError\u003e\u003cCode\u003eResourceNotFound\u003c/Code\u003e\u003cMessage\u003eThe specified resource does not exist.\n",
-        "RequestId:510ec2f9-101e-002d-684f-25fe7d000000\n",
-        "Time:2019-06-17T20:58:30.5123960Z\u003c/Message\u003e\u003c/Error\u003e"
+        "﻿<?xml version=\"1.0\" encoding=\"utf-8\"?><Error><Code>NoAuthenticationInformation</Code><Message>Server failed to authenticate the request. Please refer to the information in the www-authenticate header.\n",
+        "RequestId:bc8574ab-901e-0036-1cd3-0457b2000000\n",
+        "Time:2021-02-17T02:19:24.3883820Z</Message></Error>"
       ]
     }
   ],
   "Variables": {
-    "RandomSeed": "1269767901"
+    "RandomSeed": "566165797",
+    "Storage_TestConfigDefault": "ProductionTenant\nseanmcccanary3\nU2FuaXRpemVk\nhttps://seanmcccanary3.blob.core.windows.net\nhttps://seanmcccanary3.file.core.windows.net\nhttps://seanmcccanary3.queue.core.windows.net\nhttps://seanmcccanary3.table.core.windows.net\n\n\n\n\nhttps://seanmcccanary3-secondary.blob.core.windows.net\nhttps://seanmcccanary3-secondary.file.core.windows.net\nhttps://seanmcccanary3-secondary.queue.core.windows.net\nhttps://seanmcccanary3-secondary.table.core.windows.net\n\nSanitized\n\n\nCloud\nBlobEndpoint=https://seanmcccanary3.blob.core.windows.net/;QueueEndpoint=https://seanmcccanary3.queue.core.windows.net/;FileEndpoint=https://seanmcccanary3.file.core.windows.net/;BlobSecondaryEndpoint=https://seanmcccanary3-secondary.blob.core.windows.net/;QueueSecondaryEndpoint=https://seanmcccanary3-secondary.queue.core.windows.net/;FileSecondaryEndpoint=https://seanmcccanary3-secondary.file.core.windows.net/;AccountName=seanmcccanary3;AccountKey=Kg==;\nseanscope1\n\n"
   }
 }

@@ -33,9 +33,9 @@ namespace Microsoft.Azure.Management.Network
             /// <param name='ddosProtectionPlanName'>
             /// The name of the DDoS protection plan.
             /// </param>
-            public static void Delete(this IDdosProtectionPlansOperations operations, string resourceGroupName, string ddosProtectionPlanName)
+            public static DdosProtectionPlansDeleteHeaders Delete(this IDdosProtectionPlansOperations operations, string resourceGroupName, string ddosProtectionPlanName)
             {
-                operations.DeleteAsync(resourceGroupName, ddosProtectionPlanName).GetAwaiter().GetResult();
+                return operations.DeleteAsync(resourceGroupName, ddosProtectionPlanName).GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -53,9 +53,12 @@ namespace Microsoft.Azure.Management.Network
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task DeleteAsync(this IDdosProtectionPlansOperations operations, string resourceGroupName, string ddosProtectionPlanName, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<DdosProtectionPlansDeleteHeaders> DeleteAsync(this IDdosProtectionPlansOperations operations, string resourceGroupName, string ddosProtectionPlanName, CancellationToken cancellationToken = default(CancellationToken))
             {
-                (await operations.DeleteWithHttpMessagesAsync(resourceGroupName, ddosProtectionPlanName, null, cancellationToken).ConfigureAwait(false)).Dispose();
+                using (var _result = await operations.DeleteWithHttpMessagesAsync(resourceGroupName, ddosProtectionPlanName, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Headers;
+                }
             }
 
             /// <summary>
@@ -264,9 +267,9 @@ namespace Microsoft.Azure.Management.Network
             /// <param name='ddosProtectionPlanName'>
             /// The name of the DDoS protection plan.
             /// </param>
-            public static void BeginDelete(this IDdosProtectionPlansOperations operations, string resourceGroupName, string ddosProtectionPlanName)
+            public static DdosProtectionPlansDeleteHeaders BeginDelete(this IDdosProtectionPlansOperations operations, string resourceGroupName, string ddosProtectionPlanName)
             {
-                operations.BeginDeleteAsync(resourceGroupName, ddosProtectionPlanName).GetAwaiter().GetResult();
+                return operations.BeginDeleteAsync(resourceGroupName, ddosProtectionPlanName).GetAwaiter().GetResult();
             }
 
             /// <summary>
@@ -284,9 +287,12 @@ namespace Microsoft.Azure.Management.Network
             /// <param name='cancellationToken'>
             /// The cancellation token.
             /// </param>
-            public static async Task BeginDeleteAsync(this IDdosProtectionPlansOperations operations, string resourceGroupName, string ddosProtectionPlanName, CancellationToken cancellationToken = default(CancellationToken))
+            public static async Task<DdosProtectionPlansDeleteHeaders> BeginDeleteAsync(this IDdosProtectionPlansOperations operations, string resourceGroupName, string ddosProtectionPlanName, CancellationToken cancellationToken = default(CancellationToken))
             {
-                (await operations.BeginDeleteWithHttpMessagesAsync(resourceGroupName, ddosProtectionPlanName, null, cancellationToken).ConfigureAwait(false)).Dispose();
+                using (var _result = await operations.BeginDeleteWithHttpMessagesAsync(resourceGroupName, ddosProtectionPlanName, null, cancellationToken).ConfigureAwait(false))
+                {
+                    return _result.Headers;
+                }
             }
 
             /// <summary>
@@ -330,52 +336,6 @@ namespace Microsoft.Azure.Management.Network
             public static async Task<DdosProtectionPlan> BeginCreateOrUpdateAsync(this IDdosProtectionPlansOperations operations, string resourceGroupName, string ddosProtectionPlanName, DdosProtectionPlan parameters, CancellationToken cancellationToken = default(CancellationToken))
             {
                 using (var _result = await operations.BeginCreateOrUpdateWithHttpMessagesAsync(resourceGroupName, ddosProtectionPlanName, parameters, null, cancellationToken).ConfigureAwait(false))
-                {
-                    return _result.Body;
-                }
-            }
-
-            /// <summary>
-            /// Update a DDoS protection plan tags.
-            /// </summary>
-            /// <param name='operations'>
-            /// The operations group for this extension method.
-            /// </param>
-            /// <param name='resourceGroupName'>
-            /// The name of the resource group.
-            /// </param>
-            /// <param name='ddosProtectionPlanName'>
-            /// The name of the DDoS protection plan.
-            /// </param>
-            /// <param name='parameters'>
-            /// Parameters supplied to the update DDoS protection plan resource tags.
-            /// </param>
-            public static DdosProtectionPlan BeginUpdateTags(this IDdosProtectionPlansOperations operations, string resourceGroupName, string ddosProtectionPlanName, TagsObject parameters)
-            {
-                return operations.BeginUpdateTagsAsync(resourceGroupName, ddosProtectionPlanName, parameters).GetAwaiter().GetResult();
-            }
-
-            /// <summary>
-            /// Update a DDoS protection plan tags.
-            /// </summary>
-            /// <param name='operations'>
-            /// The operations group for this extension method.
-            /// </param>
-            /// <param name='resourceGroupName'>
-            /// The name of the resource group.
-            /// </param>
-            /// <param name='ddosProtectionPlanName'>
-            /// The name of the DDoS protection plan.
-            /// </param>
-            /// <param name='parameters'>
-            /// Parameters supplied to the update DDoS protection plan resource tags.
-            /// </param>
-            /// <param name='cancellationToken'>
-            /// The cancellation token.
-            /// </param>
-            public static async Task<DdosProtectionPlan> BeginUpdateTagsAsync(this IDdosProtectionPlansOperations operations, string resourceGroupName, string ddosProtectionPlanName, TagsObject parameters, CancellationToken cancellationToken = default(CancellationToken))
-            {
-                using (var _result = await operations.BeginUpdateTagsWithHttpMessagesAsync(resourceGroupName, ddosProtectionPlanName, parameters, null, cancellationToken).ConfigureAwait(false))
                 {
                     return _result.Body;
                 }

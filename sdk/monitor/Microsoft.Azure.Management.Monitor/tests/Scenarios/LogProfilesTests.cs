@@ -16,7 +16,7 @@ namespace Monitor.Tests.Scenarios
 {
     public class LogProfilesTests : TestBase
     {
-        private const string ResourceId = "/subscriptions/07c0b09d-9f69-4e6e-8d05-f59f67299cb2/providers/microsoft.insights/logprofiles/default";
+        private const string ResourceId = "/subscriptions/07c0b09d-9f69-4e6e-8d05-f59f67299cb2/providers/Microsoft.Insights/logprofiles/default";
         private static string DefaultName = "default";
         private RecordedDelegatingHandler handler;
 
@@ -32,7 +32,7 @@ namespace Monitor.Tests.Scenarios
         {
             // The second argument in the call to Start (missing in this case) controls the name of the output file.
             // By default the system will use the name of the current method as file for the output (when recording.)
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 LogProfileResource expResponse = CreateLogProfile();
 

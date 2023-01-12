@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using Microsoft.Azure.Management.Compute;
@@ -14,8 +14,8 @@ namespace Compute.Tests
     public class VMMarketplaceTest : VMTestBase
     {
         public const string vmmPublisherName = "datastax";
-        public const string vmmOfferName = "datastax-enterprise-non-production-use-only";
-        public const string vmmSku = "sandbox_single-node";
+        public const string vmmOfferName = "datastax_test";
+        public const string vmmSku = "dse-6";
 
         public VirtualMachineImage GetMarketplaceImage()
         {
@@ -27,7 +27,7 @@ namespace Compute.Tests
         [Fact]
         public void TestVMMarketplace()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 EnsureClientsInitialized(context);
 
@@ -88,7 +88,7 @@ namespace Compute.Tests
                 {
                     // Don't wait for RG deletion since it's too slow, and there is nothing interesting expected with 
                     // the resources from this test.
-                    //m_ResourcesClient.ResourceGroups.BeginDelete(rgName);
+                    m_ResourcesClient.ResourceGroups.BeginDelete(rgName);
                 }
             }
         }
@@ -96,7 +96,7 @@ namespace Compute.Tests
         [Fact]
         public void TestVMBYOL()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 EnsureClientsInitialized(context);
 
@@ -166,3 +166,4 @@ namespace Compute.Tests
         }
     }
 }
+

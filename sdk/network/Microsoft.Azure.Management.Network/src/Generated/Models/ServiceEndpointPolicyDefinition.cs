@@ -42,14 +42,15 @@ namespace Microsoft.Azure.Management.Network.Models
         /// <param name="service">Service endpoint name.</param>
         /// <param name="serviceResources">A list of service resources.</param>
         /// <param name="provisioningState">The provisioning state of the
-        /// service end point policy definition. Possible values are:
-        /// 'Updating', 'Deleting', and 'Failed'.</param>
+        /// service endpoint policy definition resource. Possible values
+        /// include: 'Succeeded', 'Updating', 'Deleting', 'Failed'</param>
         /// <param name="name">The name of the resource that is unique within a
         /// resource group. This name can be used to access the
         /// resource.</param>
         /// <param name="etag">A unique read-only string that changes whenever
         /// the resource is updated.</param>
-        public ServiceEndpointPolicyDefinition(string id = default(string), string description = default(string), string service = default(string), IList<string> serviceResources = default(IList<string>), string provisioningState = default(string), string name = default(string), string etag = default(string))
+        /// <param name="type">The type of the resource.</param>
+        public ServiceEndpointPolicyDefinition(string id = default(string), string description = default(string), string service = default(string), IList<string> serviceResources = default(IList<string>), string provisioningState = default(string), string name = default(string), string etag = default(string), string type = default(string))
             : base(id)
         {
             Description = description;
@@ -58,6 +59,7 @@ namespace Microsoft.Azure.Management.Network.Models
             ProvisioningState = provisioningState;
             Name = name;
             Etag = etag;
+            Type = type;
             CustomInit();
         }
 
@@ -85,9 +87,9 @@ namespace Microsoft.Azure.Management.Network.Models
         public IList<string> ServiceResources { get; set; }
 
         /// <summary>
-        /// Gets the provisioning state of the service end point policy
-        /// definition. Possible values are: 'Updating', 'Deleting', and
-        /// 'Failed'.
+        /// Gets the provisioning state of the service endpoint policy
+        /// definition resource. Possible values include: 'Succeeded',
+        /// 'Updating', 'Deleting', 'Failed'
         /// </summary>
         [JsonProperty(PropertyName = "properties.provisioningState")]
         public string ProvisioningState { get; private set; }
@@ -100,11 +102,17 @@ namespace Microsoft.Azure.Management.Network.Models
         public string Name { get; set; }
 
         /// <summary>
-        /// Gets or sets a unique read-only string that changes whenever the
-        /// resource is updated.
+        /// Gets a unique read-only string that changes whenever the resource
+        /// is updated.
         /// </summary>
         [JsonProperty(PropertyName = "etag")]
-        public string Etag { get; set; }
+        public string Etag { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the type of the resource.
+        /// </summary>
+        [JsonProperty(PropertyName = "type")]
+        public string Type { get; set; }
 
     }
 }

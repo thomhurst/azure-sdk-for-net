@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using Microsoft.Azure.Management.Media;
@@ -15,7 +15,7 @@ namespace Media.Tests.ScenarioTests
         [Fact]
         public void LiveEventComboTest()
         {
-            using (MockContext context = this.StartMockContextAndInitializeClients(this.GetType().FullName))
+            using (MockContext context = this.StartMockContextAndInitializeClients(this.GetType()))
             {
                 try
                 {
@@ -29,8 +29,7 @@ namespace Media.Tests.ScenarioTests
                     string liveEventDescription = "A test live event";
 
                     // Get the LiveEvent, which should not exist
-                    LiveEvent liveEvent = MediaClient.LiveEvents.Get(ResourceGroup, AccountName, eventName);
-                    Assert.Null(liveEvent);
+                    Assert.Equal(System.Net.HttpStatusCode.NotFound, Assert.Throws<ErrorResponseException>(() => MediaClient.LiveEvents.Get(ResourceGroup, AccountName, eventName)).Response.StatusCode);
 
                     // Create the LiveEvent
                     string expectedProtocol = LiveEventInputProtocol.FragmentedMP4.ToString();
@@ -44,7 +43,7 @@ namespace Media.Tests.ScenarioTests
                     ValidateLiveEvent(liveEvents.First(), eventName, liveEventDescription, LiveEventResourceState.Running, expectedProtocol);
 
                     // Get the newly created LiveEvent
-                    liveEvent = MediaClient.LiveEvents.Get(ResourceGroup, AccountName, eventName);
+                    LiveEvent liveEvent = MediaClient.LiveEvents.Get(ResourceGroup, AccountName, eventName);
                     ValidateLiveEvent(liveEvent, eventName, liveEventDescription, LiveEventResourceState.Running, expectedProtocol);
                     Assert.NotNull(liveEvent);
 
@@ -64,8 +63,7 @@ namespace Media.Tests.ScenarioTests
                     Assert.Empty(liveEvents);
 
                     // Get LiveEvent, which should not exist
-                    liveEvent = MediaClient.LiveEvents.Get(ResourceGroup, AccountName, eventName);
-                    Assert.Null(liveEvent);
+                    Assert.Equal(System.Net.HttpStatusCode.NotFound, Assert.Throws<ErrorResponseException>(() => MediaClient.LiveEvents.Get(ResourceGroup, AccountName, eventName)).Response.StatusCode);
                 }
                 finally
                 {
@@ -99,4 +97,5 @@ namespace Media.Tests.ScenarioTests
         }
     }
 }
+
 

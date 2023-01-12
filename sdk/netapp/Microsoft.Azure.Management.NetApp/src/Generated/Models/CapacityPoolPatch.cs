@@ -14,6 +14,8 @@ namespace Microsoft.Azure.Management.NetApp.Models
     using Microsoft.Rest.Azure;
     using Microsoft.Rest.Serialization;
     using Newtonsoft.Json;
+    using System.Collections;
+    using System.Collections.Generic;
     using System.Linq;
 
     /// <summary>
@@ -39,8 +41,8 @@ namespace Microsoft.Azure.Management.NetApp.Models
         /// <param name="type">Resource type</param>
         /// <param name="tags">Resource tags</param>
         /// <param name="size">size</param>
-        /// <param name="serviceLevel">serviceLevel</param>
-        public CapacityPoolPatch(string location = default(string), string id = default(string), string name = default(string), string type = default(string), object tags = default(object), long? size = default(long?), string serviceLevel = default(string))
+        /// <param name="qosType">qosType</param>
+        public CapacityPoolPatch(string location = default(string), string id = default(string), string name = default(string), string type = default(string), IDictionary<string, string> tags = default(IDictionary<string, string>), long? size = default(long?), string qosType = default(string))
         {
             Location = location;
             Id = id;
@@ -48,7 +50,7 @@ namespace Microsoft.Azure.Management.NetApp.Models
             Type = type;
             Tags = tags;
             Size = size;
-            ServiceLevel = serviceLevel;
+            QosType = qosType;
             CustomInit();
         }
 
@@ -85,44 +87,26 @@ namespace Microsoft.Azure.Management.NetApp.Models
         /// Gets or sets resource tags
         /// </summary>
         [JsonProperty(PropertyName = "tags")]
-        public object Tags { get; set; }
+        public IDictionary<string, string> Tags { get; set; }
 
         /// <summary>
         /// Gets or sets size
         /// </summary>
         /// <remarks>
-        /// Provisioned size of the pool (in bytes). Allowed values are in 4TiB
+        /// Provisioned size of the pool (in bytes). Allowed values are in 1TiB
         /// chunks (value must be multiply of 4398046511104).
         /// </remarks>
         [JsonProperty(PropertyName = "properties.size")]
         public long? Size { get; set; }
 
         /// <summary>
-        /// Gets or sets serviceLevel
+        /// Gets or sets qosType
         /// </summary>
         /// <remarks>
-        /// The service level of the file system. Possible values include:
-        /// 'Standard', 'Premium', 'Ultra'
+        /// The qos type of the pool. Possible values include: 'Auto', 'Manual'
         /// </remarks>
-        [JsonProperty(PropertyName = "properties.serviceLevel")]
-        public string ServiceLevel { get; set; }
+        [JsonProperty(PropertyName = "properties.qosType")]
+        public string QosType { get; set; }
 
-        /// <summary>
-        /// Validate the object.
-        /// </summary>
-        /// <exception cref="ValidationException">
-        /// Thrown if validation fails
-        /// </exception>
-        public virtual void Validate()
-        {
-            if (Size > 549755813888000)
-            {
-                throw new ValidationException(ValidationRules.InclusiveMaximum, "Size", 549755813888000);
-            }
-            if (Size < 4398046511104)
-            {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "Size", 4398046511104);
-            }
-        }
     }
 }

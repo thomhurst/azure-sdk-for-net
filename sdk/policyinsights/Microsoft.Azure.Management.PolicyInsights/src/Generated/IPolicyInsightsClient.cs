@@ -83,5 +83,20 @@ namespace Microsoft.Azure.Management.PolicyInsights
         /// </summary>
         IOperations Operations { get; }
 
+        /// <summary>
+        /// Gets the IPolicyMetadataOperations.
+        /// </summary>
+        IPolicyMetadataOperations PolicyMetadata { get; }
+
+        /// <summary>
+        /// Gets the IPolicyRestrictionsOperations.
+        /// </summary>
+        IPolicyRestrictionsOperations PolicyRestrictions { get; }
+
+        /// <summary>
+        /// Gets the IAttestationsOperations.
+        /// </summary>
+        IAttestationsOperations Attestations { get; }
+
     }
 }

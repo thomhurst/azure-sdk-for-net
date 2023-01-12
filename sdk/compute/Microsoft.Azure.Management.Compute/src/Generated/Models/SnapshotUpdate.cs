@@ -37,7 +37,7 @@ namespace Microsoft.Azure.Management.Compute.Models
         /// <param name="osType">the Operating System type. Possible values
         /// include: 'Windows', 'Linux'</param>
         /// <param name="diskSizeGB">If creationData.createOption is Empty,
-        /// this field is mandatory and it indicates the size of the VHD to
+        /// this field is mandatory and it indicates the size of the disk to
         /// create. If this field is present for updates or creation with other
         /// options, it indicates a resize. Resizes are only allowed if the
         /// disk is not attached to a running VM, and can only increase the
@@ -45,12 +45,34 @@ namespace Microsoft.Azure.Management.Compute.Models
         /// <param name="encryptionSettingsCollection">Encryption settings
         /// collection used be Azure Disk Encryption, can contain multiple
         /// encryption settings per disk or snapshot.</param>
+        /// <param name="encryption">Encryption property can be used to encrypt
+        /// data at rest with customer managed keys or platform managed
+        /// keys.</param>
+        /// <param name="networkAccessPolicy">Possible values include:
+        /// 'AllowAll', 'AllowPrivate', 'DenyAll'</param>
+        /// <param name="diskAccessId">ARM id of the DiskAccess resource for
+        /// using private endpoints on disks.</param>
+        /// <param name="supportsHibernation">Indicates the OS on a snapshot
+        /// supports hibernation.</param>
+        /// <param name="publicNetworkAccess">Possible values include:
+        /// 'Enabled', 'Disabled'</param>
+        /// <param name="dataAccessAuthMode">Possible values include:
+        /// 'AzureActiveDirectory', 'None'</param>
+        /// <param name="supportedCapabilities">List of supported capabilities
+        /// for the image from which the OS disk was created.</param>
         /// <param name="tags">Resource tags</param>
-        public SnapshotUpdate(OperatingSystemTypes? osType = default(OperatingSystemTypes?), int? diskSizeGB = default(int?), EncryptionSettingsCollection encryptionSettingsCollection = default(EncryptionSettingsCollection), IDictionary<string, string> tags = default(IDictionary<string, string>), SnapshotSku sku = default(SnapshotSku))
+        public SnapshotUpdate(OperatingSystemTypes? osType = default(OperatingSystemTypes?), int? diskSizeGB = default(int?), EncryptionSettingsCollection encryptionSettingsCollection = default(EncryptionSettingsCollection), Encryption encryption = default(Encryption), string networkAccessPolicy = default(string), string diskAccessId = default(string), bool? supportsHibernation = default(bool?), string publicNetworkAccess = default(string), string dataAccessAuthMode = default(string), SupportedCapabilities supportedCapabilities = default(SupportedCapabilities), IDictionary<string, string> tags = default(IDictionary<string, string>), SnapshotSku sku = default(SnapshotSku))
         {
             OsType = osType;
             DiskSizeGB = diskSizeGB;
             EncryptionSettingsCollection = encryptionSettingsCollection;
+            Encryption = encryption;
+            NetworkAccessPolicy = networkAccessPolicy;
+            DiskAccessId = diskAccessId;
+            SupportsHibernation = supportsHibernation;
+            PublicNetworkAccess = publicNetworkAccess;
+            DataAccessAuthMode = dataAccessAuthMode;
+            SupportedCapabilities = supportedCapabilities;
             Tags = tags;
             Sku = sku;
             CustomInit();
@@ -70,7 +92,7 @@ namespace Microsoft.Azure.Management.Compute.Models
 
         /// <summary>
         /// Gets or sets if creationData.createOption is Empty, this field is
-        /// mandatory and it indicates the size of the VHD to create. If this
+        /// mandatory and it indicates the size of the disk to create. If this
         /// field is present for updates or creation with other options, it
         /// indicates a resize. Resizes are only allowed if the disk is not
         /// attached to a running VM, and can only increase the disk's size.
@@ -85,6 +107,53 @@ namespace Microsoft.Azure.Management.Compute.Models
         /// </summary>
         [JsonProperty(PropertyName = "properties.encryptionSettingsCollection")]
         public EncryptionSettingsCollection EncryptionSettingsCollection { get; set; }
+
+        /// <summary>
+        /// Gets or sets encryption property can be used to encrypt data at
+        /// rest with customer managed keys or platform managed keys.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.encryption")]
+        public Encryption Encryption { get; set; }
+
+        /// <summary>
+        /// Gets or sets possible values include: 'AllowAll', 'AllowPrivate',
+        /// 'DenyAll'
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.networkAccessPolicy")]
+        public string NetworkAccessPolicy { get; set; }
+
+        /// <summary>
+        /// Gets or sets ARM id of the DiskAccess resource for using private
+        /// endpoints on disks.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.diskAccessId")]
+        public string DiskAccessId { get; set; }
+
+        /// <summary>
+        /// Gets or sets indicates the OS on a snapshot supports hibernation.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.supportsHibernation")]
+        public bool? SupportsHibernation { get; set; }
+
+        /// <summary>
+        /// Gets or sets possible values include: 'Enabled', 'Disabled'
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.publicNetworkAccess")]
+        public string PublicNetworkAccess { get; set; }
+
+        /// <summary>
+        /// Gets or sets possible values include: 'AzureActiveDirectory',
+        /// 'None'
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.dataAccessAuthMode")]
+        public string DataAccessAuthMode { get; set; }
+
+        /// <summary>
+        /// Gets or sets list of supported capabilities for the image from
+        /// which the OS disk was created.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.supportedCapabilities")]
+        public SupportedCapabilities SupportedCapabilities { get; set; }
 
         /// <summary>
         /// Gets or sets resource tags

@@ -20,9 +20,7 @@ namespace Microsoft.Azure.Management.Cdn
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Use these APIs to manage Azure CDN resources through the Azure Resource
-    /// Manager. You must make sure that requests made to these resources are
-    /// secure.
+    /// Cdn Management Client
     /// </summary>
     public partial interface ICdnManagementClient : System.IDisposable
     {
@@ -53,7 +51,7 @@ namespace Microsoft.Azure.Management.Cdn
 
         /// <summary>
         /// Version of the API to be used with the client request. Current
-        /// version is 2017-04-02.
+        /// version is 2020-09-01.
         /// </summary>
         string ApiVersion { get; }
 
@@ -92,6 +90,11 @@ namespace Microsoft.Azure.Management.Cdn
         IOriginsOperations Origins { get; }
 
         /// <summary>
+        /// Gets the IOriginGroupsOperations.
+        /// </summary>
+        IOriginGroupsOperations OriginGroups { get; }
+
+        /// <summary>
         /// Gets the ICustomDomainsOperations.
         /// </summary>
         ICustomDomainsOperations CustomDomains { get; }
@@ -110,6 +113,76 @@ namespace Microsoft.Azure.Management.Cdn
         /// Gets the IEdgeNodesOperations.
         /// </summary>
         IEdgeNodesOperations EdgeNodes { get; }
+
+        /// <summary>
+        /// Gets the IAFDProfilesOperations.
+        /// </summary>
+        IAFDProfilesOperations AFDProfiles { get; }
+
+        /// <summary>
+        /// Gets the IAFDCustomDomainsOperations.
+        /// </summary>
+        IAFDCustomDomainsOperations AFDCustomDomains { get; }
+
+        /// <summary>
+        /// Gets the IAFDEndpointsOperations.
+        /// </summary>
+        IAFDEndpointsOperations AFDEndpoints { get; }
+
+        /// <summary>
+        /// Gets the IAFDOriginGroupsOperations.
+        /// </summary>
+        IAFDOriginGroupsOperations AFDOriginGroups { get; }
+
+        /// <summary>
+        /// Gets the IAFDOriginsOperations.
+        /// </summary>
+        IAFDOriginsOperations AFDOrigins { get; }
+
+        /// <summary>
+        /// Gets the IRoutesOperations.
+        /// </summary>
+        IRoutesOperations Routes { get; }
+
+        /// <summary>
+        /// Gets the IRuleSetsOperations.
+        /// </summary>
+        IRuleSetsOperations RuleSets { get; }
+
+        /// <summary>
+        /// Gets the IRulesOperations.
+        /// </summary>
+        IRulesOperations Rules { get; }
+
+        /// <summary>
+        /// Gets the ISecurityPoliciesOperations.
+        /// </summary>
+        ISecurityPoliciesOperations SecurityPolicies { get; }
+
+        /// <summary>
+        /// Gets the ISecretsOperations.
+        /// </summary>
+        ISecretsOperations Secrets { get; }
+
+        /// <summary>
+        /// Gets the IValidateOperations.
+        /// </summary>
+        IValidateOperations Validate { get; }
+
+        /// <summary>
+        /// Gets the ILogAnalyticsOperations.
+        /// </summary>
+        ILogAnalyticsOperations LogAnalytics { get; }
+
+        /// <summary>
+        /// Gets the IPoliciesOperations.
+        /// </summary>
+        IPoliciesOperations Policies { get; }
+
+        /// <summary>
+        /// Gets the IManagedRuleSetsOperations.
+        /// </summary>
+        IManagedRuleSetsOperations ManagedRuleSets { get; }
 
         /// <summary>
         /// Check the availability of a resource name. This is needed for

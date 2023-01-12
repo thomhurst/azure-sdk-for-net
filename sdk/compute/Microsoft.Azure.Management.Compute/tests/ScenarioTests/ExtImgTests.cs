@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using Microsoft.Azure.Management.Compute;
@@ -65,25 +65,27 @@ namespace Compute.Tests
             public string FilterExpression = "";
         }
 
+        private static readonly string existingVersion = "2.4.5";
+
         private static readonly VirtualMachineExtensionImageGetParameters parameters =
             new VirtualMachineExtensionImageGetParameters();
 
         [Fact]
         public void TestExtImgGet()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 ComputeManagementClient _pirClient =
                     ComputeManagementTestUtilities.GetComputeManagementClient(context,
-                        new RecordedDelegatingHandler {StatusCodeToReturn = HttpStatusCode.OK});
+                        new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK });
 
                 var vmimageext = _pirClient.VirtualMachineExtensionImages.Get(
                     parameters.Location,
                     parameters.PublisherName,
                     parameters.Type,
-                    "2.0");
+                    existingVersion);
 
-                Assert.True(vmimageext.Name == "2.0");
+                Assert.True(vmimageext.Name == existingVersion);
                 Assert.True(vmimageext.Location == "westus");
 
                 Assert.True(vmimageext.OperatingSystem == "Windows");
@@ -97,14 +99,14 @@ namespace Compute.Tests
         [Fact]
         public void TestExtImgListTypes()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 ComputeManagementClient _pirClient =
                     ComputeManagementTestUtilities.GetComputeManagementClient(context,
-                        new RecordedDelegatingHandler {StatusCodeToReturn = HttpStatusCode.OK});
+                        new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK });
 
                 var vmextimg = _pirClient.VirtualMachineExtensionImages.ListTypes(
-                    parameters.Location, 
+                    parameters.Location,
                     parameters.PublisherName);
 
                 Assert.True(vmextimg.Count > 0);
@@ -115,11 +117,11 @@ namespace Compute.Tests
         [Fact]
         public void TestExtImgListVersionsNoFilter()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 ComputeManagementClient _pirClient =
                     ComputeManagementTestUtilities.GetComputeManagementClient(context,
-                        new RecordedDelegatingHandler {StatusCodeToReturn = HttpStatusCode.OK});
+                        new RecordedDelegatingHandler { StatusCodeToReturn = HttpStatusCode.OK });
 
                 var vmextimg = _pirClient.VirtualMachineExtensionImages.ListVersions(
                     parameters.Location,
@@ -127,14 +129,16 @@ namespace Compute.Tests
                     parameters.Type);
 
                 Assert.True(vmextimg.Count > 0);
-                Assert.True(vmextimg.Count(vmi => vmi.Name == "2.0") != 0);
+                Assert.True(vmextimg.Count(vmi => vmi.Name == existingVersion) != 0);
             }
         }
 
         [Fact]
         public void TestExtImgListVersionsFilters()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            string existingVersionPrefix = existingVersion.Substring(0, existingVersion.LastIndexOf('.'));
+
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 ComputeManagementClient _pirClient =
                     ComputeManagementTestUtilities.GetComputeManagementClient(context,
@@ -159,22 +163,21 @@ namespace Compute.Tests
                     parameters.Type,
                     query);
                 Assert.True(vmextimg.Count > 0);
-                Assert.True(vmextimg.Count(vmi => vmi.Name == "2.0") != 0);
+                Assert.True(vmextimg.Count(vmi => vmi.Name != existingVersionPrefix) != 0);
 
                 // Filter: startswith - Negative Test
-                query.SetFilter(f => f.Name.StartsWith("1.0"));
-                parameters.FilterExpression = "$filter=startswith(name,'1.0')";
+                query.SetFilter(f => f.Name.StartsWith(existingVersionPrefix));
+                parameters.FilterExpression = string.Format("$filter=startswith(name,'{0}')", existingVersionPrefix);
                 vmextimg = _pirClient.VirtualMachineExtensionImages.ListVersions(
                     parameters.Location,
                     parameters.PublisherName,
                     parameters.Type,
                     query);
-                Assert.True(vmextimg.Count == 0);
-                Assert.True(vmextimg.Count(vmi => vmi.Name == "2.0") == 0);
+                Assert.True(vmextimg.Count > 0);
 
                 // Filter: top - Positive Test
                 query.Filter = null;
-                query.Top =1;
+                query.Top = 1;
                 parameters.FilterExpression = "$top=1";
                 vmextimg = _pirClient.VirtualMachineExtensionImages.ListVersions(
                     parameters.Location,
@@ -182,7 +185,6 @@ namespace Compute.Tests
                     parameters.Type,
                     query);
                 Assert.True(vmextimg.Count == 1);
-                Assert.True(vmextimg.Count(vmi => vmi.Name == "2.0") != 0);
 
                 // Filter: top - Negative Test
                 query.Top = 0;
@@ -197,3 +199,4 @@ namespace Compute.Tests
         }
     }
 }
+

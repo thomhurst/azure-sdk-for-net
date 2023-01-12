@@ -19,7 +19,7 @@ namespace Monitor.Tests.Scenarios
     {
         private const string ResourceGroupName = "Rac46PostSwapRG";
         private const string RuleName = "chiricutin";
-        private const string ResourceId = "/subscriptions/{0}/resourceGroups/" + ResourceGroupName + "/providers/microsoft.insights/alertrules/" + RuleName;
+        private const string ResourceId = "/subscriptions/{0}/resourceGroups/" + ResourceGroupName + "/providers/Microsoft.Insights/alertrules/" + RuleName;
         private const string Location = "westus";
 
         private RecordedDelegatingHandler handler;
@@ -34,7 +34,7 @@ namespace Monitor.Tests.Scenarios
         [Trait("Category", "Scenario")]
         public void MetricBasedRule()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 MonitorManagementClient insightsClient = GetMonitorManagementClient(context, handler);
                 this.VerifyExistenceOrCreateResourceGroup(resourceGroupName: ResourceGroupName, location: Location);
@@ -124,7 +124,7 @@ namespace Monitor.Tests.Scenarios
                     resourceGroupName: ResourceGroupName,
                     ruleName: RuleName);
 
-                Assert.Throws<CloudException>(
+                Assert.Throws<ErrorResponseException>(
                     () => insightsClient.AlertRules.Get(
                             resourceGroupName: ResourceGroupName,
                             ruleName: RuleName));
@@ -135,7 +135,7 @@ namespace Monitor.Tests.Scenarios
         [Trait("Category", "Scenario")]
         public void GetIncidentTest()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 MonitorManagementClient insightsClient = GetMonitorManagementClient(context, handler);
 
@@ -165,7 +165,7 @@ namespace Monitor.Tests.Scenarios
         [Trait("Category", "Scenario")]
         public void ListGetIncidentsTest()
         {
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 MonitorManagementClient insightsClient = GetMonitorManagementClient(context, handler);
 

@@ -32,23 +32,50 @@ namespace Microsoft.Azure.Management.Compute.Models
         /// </summary>
         /// <param name="createOption">This enumerates the possible sources of
         /// a disk's creation. Possible values include: 'Empty', 'Attach',
-        /// 'FromImage', 'Import', 'Copy', 'Restore', 'Upload'</param>
-        /// <param name="storageAccountId">If createOption is Import, the Azure
-        /// Resource Manager identifier of the storage account containing the
-        /// blob to import as a disk. Required only if the blob is in a
-        /// different subscription</param>
-        /// <param name="imageReference">Disk source information.</param>
+        /// 'FromImage', 'Import', 'Copy', 'Restore', 'Upload', 'CopyStart',
+        /// 'ImportSecure', 'UploadPreparedSecure'</param>
+        /// <param name="storageAccountId">Required if createOption is Import.
+        /// The Azure Resource Manager identifier of the storage account
+        /// containing the blob to import as a disk.</param>
+        /// <param name="imageReference">Disk source information for PIR or
+        /// user images.</param>
+        /// <param name="galleryImageReference">Required if creating from a
+        /// Gallery Image. The id/sharedGalleryImageId/communityGalleryImageId
+        /// of the ImageDiskReference will be the ARM id of the shared galley
+        /// image version from which to create a disk.</param>
         /// <param name="sourceUri">If createOption is Import, this is the URI
         /// of a blob to be imported into a managed disk.</param>
         /// <param name="sourceResourceId">If createOption is Copy, this is the
         /// ARM id of the source snapshot or disk.</param>
-        public CreationData(string createOption, string storageAccountId = default(string), ImageDiskReference imageReference = default(ImageDiskReference), string sourceUri = default(string), string sourceResourceId = default(string))
+        /// <param name="sourceUniqueId">If this field is set, this is the
+        /// unique id identifying the source of this resource.</param>
+        /// <param name="uploadSizeBytes">If createOption is Upload, this is
+        /// the size of the contents of the upload including the VHD footer.
+        /// This value should be between 20972032 (20 MiB + 512 bytes for the
+        /// VHD footer) and 35183298347520 bytes (32 TiB + 512 bytes for the
+        /// VHD footer).</param>
+        /// <param name="logicalSectorSize">Logical sector size in bytes for
+        /// Ultra disks. Supported values are 512 ad 4096. 4096 is the
+        /// default.</param>
+        /// <param name="securityDataUri">If createOption is ImportSecure, this
+        /// is the URI of a blob to be imported into VM guest state.</param>
+        /// <param name="performancePlus">Set this flag to true to get a boost
+        /// on the performance target of the disk deployed, see here on the
+        /// respective performance target. This flag can only be set on disk
+        /// creation time and cannot be disabled after enabled.</param>
+        public CreationData(string createOption, string storageAccountId = default(string), ImageDiskReference imageReference = default(ImageDiskReference), ImageDiskReference galleryImageReference = default(ImageDiskReference), string sourceUri = default(string), string sourceResourceId = default(string), string sourceUniqueId = default(string), long? uploadSizeBytes = default(long?), int? logicalSectorSize = default(int?), string securityDataUri = default(string), bool? performancePlus = default(bool?))
         {
             CreateOption = createOption;
             StorageAccountId = storageAccountId;
             ImageReference = imageReference;
+            GalleryImageReference = galleryImageReference;
             SourceUri = sourceUri;
             SourceResourceId = sourceResourceId;
+            SourceUniqueId = sourceUniqueId;
+            UploadSizeBytes = uploadSizeBytes;
+            LogicalSectorSize = logicalSectorSize;
+            SecurityDataUri = securityDataUri;
+            PerformancePlus = performancePlus;
             CustomInit();
         }
 
@@ -60,24 +87,34 @@ namespace Microsoft.Azure.Management.Compute.Models
         /// <summary>
         /// Gets or sets this enumerates the possible sources of a disk's
         /// creation. Possible values include: 'Empty', 'Attach', 'FromImage',
-        /// 'Import', 'Copy', 'Restore', 'Upload'
+        /// 'Import', 'Copy', 'Restore', 'Upload', 'CopyStart', 'ImportSecure',
+        /// 'UploadPreparedSecure'
         /// </summary>
         [JsonProperty(PropertyName = "createOption")]
         public string CreateOption { get; set; }
 
         /// <summary>
-        /// Gets or sets if createOption is Import, the Azure Resource Manager
-        /// identifier of the storage account containing the blob to import as
-        /// a disk. Required only if the blob is in a different subscription
+        /// Gets or sets required if createOption is Import. The Azure Resource
+        /// Manager identifier of the storage account containing the blob to
+        /// import as a disk.
         /// </summary>
         [JsonProperty(PropertyName = "storageAccountId")]
         public string StorageAccountId { get; set; }
 
         /// <summary>
-        /// Gets or sets disk source information.
+        /// Gets or sets disk source information for PIR or user images.
         /// </summary>
         [JsonProperty(PropertyName = "imageReference")]
         public ImageDiskReference ImageReference { get; set; }
+
+        /// <summary>
+        /// Gets or sets required if creating from a Gallery Image. The
+        /// id/sharedGalleryImageId/communityGalleryImageId of the
+        /// ImageDiskReference will be the ARM id of the shared galley image
+        /// version from which to create a disk.
+        /// </summary>
+        [JsonProperty(PropertyName = "galleryImageReference")]
+        public ImageDiskReference GalleryImageReference { get; set; }
 
         /// <summary>
         /// Gets or sets if createOption is Import, this is the URI of a blob
@@ -94,6 +131,45 @@ namespace Microsoft.Azure.Management.Compute.Models
         public string SourceResourceId { get; set; }
 
         /// <summary>
+        /// Gets if this field is set, this is the unique id identifying the
+        /// source of this resource.
+        /// </summary>
+        [JsonProperty(PropertyName = "sourceUniqueId")]
+        public string SourceUniqueId { get; private set; }
+
+        /// <summary>
+        /// Gets or sets if createOption is Upload, this is the size of the
+        /// contents of the upload including the VHD footer. This value should
+        /// be between 20972032 (20 MiB + 512 bytes for the VHD footer) and
+        /// 35183298347520 bytes (32 TiB + 512 bytes for the VHD footer).
+        /// </summary>
+        [JsonProperty(PropertyName = "uploadSizeBytes")]
+        public long? UploadSizeBytes { get; set; }
+
+        /// <summary>
+        /// Gets or sets logical sector size in bytes for Ultra disks.
+        /// Supported values are 512 ad 4096. 4096 is the default.
+        /// </summary>
+        [JsonProperty(PropertyName = "logicalSectorSize")]
+        public int? LogicalSectorSize { get; set; }
+
+        /// <summary>
+        /// Gets or sets if createOption is ImportSecure, this is the URI of a
+        /// blob to be imported into VM guest state.
+        /// </summary>
+        [JsonProperty(PropertyName = "securityDataUri")]
+        public string SecurityDataUri { get; set; }
+
+        /// <summary>
+        /// Gets or sets set this flag to true to get a boost on the
+        /// performance target of the disk deployed, see here on the respective
+        /// performance target. This flag can only be set on disk creation time
+        /// and cannot be disabled after enabled.
+        /// </summary>
+        [JsonProperty(PropertyName = "performancePlus")]
+        public bool? PerformancePlus { get; set; }
+
+        /// <summary>
         /// Validate the object.
         /// </summary>
         /// <exception cref="ValidationException">
@@ -104,10 +180,6 @@ namespace Microsoft.Azure.Management.Compute.Models
             if (CreateOption == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "CreateOption");
-            }
-            if (ImageReference != null)
-            {
-                ImageReference.Validate();
             }
         }
     }

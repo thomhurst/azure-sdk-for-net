@@ -1,18 +1,52 @@
 {
   "Entries": [
     {
-      "RequestUri": "https://pakrym-keyvault.vault.azure.net/keys/20980359740/create?api-version=7.0",
+      "RequestUri": "https://heathskeyvault.vault.azure.net/keys/7585219130/create?api-version=7.4-preview.1",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Content-Length": "0",
+        "traceparent": "00-0210132bdebe26e51e9cb0137a4cc317-40f151e9de74274f-00",
+        "User-Agent": "azsdk-net-Security.KeyVault.Keys/4.5.0-alpha.20221031.1 (.NET 6.0.10; Microsoft Windows 10.0.22621)",
+        "x-ms-client-request-id": "e5eb180442d7c1c6ae91457c70a189b5",
+        "x-ms-return-client-request-id": "true"
+      },
+      "RequestBody": null,
+      "StatusCode": 401,
+      "ResponseHeaders": {
+        "Cache-Control": "no-cache",
+        "Content-Length": "97",
+        "Content-Type": "application/json; charset=utf-8",
+        "Date": "Mon, 31 Oct 2022 23:20:13 GMT",
+        "Expires": "-1",
+        "Pragma": "no-cache",
+        "Strict-Transport-Security": "max-age=31536000;includeSubDomains",
+        "WWW-Authenticate": "Bearer authorization=\u0022https://login.windows.net/72f988bf-86f1-41af-91ab-2d7cd011db47\u0022, resource=\u0022https://vault.azure.net\u0022",
+        "X-Content-Type-Options": "nosniff",
+        "x-ms-client-request-id": "e5eb180442d7c1c6ae91457c70a189b5",
+        "x-ms-keyvault-network-info": "conn_type=Ipv4;addr=24.16.19.131;act_addr_fam=InterNetwork;",
+        "x-ms-keyvault-region": "westus",
+        "x-ms-keyvault-service-version": "1.9.538.1",
+        "x-ms-request-id": "879535cc-a7bc-49d0-9221-5db199772aed"
+      },
+      "ResponseBody": {
+        "error": {
+          "code": "Unauthorized",
+          "message": "AKV10000: Request is missing a Bearer or PoP token."
+        }
+      }
+    },
+    {
+      "RequestUri": "https://heathskeyvault.vault.azure.net/keys/7585219130/create?api-version=7.4-preview.1",
       "RequestMethod": "POST",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
         "Content-Length": "12",
         "Content-Type": "application/json",
-        "User-Agent": [
-          "azsdk-net-keyvault-secret/1.0.0.0",
-          "(.NET Core 4.6.27617.04; Microsoft Windows 10.0.18362 )"
-        ],
-        "x-ms-client-request-id": "184b5e26818abe160142c8ca71551c3e",
+        "traceparent": "00-0210132bdebe26e51e9cb0137a4cc317-40f151e9de74274f-00",
+        "User-Agent": "azsdk-net-Security.KeyVault.Keys/4.5.0-alpha.20221031.1 (.NET 6.0.10; Microsoft Windows 10.0.22621)",
+        "x-ms-client-request-id": "e5eb180442d7c1c6ae91457c70a189b5",
         "x-ms-return-client-request-id": "true"
       },
       "RequestBody": {
@@ -21,110 +55,109 @@
       "StatusCode": 200,
       "ResponseHeaders": {
         "Cache-Control": "no-cache",
-        "Content-Length": "372",
+        "Content-Length": "419",
         "Content-Type": "application/json; charset=utf-8",
-        "Date": "Tue, 18 Jun 2019 20:31:53 GMT",
+        "Date": "Mon, 31 Oct 2022 23:20:13 GMT",
         "Expires": "-1",
         "Pragma": "no-cache",
-        "Server": "Microsoft-IIS/10.0",
         "Strict-Transport-Security": "max-age=31536000;includeSubDomains",
-        "X-AspNet-Version": "4.0.30319",
         "X-Content-Type-Options": "nosniff",
-        "x-ms-keyvault-network-info": "addr=131.107.174.199;act_addr_fam=InterNetwork;",
+        "x-ms-client-request-id": "e5eb180442d7c1c6ae91457c70a189b5",
+        "x-ms-keyvault-network-info": "conn_type=Ipv4;addr=24.16.19.131;act_addr_fam=InterNetwork;",
+        "x-ms-keyvault-rbac-assignment-id": "0ecc3e39-c3aa-550c-9221-2cec9776c051",
+        "x-ms-keyvault-rbac-cache": "ra_age=181;da_age=181;rd_age=181;brd_age=11085;ra_notif_age=595;dec_lev=1;",
         "x-ms-keyvault-region": "westus",
-        "x-ms-keyvault-service-version": "1.1.0.866",
-        "x-ms-request-id": "9bfdeafc-1ada-4d2f-b6c2-5217bca7651c",
-        "X-Powered-By": "ASP.NET"
+        "x-ms-keyvault-service-version": "1.9.538.1",
+        "x-ms-request-id": "cf63272f-70ee-4015-80e5-10d81e11771d"
       },
       "ResponseBody": {
         "key": {
-          "kid": "https://pakrym-keyvault.vault.azure.net/keys/20980359740/1246c5a378d1454b822aaf9cbc142e57",
+          "kid": "https://heathskeyvault.vault.azure.net/keys/7585219130/b84195d09f1e4317a3f9b962a710ad5e",
           "kty": "EC",
           "key_ops": [
             "sign",
             "verify"
           ],
           "crv": "P-256",
-          "x": "ej0WU0cXhcwgdUrmtjUHf9JMf8GiAUCakwTMEFWQryY",
-          "y": "PL4xnjeV14dQZQcY9Ey96fQBbKTpq_EfBVXBNLVD9u8"
+          "x": "XUqgZ2wOwMU_9_o7dDXbdo5JNS1VHEeEBDYix66Z2ow",
+          "y": "daK691bc3YoZH79w_AvIfNsTJTUiG6l-J3PF6LveAks"
         },
         "attributes": {
           "enabled": true,
-          "created": 1560889914,
-          "updated": 1560889914,
-          "recoveryLevel": "Recoverable\u002bPurgeable"
+          "created": 1667258413,
+          "updated": 1667258413,
+          "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+          "recoverableDays": 7,
+          "exportable": false
         }
       }
     },
     {
-      "RequestUri": "https://pakrym-keyvault.vault.azure.net/keys/20980359740?api-version=7.0",
+      "RequestUri": "https://heathskeyvault.vault.azure.net/keys/7585219130?api-version=7.4-preview.1",
       "RequestMethod": "DELETE",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Type": "application/json",
-        "User-Agent": [
-          "azsdk-net-keyvault-secret/1.0.0.0",
-          "(.NET Core 4.6.27617.04; Microsoft Windows 10.0.18362 )"
-        ],
-        "x-ms-client-request-id": "e774367b29ebc858f8e4b58ef8d89d40",
+        "traceparent": "00-1d9f7d8c1573b048a8224ee22d52d17b-18820d1042966b07-00",
+        "User-Agent": "azsdk-net-Security.KeyVault.Keys/4.5.0-alpha.20221031.1 (.NET 6.0.10; Microsoft Windows 10.0.22621)",
+        "x-ms-client-request-id": "cc61fd87a574aee120650b3a176f36b5",
         "x-ms-return-client-request-id": "true"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
         "Cache-Control": "no-cache",
-        "Content-Length": "508",
+        "Content-Length": "553",
         "Content-Type": "application/json; charset=utf-8",
-        "Date": "Tue, 18 Jun 2019 20:31:54 GMT",
+        "Date": "Mon, 31 Oct 2022 23:20:13 GMT",
         "Expires": "-1",
         "Pragma": "no-cache",
-        "Server": "Microsoft-IIS/10.0",
         "Strict-Transport-Security": "max-age=31536000;includeSubDomains",
-        "X-AspNet-Version": "4.0.30319",
         "X-Content-Type-Options": "nosniff",
-        "x-ms-keyvault-network-info": "addr=131.107.174.199;act_addr_fam=InterNetwork;",
+        "x-ms-client-request-id": "cc61fd87a574aee120650b3a176f36b5",
+        "x-ms-keyvault-network-info": "conn_type=Ipv4;addr=24.16.19.131;act_addr_fam=InterNetwork;",
+        "x-ms-keyvault-rbac-assignment-id": "0ecc3e39-c3aa-550c-9221-2cec9776c051",
+        "x-ms-keyvault-rbac-cache": "ra_age=181;da_age=181;rd_age=181;brd_age=11085;ra_notif_age=595;dec_lev=1;",
         "x-ms-keyvault-region": "westus",
-        "x-ms-keyvault-service-version": "1.1.0.866",
-        "x-ms-request-id": "fcc5ead5-53c7-4800-8284-68fb4ce1a3b3",
-        "X-Powered-By": "ASP.NET"
+        "x-ms-keyvault-service-version": "1.9.538.1",
+        "x-ms-request-id": "f48dbfcb-3288-47ef-b1e1-63712cc75f39"
       },
       "ResponseBody": {
-        "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/20980359740",
-        "deletedDate": 1560889914,
-        "scheduledPurgeDate": 1568665914,
+        "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/7585219130",
+        "deletedDate": 1667258413,
+        "scheduledPurgeDate": 1667863213,
         "key": {
-          "kid": "https://pakrym-keyvault.vault.azure.net/keys/20980359740/1246c5a378d1454b822aaf9cbc142e57",
+          "kid": "https://heathskeyvault.vault.azure.net/keys/7585219130/b84195d09f1e4317a3f9b962a710ad5e",
           "kty": "EC",
           "key_ops": [
             "sign",
             "verify"
           ],
           "crv": "P-256",
-          "x": "ej0WU0cXhcwgdUrmtjUHf9JMf8GiAUCakwTMEFWQryY",
-          "y": "PL4xnjeV14dQZQcY9Ey96fQBbKTpq_EfBVXBNLVD9u8"
+          "x": "XUqgZ2wOwMU_9_o7dDXbdo5JNS1VHEeEBDYix66Z2ow",
+          "y": "daK691bc3YoZH79w_AvIfNsTJTUiG6l-J3PF6LveAks"
         },
         "attributes": {
           "enabled": true,
-          "created": 1560889914,
-          "updated": 1560889914,
-          "recoveryLevel": "Recoverable\u002bPurgeable"
+          "created": 1667258413,
+          "updated": 1667258413,
+          "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+          "recoverableDays": 7,
+          "exportable": false
         }
       }
     },
     {
-      "RequestUri": "https://pakrym-keyvault.vault.azure.net/keys/20980359741/create?api-version=7.0",
+      "RequestUri": "https://heathskeyvault.vault.azure.net/keys/7585219131/create?api-version=7.4-preview.1",
       "RequestMethod": "POST",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
         "Content-Length": "12",
         "Content-Type": "application/json",
-        "User-Agent": [
-          "azsdk-net-keyvault-secret/1.0.0.0",
-          "(.NET Core 4.6.27617.04; Microsoft Windows 10.0.18362 )"
-        ],
-        "x-ms-client-request-id": "844ad951cf65cf08be0d823b6d5e1fc9",
+        "traceparent": "00-557270666c87ffeffc28bbe44500792d-df8a523d91ff9345-00",
+        "User-Agent": "azsdk-net-Security.KeyVault.Keys/4.5.0-alpha.20221031.1 (.NET 6.0.10; Microsoft Windows 10.0.22621)",
+        "x-ms-client-request-id": "01252ae5828739feabdd3408ecb63dc7",
         "x-ms-return-client-request-id": "true"
       },
       "RequestBody": {
@@ -133,1603 +166,2202 @@
       "StatusCode": 200,
       "ResponseHeaders": {
         "Cache-Control": "no-cache",
-        "Content-Length": "372",
+        "Content-Length": "419",
         "Content-Type": "application/json; charset=utf-8",
-        "Date": "Tue, 18 Jun 2019 20:31:54 GMT",
+        "Date": "Mon, 31 Oct 2022 23:20:14 GMT",
         "Expires": "-1",
         "Pragma": "no-cache",
-        "Server": "Microsoft-IIS/10.0",
         "Strict-Transport-Security": "max-age=31536000;includeSubDomains",
-        "X-AspNet-Version": "4.0.30319",
         "X-Content-Type-Options": "nosniff",
-        "x-ms-keyvault-network-info": "addr=131.107.174.199;act_addr_fam=InterNetwork;",
+        "x-ms-client-request-id": "01252ae5828739feabdd3408ecb63dc7",
+        "x-ms-keyvault-network-info": "conn_type=Ipv4;addr=24.16.19.131;act_addr_fam=InterNetwork;",
+        "x-ms-keyvault-rbac-assignment-id": "0ecc3e39-c3aa-550c-9221-2cec9776c051",
+        "x-ms-keyvault-rbac-cache": "ra_age=182;da_age=181;rd_age=181;brd_age=11085;ra_notif_age=596;dec_lev=1;",
         "x-ms-keyvault-region": "westus",
-        "x-ms-keyvault-service-version": "1.1.0.866",
-        "x-ms-request-id": "05eeb96a-9d16-4066-81ed-80808cb44181",
-        "X-Powered-By": "ASP.NET"
+        "x-ms-keyvault-service-version": "1.9.538.1",
+        "x-ms-request-id": "e4bf6c68-a8d2-4952-ac28-b8971572510b"
       },
       "ResponseBody": {
         "key": {
-          "kid": "https://pakrym-keyvault.vault.azure.net/keys/20980359741/495fd2958e204587a32bf8728d2910f1",
+          "kid": "https://heathskeyvault.vault.azure.net/keys/7585219131/2e381763010f4d56a4b205fb1eb721ca",
           "kty": "EC",
           "key_ops": [
             "sign",
             "verify"
           ],
           "crv": "P-256",
-          "x": "3lGTiV26jXl4W0W2xveuUV5Arc_qlbKz0TAA6fV7ag0",
-          "y": "Yn-6IhL6lccKgX3-mx6xuWOnGVNgE-eJ_VBD-vTeLho"
+          "x": "fvPTcVTvdsXQcK406vDdF-LBAo56jol3445Ifjwyo78",
+          "y": "1a43G-R6ogdNbwoLQaCFeurxPc2cGImYKurzGp3ufAE"
         },
         "attributes": {
           "enabled": true,
-          "created": 1560889914,
-          "updated": 1560889914,
-          "recoveryLevel": "Recoverable\u002bPurgeable"
+          "created": 1667258414,
+          "updated": 1667258414,
+          "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+          "recoverableDays": 7,
+          "exportable": false
         }
       }
     },
     {
-      "RequestUri": "https://pakrym-keyvault.vault.azure.net/keys/20980359741?api-version=7.0",
+      "RequestUri": "https://heathskeyvault.vault.azure.net/keys/7585219131?api-version=7.4-preview.1",
       "RequestMethod": "DELETE",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Type": "application/json",
-        "User-Agent": [
-          "azsdk-net-keyvault-secret/1.0.0.0",
-          "(.NET Core 4.6.27617.04; Microsoft Windows 10.0.18362 )"
-        ],
-        "x-ms-client-request-id": "d1c8f7174e20fc1b058220a6cb88c528",
+        "traceparent": "00-1c68a1552e9fd9edf4b477dc99268148-f67a058b0fdc7dbc-00",
+        "User-Agent": "azsdk-net-Security.KeyVault.Keys/4.5.0-alpha.20221031.1 (.NET 6.0.10; Microsoft Windows 10.0.22621)",
+        "x-ms-client-request-id": "6c26f711dab45ec4363cc471368ba93f",
         "x-ms-return-client-request-id": "true"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
         "Cache-Control": "no-cache",
-        "Content-Length": "508",
+        "Content-Length": "553",
         "Content-Type": "application/json; charset=utf-8",
-        "Date": "Tue, 18 Jun 2019 20:31:54 GMT",
+        "Date": "Mon, 31 Oct 2022 23:20:14 GMT",
         "Expires": "-1",
         "Pragma": "no-cache",
-        "Server": "Microsoft-IIS/10.0",
         "Strict-Transport-Security": "max-age=31536000;includeSubDomains",
-        "X-AspNet-Version": "4.0.30319",
         "X-Content-Type-Options": "nosniff",
-        "x-ms-keyvault-network-info": "addr=131.107.174.199;act_addr_fam=InterNetwork;",
+        "x-ms-client-request-id": "6c26f711dab45ec4363cc471368ba93f",
+        "x-ms-keyvault-network-info": "conn_type=Ipv4;addr=24.16.19.131;act_addr_fam=InterNetwork;",
+        "x-ms-keyvault-rbac-assignment-id": "0ecc3e39-c3aa-550c-9221-2cec9776c051",
+        "x-ms-keyvault-rbac-cache": "ra_age=182;da_age=182;rd_age=182;brd_age=11086;ra_notif_age=596;dec_lev=1;",
         "x-ms-keyvault-region": "westus",
-        "x-ms-keyvault-service-version": "1.1.0.866",
-        "x-ms-request-id": "4f86657a-d0c0-41cf-a470-2cdd01c8d2e4",
-        "X-Powered-By": "ASP.NET"
+        "x-ms-keyvault-service-version": "1.9.538.1",
+        "x-ms-request-id": "ec0938c3-0675-4b9b-a389-2bbca651a0ee"
       },
       "ResponseBody": {
-        "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/20980359741",
-        "deletedDate": 1560889914,
-        "scheduledPurgeDate": 1568665914,
+        "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/7585219131",
+        "deletedDate": 1667258414,
+        "scheduledPurgeDate": 1667863214,
         "key": {
-          "kid": "https://pakrym-keyvault.vault.azure.net/keys/20980359741/495fd2958e204587a32bf8728d2910f1",
+          "kid": "https://heathskeyvault.vault.azure.net/keys/7585219131/2e381763010f4d56a4b205fb1eb721ca",
           "kty": "EC",
           "key_ops": [
             "sign",
             "verify"
           ],
           "crv": "P-256",
-          "x": "3lGTiV26jXl4W0W2xveuUV5Arc_qlbKz0TAA6fV7ag0",
-          "y": "Yn-6IhL6lccKgX3-mx6xuWOnGVNgE-eJ_VBD-vTeLho"
+          "x": "fvPTcVTvdsXQcK406vDdF-LBAo56jol3445Ifjwyo78",
+          "y": "1a43G-R6ogdNbwoLQaCFeurxPc2cGImYKurzGp3ufAE"
         },
         "attributes": {
           "enabled": true,
-          "created": 1560889914,
-          "updated": 1560889914,
-          "recoveryLevel": "Recoverable\u002bPurgeable"
+          "created": 1667258414,
+          "updated": 1667258414,
+          "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+          "recoverableDays": 7,
+          "exportable": false
         }
       }
     },
     {
-      "RequestUri": "https://pakrym-keyvault.vault.azure.net/deletedkeys/?api-version=7.0",
+      "RequestUri": "https://heathskeyvault.vault.azure.net/deletedkeys/?api-version=7.4-preview.1",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Type": "application/json",
-        "User-Agent": [
-          "azsdk-net-keyvault-secret/1.0.0.0",
-          "(.NET Core 4.6.27617.04; Microsoft Windows 10.0.18362 )"
-        ],
-        "x-ms-client-request-id": "28bc97f82581822542bf7c6eae026929",
+        "traceparent": "00-0efcb6f231981ecb3240b5c58b37214d-b6382e247373c7da-00",
+        "User-Agent": "azsdk-net-Security.KeyVault.Keys/4.5.0-alpha.20221031.1 (.NET 6.0.10; Microsoft Windows 10.0.22621)",
+        "x-ms-client-request-id": "f1495b79896291f68f8ce0b4bee24771",
         "x-ms-return-client-request-id": "true"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
         "Cache-Control": "no-cache",
-        "Content-Length": "4083",
+        "Content-Length": "5017",
         "Content-Type": "application/json; charset=utf-8",
-        "Date": "Tue, 18 Jun 2019 20:32:11 GMT",
+        "Date": "Mon, 31 Oct 2022 23:20:19 GMT",
         "Expires": "-1",
         "Pragma": "no-cache",
-        "Server": "Microsoft-IIS/10.0",
         "Strict-Transport-Security": "max-age=31536000;includeSubDomains",
-        "X-AspNet-Version": "4.0.30319",
         "X-Content-Type-Options": "nosniff",
-        "x-ms-keyvault-network-info": "addr=131.107.174.199;act_addr_fam=InterNetwork;",
+        "x-ms-client-request-id": "f1495b79896291f68f8ce0b4bee24771",
+        "x-ms-keyvault-network-info": "conn_type=Ipv4;addr=24.16.19.131;act_addr_fam=InterNetwork;",
+        "x-ms-keyvault-rbac-assignment-id": "0ecc3e39-c3aa-550c-9221-2cec9776c051",
+        "x-ms-keyvault-rbac-cache": "ra_age=187;da_age=187;rd_age=187;brd_age=11091;ra_notif_age=601;dec_lev=1;",
         "x-ms-keyvault-region": "westus",
-        "x-ms-keyvault-service-version": "1.1.0.866",
-        "x-ms-request-id": "50253e04-a3b3-46e9-abfa-a23ab0e182ea",
-        "X-Powered-By": "ASP.NET"
+        "x-ms-keyvault-service-version": "1.9.538.1",
+        "x-ms-request-id": "1ba6178e-2afc-45f4-81b6-23852f428b6a"
       },
       "ResponseBody": {
         "value": [
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1007513984",
-            "deletedDate": 1560379203,
-            "scheduledPurgeDate": 1568155203,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1007513984",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/100031262",
+            "deletedDate": 1667258299,
+            "scheduledPurgeDate": 1667863099,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/100031262",
             "attributes": {
               "enabled": true,
-              "created": 1560379174,
-              "updated": 1560379174,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258299,
+              "updated": 1667258299,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1033722629",
-            "deletedDate": 1560374970,
-            "scheduledPurgeDate": 1568150970,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1033722629",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1001622674",
+            "deletedDate": 1667258300,
+            "scheduledPurgeDate": 1667863100,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1001622674",
             "attributes": {
               "enabled": true,
-              "created": 1560374969,
-              "updated": 1560374969,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258300,
+              "updated": 1667258300,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1101611646",
-            "deletedDate": 1560373933,
-            "scheduledPurgeDate": 1568149933,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1101611646",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1031642540",
+            "deletedDate": 1667258315,
+            "scheduledPurgeDate": 1667863115,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1031642540",
             "attributes": {
               "enabled": true,
-              "created": 1560373932,
-              "updated": 1560373932,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258315,
+              "updated": 1667258315,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1161171922",
-            "deletedDate": 1560378153,
-            "scheduledPurgeDate": 1568154153,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1161171922",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1043437138",
+            "deletedDate": 1667258286,
+            "scheduledPurgeDate": 1667863086,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1043437138",
             "attributes": {
               "enabled": true,
-              "created": 1560378153,
-              "updated": 1560378153,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258286,
+              "updated": 1667258286,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1202171351",
-            "deletedDate": 1560371877,
-            "scheduledPurgeDate": 1568147877,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1202171351",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1064400433",
+            "deletedDate": 1667258263,
+            "scheduledPurgeDate": 1667863063,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1064400433",
             "attributes": {
               "enabled": true,
-              "created": 1560371877,
-              "updated": 1560371877,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258263,
+              "updated": 1667258263,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1221764014",
-            "deletedDate": 1560365000,
-            "scheduledPurgeDate": 1568141000,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1221764014",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1089419278",
+            "deletedDate": 1667258249,
+            "scheduledPurgeDate": 1667863049,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1089419278",
             "attributes": {
               "enabled": true,
-              "created": 1560364975,
-              "updated": 1560364975,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258249,
+              "updated": 1667258249,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1225285598",
-            "deletedDate": 1560364888,
-            "scheduledPurgeDate": 1568140888,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1225285598",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1096176881",
+            "deletedDate": 1667258285,
+            "scheduledPurgeDate": 1667863085,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1096176881",
             "attributes": {
               "enabled": true,
-              "created": 1560364888,
-              "updated": 1560364888,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258285,
+              "updated": 1667258285,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1258178014",
-            "deletedDate": 1560372035,
-            "scheduledPurgeDate": 1568148035,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1258178014",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1098416729",
+            "deletedDate": 1667258244,
+            "scheduledPurgeDate": 1667863044,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1098416729",
             "attributes": {
               "enabled": true,
-              "created": 1560372035,
-              "updated": 1560372035,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258244,
+              "updated": 1667258244,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/12946988",
-            "deletedDate": 1560377998,
-            "scheduledPurgeDate": 1568153998,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/12946988",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1124882215",
+            "deletedDate": 1667258345,
+            "scheduledPurgeDate": 1667863145,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1124882215",
             "attributes": {
               "enabled": true,
-              "created": 1560377998,
-              "updated": 1560377998,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258345,
+              "updated": 1667258345,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1298735030",
-            "deletedDate": 1560364510,
-            "scheduledPurgeDate": 1568140510,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1298735030",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1128751418",
+            "deletedDate": 1667258308,
+            "scheduledPurgeDate": 1667863108,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1128751418",
             "attributes": {
               "enabled": true,
-              "created": 1560364471,
-              "updated": 1560364471,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258308,
+              "updated": 1667258308,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1299108697",
-            "deletedDate": 1560375250,
-            "scheduledPurgeDate": 1568151250,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1299108697",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1168485113",
+            "deletedDate": 1667258337,
+            "scheduledPurgeDate": 1667863137,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1168485113",
             "attributes": {
               "enabled": true,
-              "created": 1560375088,
-              "updated": 1560375088,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258336,
+              "updated": 1667258336,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1334913095",
-            "deletedDate": 1560378289,
-            "scheduledPurgeDate": 1568154289,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1334913095",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1184959437",
+            "deletedDate": 1667258296,
+            "scheduledPurgeDate": 1667863096,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1184959437",
             "attributes": {
-              "enabled": false,
-              "created": 1560378289,
-              "updated": 1560378289,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "enabled": true,
+              "created": 1667258296,
+              "updated": 1667258296,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1186903556",
+            "deletedDate": 1667258243,
+            "scheduledPurgeDate": 1667863043,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1186903556",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258243,
+              "updated": 1667258243,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           }
         ],
-        "nextLink": "https://pakrym-keyvault.vault.azure.net:443/deletedkeys?api-version=7.0\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiExMjQhTURBd01EUTNJV3RsZVM4eE16TTBPVEV6TURrMUx6azBNVFU1TkVORVF6azFSalF4T1VZNU1ESkZNalU1UlVaQ05UbEdRamcxSVRBd01EQXlPQ0U1T1RrNUxURXlMVE14VkRJek9qVTVPalU1TGprNU9UazVPVGxhSVEtLSIsIlRhcmdldExvY2F0aW9uIjowfQ"
+        "nextLink": "https://heathskeyvault.vault.azure.net:443/deletedkeys?api-version=7.4-preview.1\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiExMjQhTURBd01EUTNJV3RsZVM4eE1UZzJPVEF6TlRVMkx6WkVRelkwTTBVMlJUVTFNalJDTmtVNU9VWkRRVVZFUlRORU5UYzFPVU14SVRBd01EQXlPQ0U1T1RrNUxURXlMVE14VkRJek9qVTVPalU1TGprNU9UazVPVGxhSVEtLSIsIlRhcmdldExvY2F0aW9uIjowfQ"
       }
     },
     {
-      "RequestUri": "https://pakrym-keyvault.vault.azure.net/deletedkeys?api-version=7.0\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiExMjQhTURBd01EUTNJV3RsZVM4eE16TTBPVEV6TURrMUx6azBNVFU1TkVORVF6azFSalF4T1VZNU1ESkZNalU1UlVaQ05UbEdRamcxSVRBd01EQXlPQ0U1T1RrNUxURXlMVE14VkRJek9qVTVPalU1TGprNU9UazVPVGxhSVEtLSIsIlRhcmdldExvY2F0aW9uIjowfQ",
+      "RequestUri": "https://heathskeyvault.vault.azure.net/deletedkeys?api-version=7.4-preview.1\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiExMjQhTURBd01EUTNJV3RsZVM4eE1UZzJPVEF6TlRVMkx6WkVRelkwTTBVMlJUVTFNalJDTmtVNU9VWkRRVVZFUlRORU5UYzFPVU14SVRBd01EQXlPQ0U1T1RrNUxURXlMVE14VkRJek9qVTVPalU1TGprNU9UazVPVGxhSVEtLSIsIlRhcmdldExvY2F0aW9uIjowfQ",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Type": "application/json",
-        "User-Agent": [
-          "azsdk-net-keyvault-secret/1.0.0.0",
-          "(.NET Core 4.6.27617.04; Microsoft Windows 10.0.18362 )"
-        ],
-        "x-ms-client-request-id": "33dad91f09a8b062d1a4b01ae323afc3",
+        "traceparent": "00-653c12cd37b2ce52916f4f6154ae9594-832630d41ab5bed3-00",
+        "User-Agent": "azsdk-net-Security.KeyVault.Keys/4.5.0-alpha.20221031.1 (.NET 6.0.10; Microsoft Windows 10.0.22621)",
+        "x-ms-client-request-id": "7c620124662c314af99f56285b735038",
         "x-ms-return-client-request-id": "true"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
         "Cache-Control": "no-cache",
-        "Content-Length": "3400",
+        "Content-Length": "3875",
         "Content-Type": "application/json; charset=utf-8",
-        "Date": "Tue, 18 Jun 2019 20:32:11 GMT",
+        "Date": "Mon, 31 Oct 2022 23:20:19 GMT",
         "Expires": "-1",
         "Pragma": "no-cache",
-        "Server": "Microsoft-IIS/10.0",
         "Strict-Transport-Security": "max-age=31536000;includeSubDomains",
-        "X-AspNet-Version": "4.0.30319",
         "X-Content-Type-Options": "nosniff",
-        "x-ms-keyvault-network-info": "addr=131.107.174.199;act_addr_fam=InterNetwork;",
+        "x-ms-client-request-id": "7c620124662c314af99f56285b735038",
+        "x-ms-keyvault-network-info": "conn_type=Ipv4;addr=24.16.19.131;act_addr_fam=InterNetwork;",
+        "x-ms-keyvault-rbac-assignment-id": "0ecc3e39-c3aa-550c-9221-2cec9776c051",
+        "x-ms-keyvault-rbac-cache": "ra_age=187;da_age=187;rd_age=187;brd_age=11091;ra_notif_age=601;dec_lev=0;",
         "x-ms-keyvault-region": "westus",
-        "x-ms-keyvault-service-version": "1.1.0.866",
-        "x-ms-request-id": "85e6c831-fac3-489a-b8b4-bef63498e5b1",
-        "X-Powered-By": "ASP.NET"
+        "x-ms-keyvault-service-version": "1.9.538.1",
+        "x-ms-request-id": "276524a6-453d-41f1-baf7-48e7001ea0dd"
       },
       "ResponseBody": {
         "value": [
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1350112317",
-            "deletedDate": 1560378061,
-            "scheduledPurgeDate": 1568154061,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1350112317",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1195946338",
+            "deletedDate": 1667258309,
+            "scheduledPurgeDate": 1667863109,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1195946338",
             "attributes": {
               "enabled": true,
-              "created": 1560378061,
-              "updated": 1560378061,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258308,
+              "updated": 1667258308,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1374969203",
-            "deletedDate": 1560373922,
-            "scheduledPurgeDate": 1568149922,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1374969203",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1211079238",
+            "deletedDate": 1667258289,
+            "scheduledPurgeDate": 1667863089,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1211079238",
             "attributes": {
               "enabled": true,
-              "created": 1560373922,
-              "updated": 1560373922,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258289,
+              "updated": 1667258289,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/139860560",
-            "deletedDate": 1560364511,
-            "scheduledPurgeDate": 1568140511,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/139860560",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1221633481",
+            "deletedDate": 1667258302,
+            "scheduledPurgeDate": 1667863102,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1221633481",
             "attributes": {
               "enabled": true,
-              "created": 1560364472,
-              "updated": 1560364472,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258302,
+              "updated": 1667258302,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1432837954",
-            "deletedDate": 1560378169,
-            "scheduledPurgeDate": 1568154169,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1432837954",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1225731340",
+            "deletedDate": 1667258308,
+            "scheduledPurgeDate": 1667863108,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1225731340",
             "attributes": {
               "enabled": true,
-              "created": 1560378169,
-              "updated": 1560378169,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258308,
+              "updated": 1667258308,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1437462188",
-            "deletedDate": 1560376089,
-            "scheduledPurgeDate": 1568152089,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1437462188",
-            "attributes": {
-              "enabled": false,
-              "created": 1560376089,
-              "updated": 1560376089,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1449289597",
-            "deletedDate": 1560373541,
-            "scheduledPurgeDate": 1568149541,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1449289597",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/124887860",
+            "deletedDate": 1667258358,
+            "scheduledPurgeDate": 1667863158,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/124887860",
             "attributes": {
               "enabled": true,
-              "created": 1560373541,
-              "updated": 1560373541,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258358,
+              "updated": 1667258358,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1493747779",
-            "deletedDate": 1560379429,
-            "scheduledPurgeDate": 1568155429,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1493747779",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1289488312",
+            "deletedDate": 1667258349,
+            "scheduledPurgeDate": 1667863149,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1289488312",
             "attributes": {
               "enabled": true,
-              "created": 1560379407,
-              "updated": 1560379407,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258349,
+              "updated": 1667258349,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1499316617",
-            "deletedDate": 1560374552,
-            "scheduledPurgeDate": 1568150552,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1499316617",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1309441555",
+            "deletedDate": 1667258355,
+            "scheduledPurgeDate": 1667863155,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1309441555",
             "attributes": {
               "enabled": true,
-              "created": 1560374509,
-              "updated": 1560374509,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258355,
+              "updated": 1667258355,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1528358383",
-            "deletedDate": 1560372035,
-            "scheduledPurgeDate": 1568148035,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1528358383",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/131190071",
+            "deletedDate": 1667258321,
+            "scheduledPurgeDate": 1667863121,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/131190071",
             "attributes": {
               "enabled": true,
-              "created": 1560372035,
-              "updated": 1560372035,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258321,
+              "updated": 1667258321,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1539864055",
-            "deletedDate": 1560376400,
-            "scheduledPurgeDate": 1568152400,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1539864055",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1345803081",
+            "deletedDate": 1667258278,
+            "scheduledPurgeDate": 1667863078,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1345803081",
             "attributes": {
-              "enabled": false,
-              "created": 1560376400,
-              "updated": 1560376400,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "enabled": true,
+              "created": 1667258277,
+              "updated": 1667258277,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1400866135",
+            "deletedDate": 1667258251,
+            "scheduledPurgeDate": 1667863051,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1400866135",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258251,
+              "updated": 1667258251,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           }
         ],
-        "nextLink": "https://pakrym-keyvault.vault.azure.net:443/deletedkeys?api-version=7.0\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiE4MCFNREF3TURFMElXdGxlUzh4TlRVMk56TTBNalEySVRBd01EQXlPQ0U1T1RrNUxURXlMVE14VkRJek9qVTVPalU1TGprNU9UazVPVGxhSVEtLSIsIlRhcmdldExvY2F0aW9uIjowfQ"
+        "nextLink": "https://heathskeyvault.vault.azure.net:443/deletedkeys?api-version=7.4-preview.1\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiE4MCFNREF3TURFMElXdGxlUzh4TkRBNU1URXpOVEUwSVRBd01EQXlPQ0U1T1RrNUxURXlMVE14VkRJek9qVTVPalU1TGprNU9UazVPVGxhSVEtLSIsIlRhcmdldExvY2F0aW9uIjowfQ"
       }
     },
     {
-      "RequestUri": "https://pakrym-keyvault.vault.azure.net/deletedkeys?api-version=7.0\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiE4MCFNREF3TURFMElXdGxlUzh4TlRVMk56TTBNalEySVRBd01EQXlPQ0U1T1RrNUxURXlMVE14VkRJek9qVTVPalU1TGprNU9UazVPVGxhSVEtLSIsIlRhcmdldExvY2F0aW9uIjowfQ",
+      "RequestUri": "https://heathskeyvault.vault.azure.net/deletedkeys?api-version=7.4-preview.1\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiE4MCFNREF3TURFMElXdGxlUzh4TkRBNU1URXpOVEUwSVRBd01EQXlPQ0U1T1RrNUxURXlMVE14VkRJek9qVTVPalU1TGprNU9UazVPVGxhSVEtLSIsIlRhcmdldExvY2F0aW9uIjowfQ",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Type": "application/json",
-        "User-Agent": [
-          "azsdk-net-keyvault-secret/1.0.0.0",
-          "(.NET Core 4.6.27617.04; Microsoft Windows 10.0.18362 )"
-        ],
-        "x-ms-client-request-id": "7fc35998d4397a49cc130ac6fa468e2b",
+        "traceparent": "00-d53d59f53c394bfafdb93ed76f7f1e4e-a74c162d3bf78ffc-00",
+        "User-Agent": "azsdk-net-Security.KeyVault.Keys/4.5.0-alpha.20221031.1 (.NET 6.0.10; Microsoft Windows 10.0.22621)",
+        "x-ms-client-request-id": "62d16cda1143abbcfd1bcc921697cbe7",
         "x-ms-return-client-request-id": "true"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
         "Cache-Control": "no-cache",
-        "Content-Length": "4104",
+        "Content-Length": "4659",
         "Content-Type": "application/json; charset=utf-8",
-        "Date": "Tue, 18 Jun 2019 20:32:12 GMT",
+        "Date": "Mon, 31 Oct 2022 23:20:20 GMT",
         "Expires": "-1",
         "Pragma": "no-cache",
-        "Server": "Microsoft-IIS/10.0",
         "Strict-Transport-Security": "max-age=31536000;includeSubDomains",
-        "X-AspNet-Version": "4.0.30319",
         "X-Content-Type-Options": "nosniff",
-        "x-ms-keyvault-network-info": "addr=131.107.174.199;act_addr_fam=InterNetwork;",
+        "x-ms-client-request-id": "62d16cda1143abbcfd1bcc921697cbe7",
+        "x-ms-keyvault-network-info": "conn_type=Ipv4;addr=24.16.19.131;act_addr_fam=InterNetwork;",
+        "x-ms-keyvault-rbac-assignment-id": "0ecc3e39-c3aa-550c-9221-2cec9776c051",
+        "x-ms-keyvault-rbac-cache": "ra_age=187;da_age=187;rd_age=187;brd_age=11091;ra_notif_age=601;dec_lev=0;",
         "x-ms-keyvault-region": "westus",
-        "x-ms-keyvault-service-version": "1.1.0.866",
-        "x-ms-request-id": "6b82239f-dd29-49bc-8c29-2138ab4d1ec6",
-        "X-Powered-By": "ASP.NET"
+        "x-ms-keyvault-service-version": "1.9.538.1",
+        "x-ms-request-id": "08f089b1-76a6-4068-9ca1-85ad586d6e11"
       },
       "ResponseBody": {
         "value": [
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1556734246",
-            "deletedDate": 1560378169,
-            "scheduledPurgeDate": 1568154169,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1556734246",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1409113514",
+            "deletedDate": 1667258244,
+            "scheduledPurgeDate": 1667863044,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1409113514",
             "attributes": {
               "enabled": true,
-              "created": 1560378169,
-              "updated": 1560378169,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258244,
+              "updated": 1667258244,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1568604186",
-            "deletedDate": 1560365078,
-            "scheduledPurgeDate": 1568141078,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1568604186",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1414925882",
+            "deletedDate": 1667258343,
+            "scheduledPurgeDate": 1667863143,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1414925882",
             "attributes": {
               "enabled": true,
-              "created": 1560365077,
-              "updated": 1560365077,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258343,
+              "updated": 1667258343,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1584948566",
-            "deletedDate": 1560377966,
-            "scheduledPurgeDate": 1568153966,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1584948566",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1423971536",
+            "deletedDate": 1667258381,
+            "scheduledPurgeDate": 1667863181,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1423971536",
             "attributes": {
               "enabled": true,
-              "created": 1560377966,
-              "updated": 1560377966,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258375,
+              "updated": 1667258375,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1595598628",
-            "deletedDate": 1560374292,
-            "scheduledPurgeDate": 1568150292,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1595598628",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1427106564",
+            "deletedDate": 1667258266,
+            "scheduledPurgeDate": 1667863066,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1427106564",
             "attributes": {
               "enabled": true,
-              "created": 1560374292,
-              "updated": 1560374292,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258266,
+              "updated": 1667258266,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1597935969",
-            "deletedDate": 1560377165,
-            "scheduledPurgeDate": 1568153165,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1597935969",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1435556030",
+            "deletedDate": 1667258384,
+            "scheduledPurgeDate": 1667863184,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1435556030",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258384,
+              "updated": 1667258384,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1457685649",
+            "deletedDate": 1667258303,
+            "scheduledPurgeDate": 1667863103,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1457685649",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258303,
+              "updated": 1667258303,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1486037799",
+            "deletedDate": 1667258367,
+            "scheduledPurgeDate": 1667863167,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1486037799",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258367,
+              "updated": 1667258367,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1515262850",
+            "deletedDate": 1667258297,
+            "scheduledPurgeDate": 1667863097,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1515262850",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258297,
+              "updated": 1667258297,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1516980354",
+            "deletedDate": 1667258307,
+            "scheduledPurgeDate": 1667863107,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1516980354",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258307,
+              "updated": 1667258307,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1532200003",
+            "deletedDate": 1667258342,
+            "scheduledPurgeDate": 1667863142,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1532200003",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258342,
+              "updated": 1667258342,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1535969622",
+            "deletedDate": 1667258393,
+            "scheduledPurgeDate": 1667863193,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1535969622",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258392,
+              "updated": 1667258392,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1545523642",
+            "deletedDate": 1667258387,
+            "scheduledPurgeDate": 1667863187,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1545523642",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258387,
+              "updated": 1667258387,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          }
+        ],
+        "nextLink": "https://heathskeyvault.vault.azure.net:443/deletedkeys?api-version=7.4-preview.1\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiExMjQhTURBd01EUTNJV3RsZVM4eE5UUTFOVEl6TmpReUwwWkNRalkyT0RoRU56ZERNelF6T0VFNE1FVTFRVUl6UVRGQlJrRkJSamxGSVRBd01EQXlPQ0U1T1RrNUxURXlMVE14VkRJek9qVTVPalU1TGprNU9UazVPVGxhSVEtLSIsIlRhcmdldExvY2F0aW9uIjowfQ"
+      }
+    },
+    {
+      "RequestUri": "https://heathskeyvault.vault.azure.net/deletedkeys?api-version=7.4-preview.1\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiExMjQhTURBd01EUTNJV3RsZVM4eE5UUTFOVEl6TmpReUwwWkNRalkyT0RoRU56ZERNelF6T0VFNE1FVTFRVUl6UVRGQlJrRkJSamxGSVRBd01EQXlPQ0U1T1RrNUxURXlMVE14VkRJek9qVTVPalU1TGprNU9UazVPVGxhSVEtLSIsIlRhcmdldExvY2F0aW9uIjowfQ",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "traceparent": "00-eb4a7358593b97cf0040a991e20cff0f-cf576ebaac4a2ef8-00",
+        "User-Agent": "azsdk-net-Security.KeyVault.Keys/4.5.0-alpha.20221031.1 (.NET 6.0.10; Microsoft Windows 10.0.22621)",
+        "x-ms-client-request-id": "b768fcd970ca13301117f8c332ce351c",
+        "x-ms-return-client-request-id": "true"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Cache-Control": "no-cache",
+        "Content-Length": "3877",
+        "Content-Type": "application/json; charset=utf-8",
+        "Date": "Mon, 31 Oct 2022 23:20:20 GMT",
+        "Expires": "-1",
+        "Pragma": "no-cache",
+        "Strict-Transport-Security": "max-age=31536000;includeSubDomains",
+        "X-Content-Type-Options": "nosniff",
+        "x-ms-client-request-id": "b768fcd970ca13301117f8c332ce351c",
+        "x-ms-keyvault-network-info": "conn_type=Ipv4;addr=24.16.19.131;act_addr_fam=InterNetwork;",
+        "x-ms-keyvault-rbac-assignment-id": "0ecc3e39-c3aa-550c-9221-2cec9776c051",
+        "x-ms-keyvault-rbac-cache": "ra_age=187;da_age=187;rd_age=187;brd_age=11091;ra_notif_age=601;dec_lev=0;",
+        "x-ms-keyvault-region": "westus",
+        "x-ms-keyvault-service-version": "1.9.538.1",
+        "x-ms-request-id": "235e2997-a9ea-4cf0-bb12-71efcee3abfa"
+      },
+      "ResponseBody": {
+        "value": [
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1570347740",
+            "deletedDate": 1667258279,
+            "scheduledPurgeDate": 1667863079,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1570347740",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258279,
+              "updated": 1667258279,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1579392281",
+            "deletedDate": 1667258242,
+            "scheduledPurgeDate": 1667863042,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1579392281",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258242,
+              "updated": 1667258242,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1590440075",
+            "deletedDate": 1667258338,
+            "scheduledPurgeDate": 1667863138,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1590440075",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258338,
+              "updated": 1667258338,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1602943270",
+            "deletedDate": 1667258332,
+            "scheduledPurgeDate": 1667863132,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1602943270",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258332,
+              "updated": 1667258332,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1622221609",
+            "deletedDate": 1667258270,
+            "scheduledPurgeDate": 1667863070,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1622221609",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258270,
+              "updated": 1667258270,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1672133375",
+            "deletedDate": 1667258341,
+            "scheduledPurgeDate": 1667863141,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1672133375",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258340,
+              "updated": 1667258340,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1697824181",
+            "deletedDate": 1667258346,
+            "scheduledPurgeDate": 1667863146,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1697824181",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258346,
+              "updated": 1667258346,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1713487228",
+            "deletedDate": 1667258255,
+            "scheduledPurgeDate": 1667863055,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1713487228",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258255,
+              "updated": 1667258255,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1729278368",
+            "deletedDate": 1667258239,
+            "scheduledPurgeDate": 1667863039,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1729278368",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258239,
+              "updated": 1667258239,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/173942481",
+            "deletedDate": 1667258399,
+            "scheduledPurgeDate": 1667863199,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/173942481",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258398,
+              "updated": 1667258398,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          }
+        ],
+        "nextLink": "https://heathskeyvault.vault.azure.net:443/deletedkeys?api-version=7.4-preview.1\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiE4MCFNREF3TURFMElXdGxlUzh4TnpRd05ESTNPRFU0SVRBd01EQXlPQ0U1T1RrNUxURXlMVE14VkRJek9qVTVPalU1TGprNU9UazVPVGxhSVEtLSIsIlRhcmdldExvY2F0aW9uIjowfQ"
+      }
+    },
+    {
+      "RequestUri": "https://heathskeyvault.vault.azure.net/deletedkeys?api-version=7.4-preview.1\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiE4MCFNREF3TURFMElXdGxlUzh4TnpRd05ESTNPRFU0SVRBd01EQXlPQ0U1T1RrNUxURXlMVE14VkRJek9qVTVPalU1TGprNU9UazVPVGxhSVEtLSIsIlRhcmdldExvY2F0aW9uIjowfQ",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "traceparent": "00-eed3c872d2059cc3634a6206b594f82f-175540a284c92c55-00",
+        "User-Agent": "azsdk-net-Security.KeyVault.Keys/4.5.0-alpha.20221031.1 (.NET 6.0.10; Microsoft Windows 10.0.22621)",
+        "x-ms-client-request-id": "51daa83be510132d45b77e1099b71a62",
+        "x-ms-return-client-request-id": "true"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Cache-Control": "no-cache",
+        "Content-Length": "4659",
+        "Content-Type": "application/json; charset=utf-8",
+        "Date": "Mon, 31 Oct 2022 23:20:20 GMT",
+        "Expires": "-1",
+        "Pragma": "no-cache",
+        "Strict-Transport-Security": "max-age=31536000;includeSubDomains",
+        "X-Content-Type-Options": "nosniff",
+        "x-ms-client-request-id": "51daa83be510132d45b77e1099b71a62",
+        "x-ms-keyvault-network-info": "conn_type=Ipv4;addr=24.16.19.131;act_addr_fam=InterNetwork;",
+        "x-ms-keyvault-rbac-assignment-id": "0ecc3e39-c3aa-550c-9221-2cec9776c051",
+        "x-ms-keyvault-rbac-cache": "ra_age=188;da_age=187;rd_age=187;brd_age=11091;ra_notif_age=602;dec_lev=0;",
+        "x-ms-keyvault-region": "westus",
+        "x-ms-keyvault-service-version": "1.9.538.1",
+        "x-ms-request-id": "5d0fcafc-c617-48c6-9e6b-771eab4206aa"
+      },
+      "ResponseBody": {
+        "value": [
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1740427858",
+            "deletedDate": 1667258244,
+            "scheduledPurgeDate": 1667863044,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1740427858",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258244,
+              "updated": 1667258244,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1746701710",
+            "deletedDate": 1667258389,
+            "scheduledPurgeDate": 1667863189,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1746701710",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258389,
+              "updated": 1667258389,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1760960853",
+            "deletedDate": 1667258334,
+            "scheduledPurgeDate": 1667863134,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1760960853",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258334,
+              "updated": 1667258334,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1783644680",
+            "deletedDate": 1667258234,
+            "scheduledPurgeDate": 1667863034,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1783644680",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258234,
+              "updated": 1667258234,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1789628571",
+            "deletedDate": 1667258269,
+            "scheduledPurgeDate": 1667863069,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1789628571",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258269,
+              "updated": 1667258269,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1796592962",
+            "deletedDate": 1667258288,
+            "scheduledPurgeDate": 1667863088,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1796592962",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258287,
+              "updated": 1667258287,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1813427153",
+            "deletedDate": 1667258353,
+            "scheduledPurgeDate": 1667863153,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1813427153",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258353,
+              "updated": 1667258353,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1815556932",
+            "deletedDate": 1667258325,
+            "scheduledPurgeDate": 1667863125,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1815556932",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258325,
+              "updated": 1667258325,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1823266251",
+            "deletedDate": 1667258237,
+            "scheduledPurgeDate": 1667863037,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1823266251",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258237,
+              "updated": 1667258237,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1824934160",
+            "deletedDate": 1667258307,
+            "scheduledPurgeDate": 1667863107,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1824934160",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258307,
+              "updated": 1667258307,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1826000342",
+            "deletedDate": 1667258373,
+            "scheduledPurgeDate": 1667863173,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1826000342",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258373,
+              "updated": 1667258373,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1842251038",
+            "deletedDate": 1667258309,
+            "scheduledPurgeDate": 1667863109,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1842251038",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258309,
+              "updated": 1667258309,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          }
+        ],
+        "nextLink": "https://heathskeyvault.vault.azure.net:443/deletedkeys?api-version=7.4-preview.1\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiExMjQhTURBd01EUTNJV3RsZVM4eE9EUXlNalV4TURNNEx6QkdNakEzUXpNNE1rWTJRVFF5UlRjNU56STBRa014TnpjelFrTXpOelpESVRBd01EQXlPQ0U1T1RrNUxURXlMVE14VkRJek9qVTVPalU1TGprNU9UazVPVGxhSVEtLSIsIlRhcmdldExvY2F0aW9uIjowfQ"
+      }
+    },
+    {
+      "RequestUri": "https://heathskeyvault.vault.azure.net/deletedkeys?api-version=7.4-preview.1\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiExMjQhTURBd01EUTNJV3RsZVM4eE9EUXlNalV4TURNNEx6QkdNakEzUXpNNE1rWTJRVFF5UlRjNU56STBRa014TnpjelFrTXpOelpESVRBd01EQXlPQ0U1T1RrNUxURXlMVE14VkRJek9qVTVPalU1TGprNU9UazVPVGxhSVEtLSIsIlRhcmdldExvY2F0aW9uIjowfQ",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "traceparent": "00-f9f2a7d3a4b7bfe079f6d345c7eaba14-9ee97cf63670123b-00",
+        "User-Agent": "azsdk-net-Security.KeyVault.Keys/4.5.0-alpha.20221031.1 (.NET 6.0.10; Microsoft Windows 10.0.22621)",
+        "x-ms-client-request-id": "5f4e6fd4990a696d3cbe512b18f9782f",
+        "x-ms-return-client-request-id": "true"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Cache-Control": "no-cache",
+        "Content-Length": "3875",
+        "Content-Type": "application/json; charset=utf-8",
+        "Date": "Mon, 31 Oct 2022 23:20:20 GMT",
+        "Expires": "-1",
+        "Pragma": "no-cache",
+        "Strict-Transport-Security": "max-age=31536000;includeSubDomains",
+        "X-Content-Type-Options": "nosniff",
+        "x-ms-client-request-id": "5f4e6fd4990a696d3cbe512b18f9782f",
+        "x-ms-keyvault-network-info": "conn_type=Ipv4;addr=24.16.19.131;act_addr_fam=InterNetwork;",
+        "x-ms-keyvault-rbac-assignment-id": "0ecc3e39-c3aa-550c-9221-2cec9776c051",
+        "x-ms-keyvault-rbac-cache": "ra_age=188;da_age=188;rd_age=188;brd_age=11091;ra_notif_age=602;dec_lev=0;",
+        "x-ms-keyvault-region": "westus",
+        "x-ms-keyvault-service-version": "1.9.538.1",
+        "x-ms-request-id": "5b5daf3d-ecc6-454d-a464-25793ad55464"
+      },
+      "ResponseBody": {
+        "value": [
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1857693443",
+            "deletedDate": 1667258295,
+            "scheduledPurgeDate": 1667863095,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1857693443",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258294,
+              "updated": 1667258294,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1863206447",
+            "deletedDate": 1667258357,
+            "scheduledPurgeDate": 1667863157,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1863206447",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258356,
+              "updated": 1667258356,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/186522439",
+            "deletedDate": 1667258361,
+            "scheduledPurgeDate": 1667863161,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/186522439",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258361,
+              "updated": 1667258361,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1870235439",
+            "deletedDate": 1667258240,
+            "scheduledPurgeDate": 1667863040,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1870235439",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258240,
+              "updated": 1667258240,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/189621572",
+            "deletedDate": 1667258243,
+            "scheduledPurgeDate": 1667863043,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/189621572",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258243,
+              "updated": 1667258243,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1897563447",
+            "deletedDate": 1667258292,
+            "scheduledPurgeDate": 1667863092,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1897563447",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258291,
+              "updated": 1667258291,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1922018261",
+            "deletedDate": 1667258283,
+            "scheduledPurgeDate": 1667863083,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1922018261",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258283,
+              "updated": 1667258283,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1959032987",
+            "deletedDate": 1667258306,
+            "scheduledPurgeDate": 1667863106,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1959032987",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258306,
+              "updated": 1667258306,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1988457339",
+            "deletedDate": 1667258293,
+            "scheduledPurgeDate": 1667863093,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1988457339",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258293,
+              "updated": 1667258293,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/1991384245",
+            "deletedDate": 1667258252,
+            "scheduledPurgeDate": 1667863052,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/1991384245",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258252,
+              "updated": 1667258252,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          }
+        ],
+        "nextLink": "https://heathskeyvault.vault.azure.net:443/deletedkeys?api-version=7.4-preview.1\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiE4MCFNREF3TURFMElXdGxlUzh5TURBeE9UYzJOakExSVRBd01EQXlPQ0U1T1RrNUxURXlMVE14VkRJek9qVTVPalU1TGprNU9UazVPVGxhSVEtLSIsIlRhcmdldExvY2F0aW9uIjowfQ"
+      }
+    },
+    {
+      "RequestUri": "https://heathskeyvault.vault.azure.net/deletedkeys?api-version=7.4-preview.1\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiE4MCFNREF3TURFMElXdGxlUzh5TURBeE9UYzJOakExSVRBd01EQXlPQ0U1T1RrNUxURXlMVE14VkRJek9qVTVPalU1TGprNU9UazVPVGxhSVEtLSIsIlRhcmdldExvY2F0aW9uIjowfQ",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "traceparent": "00-f908817f1b40c7c186b583fa742df73e-d897309ea4e13003-00",
+        "User-Agent": "azsdk-net-Security.KeyVault.Keys/4.5.0-alpha.20221031.1 (.NET 6.0.10; Microsoft Windows 10.0.22621)",
+        "x-ms-client-request-id": "6e56afe67abdf4d6ce557213f1207959",
+        "x-ms-return-client-request-id": "true"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Cache-Control": "no-cache",
+        "Content-Length": "4299",
+        "Content-Type": "application/json; charset=utf-8",
+        "Date": "Mon, 31 Oct 2022 23:20:20 GMT",
+        "Expires": "-1",
+        "Pragma": "no-cache",
+        "Strict-Transport-Security": "max-age=31536000;includeSubDomains",
+        "X-Content-Type-Options": "nosniff",
+        "x-ms-client-request-id": "6e56afe67abdf4d6ce557213f1207959",
+        "x-ms-keyvault-network-info": "conn_type=Ipv4;addr=24.16.19.131;act_addr_fam=InterNetwork;",
+        "x-ms-keyvault-rbac-assignment-id": "0ecc3e39-c3aa-550c-9221-2cec9776c051",
+        "x-ms-keyvault-rbac-cache": "ra_age=188;da_age=188;rd_age=188;brd_age=11092;ra_notif_age=602;dec_lev=0;",
+        "x-ms-keyvault-region": "westus",
+        "x-ms-keyvault-service-version": "1.9.538.1",
+        "x-ms-request-id": "afb8cacd-8c8f-48e6-9f7e-f953219677ce"
+      },
+      "ResponseBody": {
+        "value": [
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/2001976605",
+            "deletedDate": 1667258403,
+            "scheduledPurgeDate": 1667863203,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/2001976605",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258402,
+              "updated": 1667258402,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/2014739817",
+            "deletedDate": 1667258312,
+            "scheduledPurgeDate": 1667863112,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/2014739817",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258312,
+              "updated": 1667258312,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/2024100864",
+            "deletedDate": 1667258382,
+            "scheduledPurgeDate": 1667863182,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/2024100864",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258382,
+              "updated": 1667258382,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/2027246798",
+            "deletedDate": 1667258311,
+            "scheduledPurgeDate": 1667863111,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/2027246798",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258311,
+              "updated": 1667258311,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/2042976446",
+            "deletedDate": 1667258327,
+            "scheduledPurgeDate": 1667863127,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/2042976446",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258327,
+              "updated": 1667258327,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/2053559559",
+            "deletedDate": 1667258272,
+            "scheduledPurgeDate": 1667863072,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/2053559559",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258272,
+              "updated": 1667258272,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/2065739464",
+            "deletedDate": 1667258309,
+            "scheduledPurgeDate": 1667863109,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/2065739464",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258309,
+              "updated": 1667258309,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/2068705899",
+            "deletedDate": 1667258330,
+            "scheduledPurgeDate": 1667863130,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/2068705899",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258329,
+              "updated": 1667258329,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/2070388919",
+            "deletedDate": 1667258261,
+            "scheduledPurgeDate": 1667863061,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/2070388919",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258261,
+              "updated": 1667258261,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/2075251470",
+            "deletedDate": 1667258335,
+            "scheduledPurgeDate": 1667863135,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/2075251470",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258335,
+              "updated": 1667258335,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/2078806189",
+            "deletedDate": 1667258366,
+            "scheduledPurgeDate": 1667863166,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/2078806189",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258366,
+              "updated": 1667258366,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          }
+        ],
+        "nextLink": "https://heathskeyvault.vault.azure.net:443/deletedkeys?api-version=7.4-preview.1\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiExMjQhTURBd01EUTNJV3RsZVM4eU1EYzRPREEyTVRnNUx6UTROalE0UXpOR01qZEJNRFJGT1RNNE9UWkVNemxETkVKQlJUQTJPRE13SVRBd01EQXlPQ0U1T1RrNUxURXlMVE14VkRJek9qVTVPalU1TGprNU9UazVPVGxhSVEtLSIsIlRhcmdldExvY2F0aW9uIjowfQ"
+      }
+    },
+    {
+      "RequestUri": "https://heathskeyvault.vault.azure.net/deletedkeys?api-version=7.4-preview.1\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiExMjQhTURBd01EUTNJV3RsZVM4eU1EYzRPREEyTVRnNUx6UTROalE0UXpOR01qZEJNRFJGT1RNNE9UWkVNemxETkVKQlJUQTJPRE13SVRBd01EQXlPQ0U1T1RrNUxURXlMVE14VkRJek9qVTVPalU1TGprNU9UazVPVGxhSVEtLSIsIlRhcmdldExvY2F0aW9uIjowfQ",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "traceparent": "00-788fcad93895fb7c0b30febc88ca5621-ecccd39c493f3188-00",
+        "User-Agent": "azsdk-net-Security.KeyVault.Keys/4.5.0-alpha.20221031.1 (.NET 6.0.10; Microsoft Windows 10.0.22621)",
+        "x-ms-client-request-id": "c3ef96fdd580a2113a7015529301fa4b",
+        "x-ms-return-client-request-id": "true"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Cache-Control": "no-cache",
+        "Content-Length": "3493",
+        "Content-Type": "application/json; charset=utf-8",
+        "Date": "Mon, 31 Oct 2022 23:20:20 GMT",
+        "Expires": "-1",
+        "Pragma": "no-cache",
+        "Strict-Transport-Security": "max-age=31536000;includeSubDomains",
+        "X-Content-Type-Options": "nosniff",
+        "x-ms-client-request-id": "c3ef96fdd580a2113a7015529301fa4b",
+        "x-ms-keyvault-network-info": "conn_type=Ipv4;addr=24.16.19.131;act_addr_fam=InterNetwork;",
+        "x-ms-keyvault-rbac-assignment-id": "0ecc3e39-c3aa-550c-9221-2cec9776c051",
+        "x-ms-keyvault-rbac-cache": "ra_age=188;da_age=188;rd_age=188;brd_age=11092;ra_notif_age=602;dec_lev=0;",
+        "x-ms-keyvault-region": "westus",
+        "x-ms-keyvault-service-version": "1.9.538.1",
+        "x-ms-request-id": "60aaa8cf-97ab-480e-89f2-87657053798a"
+      },
+      "ResponseBody": {
+        "value": [
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/2140840278",
+            "deletedDate": 1667258245,
+            "scheduledPurgeDate": 1667863045,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/2140840278",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258245,
+              "updated": 1667258245,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/2143357642",
+            "deletedDate": 1667258247,
+            "scheduledPurgeDate": 1667863047,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/2143357642",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258247,
+              "updated": 1667258247,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/243862644",
+            "deletedDate": 1667258236,
+            "scheduledPurgeDate": 1667863036,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/243862644",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258236,
+              "updated": 1667258236,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/2515282",
+            "deletedDate": 1667258306,
+            "scheduledPurgeDate": 1667863106,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/2515282",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258306,
+              "updated": 1667258306,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/280827999",
+            "deletedDate": 1667258307,
+            "scheduledPurgeDate": 1667863107,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/280827999",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258306,
+              "updated": 1667258306,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/281568504",
+            "deletedDate": 1667258390,
+            "scheduledPurgeDate": 1667863190,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/281568504",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258390,
+              "updated": 1667258390,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/30497817",
+            "deletedDate": 1667258276,
+            "scheduledPurgeDate": 1667863076,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/30497817",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258276,
+              "updated": 1667258276,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/314808217",
+            "deletedDate": 1667258359,
+            "scheduledPurgeDate": 1667863159,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/314808217",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258359,
+              "updated": 1667258359,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/323607722",
+            "deletedDate": 1667258275,
+            "scheduledPurgeDate": 1667863075,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/323607722",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258274,
+              "updated": 1667258274,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          }
+        ],
+        "nextLink": "https://heathskeyvault.vault.azure.net:443/deletedkeys?api-version=7.4-preview.1\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiE3NiFNREF3TURFeklXdGxlUzh6TXpVd01UVXhPRFFoTURBd01ESTRJVGs1T1RrdE1USXRNekZVTWpNNk5UazZOVGt1T1RrNU9UazVPVm9oIiwiVGFyZ2V0TG9jYXRpb24iOjB9"
+      }
+    },
+    {
+      "RequestUri": "https://heathskeyvault.vault.azure.net/deletedkeys?api-version=7.4-preview.1\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiE3NiFNREF3TURFeklXdGxlUzh6TXpVd01UVXhPRFFoTURBd01ESTRJVGs1T1RrdE1USXRNekZVTWpNNk5UazZOVGt1T1RrNU9UazVPVm9oIiwiVGFyZ2V0TG9jYXRpb24iOjB9",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "traceparent": "00-29361dd86e3c5e8fe53d84f13abaf68c-2264991385265075-00",
+        "User-Agent": "azsdk-net-Security.KeyVault.Keys/4.5.0-alpha.20221031.1 (.NET 6.0.10; Microsoft Windows 10.0.22621)",
+        "x-ms-client-request-id": "ea294f3fab605aa4985a90b5265a781b",
+        "x-ms-return-client-request-id": "true"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Cache-Control": "no-cache",
+        "Content-Length": "3948",
+        "Content-Type": "application/json; charset=utf-8",
+        "Date": "Mon, 31 Oct 2022 23:20:20 GMT",
+        "Expires": "-1",
+        "Pragma": "no-cache",
+        "Strict-Transport-Security": "max-age=31536000;includeSubDomains",
+        "X-Content-Type-Options": "nosniff",
+        "x-ms-client-request-id": "ea294f3fab605aa4985a90b5265a781b",
+        "x-ms-keyvault-network-info": "conn_type=Ipv4;addr=24.16.19.131;act_addr_fam=InterNetwork;",
+        "x-ms-keyvault-rbac-assignment-id": "0ecc3e39-c3aa-550c-9221-2cec9776c051",
+        "x-ms-keyvault-rbac-cache": "ra_age=188;da_age=188;rd_age=188;brd_age=11092;ra_notif_age=602;dec_lev=0;",
+        "x-ms-keyvault-region": "westus",
+        "x-ms-keyvault-service-version": "1.9.538.1",
+        "x-ms-request-id": "4e25470f-57aa-4674-a0dc-c2e70cc9e8c7"
+      },
+      "ResponseBody": {
+        "value": [
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/335015184",
+            "deletedDate": 1667258352,
+            "scheduledPurgeDate": 1667863152,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/335015184",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258352,
+              "updated": 1667258352,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/376642268",
+            "deletedDate": 1667258304,
+            "scheduledPurgeDate": 1667863104,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/376642268",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258304,
+              "updated": 1667258304,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/420856044",
+            "deletedDate": 1667258324,
+            "scheduledPurgeDate": 1667863124,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/420856044",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258324,
+              "updated": 1667258324,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/451914043",
+            "deletedDate": 1667258242,
+            "scheduledPurgeDate": 1667863042,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/451914043",
+            "attributes": {
+              "enabled": true,
+              "created": 1667258242,
+              "updated": 1667258242,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
+            }
+          },
+          {
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/491159497",
+            "deletedDate": 1667258385,
+            "scheduledPurgeDate": 1667863185,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/491159497",
             "attributes": {
               "enabled": false,
-              "created": 1560377123,
-              "updated": 1560377123,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "nbf": 1564536012,
+              "exp": 1567128012,
+              "created": 1667258385,
+              "updated": 1667258385,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1608304173",
-            "deletedDate": 1560374308,
-            "scheduledPurgeDate": 1568150308,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1608304173",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/495811181",
+            "deletedDate": 1667258323,
+            "scheduledPurgeDate": 1667863123,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/495811181",
             "attributes": {
               "enabled": true,
-              "created": 1560374308,
-              "updated": 1560374308,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258323,
+              "updated": 1667258323,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1608698807",
-            "deletedDate": 1560363628,
-            "scheduledPurgeDate": 1568139628,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1608698807",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/516541555",
+            "deletedDate": 1667258254,
+            "scheduledPurgeDate": 1667863054,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/516541555",
             "attributes": {
               "enabled": true,
-              "created": 1560363590,
-              "updated": 1560363590,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258254,
+              "updated": 1667258254,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1610471226",
-            "deletedDate": 1560378030,
-            "scheduledPurgeDate": 1568154030,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1610471226",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/557223506",
+            "deletedDate": 1667258397,
+            "scheduledPurgeDate": 1667863197,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/557223506",
             "attributes": {
               "enabled": true,
-              "created": 1560378029,
-              "updated": 1560378029,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258397,
+              "updated": 1667258397,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1618368194",
-            "deletedDate": 1560375537,
-            "scheduledPurgeDate": 1568151537,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1618368194",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/558703442",
+            "deletedDate": 1667258267,
+            "scheduledPurgeDate": 1667863067,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/558703442",
             "attributes": {
               "enabled": true,
-              "created": 1560375537,
-              "updated": 1560375537,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258267,
+              "updated": 1667258267,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1645695659",
-            "deletedDate": 1560373510,
-            "scheduledPurgeDate": 1568149510,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1645695659",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/611127400",
+            "deletedDate": 1667258331,
+            "scheduledPurgeDate": 1667863131,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/611127400",
             "attributes": {
               "enabled": true,
-              "created": 1560373510,
-              "updated": 1560373510,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1724486190",
-            "deletedDate": 1560375518,
-            "scheduledPurgeDate": 1568151518,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1724486190",
-            "attributes": {
-              "enabled": true,
-              "created": 1560375504,
-              "updated": 1560375504,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1773139216",
-            "deletedDate": 1560377756,
-            "scheduledPurgeDate": 1568153756,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1773139216",
-            "attributes": {
-              "enabled": true,
-              "exp": 1560377755,
-              "created": 1560377755,
-              "updated": 1560377756,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258331,
+              "updated": 1667258331,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           }
         ],
-        "nextLink": "https://pakrym-keyvault.vault.azure.net:443/deletedkeys?api-version=7.0\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiExMjQhTURBd01EUTNJV3RsZVM4eE56Y3pNVE01TWpFMkwwWXdRell6TlVNeU56RXlNVFEzTnpZNE1FUkRRek5GTXpVM016TkJNMFZHSVRBd01EQXlPQ0U1T1RrNUxURXlMVE14VkRJek9qVTVPalU1TGprNU9UazVPVGxhSVEtLSIsIlRhcmdldExvY2F0aW9uIjowfQ"
+        "nextLink": "https://heathskeyvault.vault.azure.net:443/deletedkeys?api-version=7.4-preview.1\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiExMjAhTURBd01EUTJJV3RsZVM4Mk1URXhNamMwTURBdk56azBNVEpCT1RZNFJrWTJORGMwUkRsQ04wTTRSa0ZFTVVSRE1EWTJSREFoTURBd01ESTRJVGs1T1RrdE1USXRNekZVTWpNNk5UazZOVGt1T1RrNU9UazVPVm9oIiwiVGFyZ2V0TG9jYXRpb24iOjB9"
       }
     },
     {
-      "RequestUri": "https://pakrym-keyvault.vault.azure.net/deletedkeys?api-version=7.0\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiExMjQhTURBd01EUTNJV3RsZVM4eE56Y3pNVE01TWpFMkwwWXdRell6TlVNeU56RXlNVFEzTnpZNE1FUkRRek5GTXpVM016TkJNMFZHSVRBd01EQXlPQ0U1T1RrNUxURXlMVE14VkRJek9qVTVPalU1TGprNU9UazVPVGxhSVEtLSIsIlRhcmdldExvY2F0aW9uIjowfQ",
+      "RequestUri": "https://heathskeyvault.vault.azure.net/deletedkeys?api-version=7.4-preview.1\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiExMjAhTURBd01EUTJJV3RsZVM4Mk1URXhNamMwTURBdk56azBNVEpCT1RZNFJrWTJORGMwUkRsQ04wTTRSa0ZFTVVSRE1EWTJSREFoTURBd01ESTRJVGs1T1RrdE1USXRNekZVTWpNNk5UazZOVGt1T1RrNU9UazVPVm9oIiwiVGFyZ2V0TG9jYXRpb24iOjB9",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Type": "application/json",
-        "User-Agent": [
-          "azsdk-net-keyvault-secret/1.0.0.0",
-          "(.NET Core 4.6.27617.04; Microsoft Windows 10.0.18362 )"
-        ],
-        "x-ms-client-request-id": "4fd4b88daacaefd7350b56dc750b9f1e",
+        "traceparent": "00-fde823af122a617ebc7347afa9bb7ff4-624db137541a8c80-00",
+        "User-Agent": "azsdk-net-Security.KeyVault.Keys/4.5.0-alpha.20221031.1 (.NET 6.0.10; Microsoft Windows 10.0.22621)",
+        "x-ms-client-request-id": "822ef744b40a11af9eb4344c658460cd",
         "x-ms-return-client-request-id": "true"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
         "Cache-Control": "no-cache",
-        "Content-Length": "3768",
+        "Content-Length": "3853",
         "Content-Type": "application/json; charset=utf-8",
-        "Date": "Tue, 18 Jun 2019 20:32:12 GMT",
+        "Date": "Mon, 31 Oct 2022 23:20:20 GMT",
         "Expires": "-1",
         "Pragma": "no-cache",
-        "Server": "Microsoft-IIS/10.0",
         "Strict-Transport-Security": "max-age=31536000;includeSubDomains",
-        "X-AspNet-Version": "4.0.30319",
         "X-Content-Type-Options": "nosniff",
-        "x-ms-keyvault-network-info": "addr=131.107.174.199;act_addr_fam=InterNetwork;",
+        "x-ms-client-request-id": "822ef744b40a11af9eb4344c658460cd",
+        "x-ms-keyvault-network-info": "conn_type=Ipv4;addr=24.16.19.131;act_addr_fam=InterNetwork;",
+        "x-ms-keyvault-rbac-assignment-id": "0ecc3e39-c3aa-550c-9221-2cec9776c051",
+        "x-ms-keyvault-rbac-cache": "ra_age=188;da_age=188;rd_age=188;brd_age=11092;ra_notif_age=602;dec_lev=0;",
         "x-ms-keyvault-region": "westus",
-        "x-ms-keyvault-service-version": "1.1.0.866",
-        "x-ms-request-id": "fd51855a-596c-439b-aa0a-afc415e392de",
-        "X-Powered-By": "ASP.NET"
+        "x-ms-keyvault-service-version": "1.9.538.1",
+        "x-ms-request-id": "c87038fc-b1f5-4ee5-90d0-dd20a4894090"
       },
       "ResponseBody": {
         "value": [
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1784794548",
-            "deletedDate": 1560380486,
-            "scheduledPurgeDate": 1568156486,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1784794548",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/622920280",
+            "deletedDate": 1667258259,
+            "scheduledPurgeDate": 1667863059,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/622920280",
             "attributes": {
               "enabled": true,
-              "created": 1560380486,
-              "updated": 1560380486,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258259,
+              "updated": 1667258259,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/180759389",
-            "deletedDate": 1560377423,
-            "scheduledPurgeDate": 1568153423,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/180759389",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/660483447",
+            "deletedDate": 1667258363,
+            "scheduledPurgeDate": 1667863163,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/660483447",
             "attributes": {
               "enabled": true,
-              "exp": 1560377723264,
-              "created": 1560377423,
-              "updated": 1560377423,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258363,
+              "updated": 1667258363,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1830553916",
-            "deletedDate": 1560363375,
-            "scheduledPurgeDate": 1568139375,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1830553916",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/660843339",
+            "deletedDate": 1667258372,
+            "scheduledPurgeDate": 1667863172,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/660843339",
             "attributes": {
               "enabled": true,
-              "created": 1560363374,
-              "updated": 1560363374,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258371,
+              "updated": 1667258372,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": true
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1861282159",
-            "deletedDate": 1560378216,
-            "scheduledPurgeDate": 1568154216,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1861282159",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/684937983",
+            "deletedDate": 1667258365,
+            "scheduledPurgeDate": 1667863165,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/684937983",
             "attributes": {
               "enabled": true,
-              "created": 1560378216,
-              "updated": 1560378216,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258364,
+              "updated": 1667258364,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1895620033",
-            "deletedDate": 1560377972,
-            "scheduledPurgeDate": 1568153972,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1895620033",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/716772829",
+            "deletedDate": 1667258248,
+            "scheduledPurgeDate": 1667863048,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/716772829",
             "attributes": {
               "enabled": true,
-              "created": 1560377972,
-              "updated": 1560377972,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258248,
+              "updated": 1667258248,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1897393706",
-            "deletedDate": 1560377601,
-            "scheduledPurgeDate": 1568153601,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1897393706",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/7585219130",
+            "deletedDate": 1667258413,
+            "scheduledPurgeDate": 1667863213,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/7585219130",
             "attributes": {
               "enabled": true,
-              "exp": 1560377900831,
-              "created": 1560377600,
-              "updated": 1560377600,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258413,
+              "updated": 1667258413,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1909072118",
-            "deletedDate": 1560375518,
-            "scheduledPurgeDate": 1568151518,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1909072118",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/7585219131",
+            "deletedDate": 1667258414,
+            "scheduledPurgeDate": 1667863214,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/7585219131",
             "attributes": {
               "enabled": true,
-              "created": 1560375441,
-              "updated": 1560375441,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258414,
+              "updated": 1667258414,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1924505550",
-            "deletedDate": 1560371167,
-            "scheduledPurgeDate": 1568147167,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1924505550",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/799365293",
+            "deletedDate": 1667258339,
+            "scheduledPurgeDate": 1667863139,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/799365293",
             "attributes": {
               "enabled": true,
-              "created": 1560371166,
-              "updated": 1560371166,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258339,
+              "updated": 1667258339,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1935071491",
-            "deletedDate": 1560365077,
-            "scheduledPurgeDate": 1568141077,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1935071491",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/82008545",
+            "deletedDate": 1667258369,
+            "scheduledPurgeDate": 1667863169,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/82008545",
             "attributes": {
               "enabled": true,
-              "created": 1560365077,
-              "updated": 1560365077,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258369,
+              "updated": 1667258369,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": true
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1992723823",
-            "deletedDate": 1560378109,
-            "scheduledPurgeDate": 1568154109,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1992723823",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/825348498",
+            "deletedDate": 1667258265,
+            "scheduledPurgeDate": 1667863065,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/825348498",
             "attributes": {
               "enabled": true,
-              "exp": 1560378109,
-              "created": 1560378109,
-              "updated": 1560378109,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/1993066193",
-            "deletedDate": 1560375719,
-            "scheduledPurgeDate": 1568151719,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/1993066193",
-            "attributes": {
-              "enabled": true,
-              "created": 1560375719,
-              "updated": 1560375719,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258264,
+              "updated": 1667258264,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           }
         ],
-        "nextLink": "https://pakrym-keyvault.vault.azure.net:443/deletedkeys?api-version=7.0\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiE4MCFNREF3TURFMElXdGxlUzh5TURVM016RXlPRGMySVRBd01EQXlPQ0U1T1RrNUxURXlMVE14VkRJek9qVTVPalU1TGprNU9UazVPVGxhSVEtLSIsIlRhcmdldExvY2F0aW9uIjowfQ"
+        "nextLink": "https://heathskeyvault.vault.azure.net:443/deletedkeys?api-version=7.4-preview.1\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiE3NiFNREF3TURFeklXdGxlUzg0TXpnM01UVTFNREloTURBd01ESTRJVGs1T1RrdE1USXRNekZVTWpNNk5UazZOVGt1T1RrNU9UazVPVm9oIiwiVGFyZ2V0TG9jYXRpb24iOjB9"
       }
     },
     {
-      "RequestUri": "https://pakrym-keyvault.vault.azure.net/deletedkeys?api-version=7.0\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiE4MCFNREF3TURFMElXdGxlUzh5TURVM016RXlPRGMySVRBd01EQXlPQ0U1T1RrNUxURXlMVE14VkRJek9qVTVPalU1TGprNU9UazVPVGxhSVEtLSIsIlRhcmdldExvY2F0aW9uIjowfQ",
+      "RequestUri": "https://heathskeyvault.vault.azure.net/deletedkeys?api-version=7.4-preview.1\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiE3NiFNREF3TURFeklXdGxlUzg0TXpnM01UVTFNREloTURBd01ESTRJVGs1T1RrdE1USXRNekZVTWpNNk5UazZOVGt1T1RrNU9UazVPVm9oIiwiVGFyZ2V0TG9jYXRpb24iOjB9",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Type": "application/json",
-        "User-Agent": [
-          "azsdk-net-keyvault-secret/1.0.0.0",
-          "(.NET Core 4.6.27617.04; Microsoft Windows 10.0.18362 )"
-        ],
-        "x-ms-client-request-id": "54d6b810e93e4bef8f5f6794fe9bb58b",
+        "traceparent": "00-d637f3ea16a2dda82ac6497072dfd255-eaa16af4c3a761fb-00",
+        "User-Agent": "azsdk-net-Security.KeyVault.Keys/4.5.0-alpha.20221031.1 (.NET 6.0.10; Microsoft Windows 10.0.22621)",
+        "x-ms-client-request-id": "a2d3275a8ff651f8f1942a25455c7be0",
         "x-ms-return-client-request-id": "true"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
         "Cache-Control": "no-cache",
-        "Content-Length": "4062",
+        "Content-Length": "4269",
         "Content-Type": "application/json; charset=utf-8",
-        "Date": "Tue, 18 Jun 2019 20:32:13 GMT",
+        "Date": "Mon, 31 Oct 2022 23:20:21 GMT",
         "Expires": "-1",
         "Pragma": "no-cache",
-        "Server": "Microsoft-IIS/10.0",
         "Strict-Transport-Security": "max-age=31536000;includeSubDomains",
-        "X-AspNet-Version": "4.0.30319",
         "X-Content-Type-Options": "nosniff",
-        "x-ms-keyvault-network-info": "addr=131.107.174.199;act_addr_fam=InterNetwork;",
+        "x-ms-client-request-id": "a2d3275a8ff651f8f1942a25455c7be0",
+        "x-ms-keyvault-network-info": "conn_type=Ipv4;addr=24.16.19.131;act_addr_fam=InterNetwork;",
+        "x-ms-keyvault-rbac-assignment-id": "0ecc3e39-c3aa-550c-9221-2cec9776c051",
+        "x-ms-keyvault-rbac-cache": "ra_age=188;da_age=188;rd_age=188;brd_age=11092;ra_notif_age=602;dec_lev=0;",
         "x-ms-keyvault-region": "westus",
-        "x-ms-keyvault-service-version": "1.1.0.866",
-        "x-ms-request-id": "8ade9878-d9aa-49bb-aad5-9c5e33fcffa2",
-        "X-Powered-By": "ASP.NET"
+        "x-ms-keyvault-service-version": "1.9.538.1",
+        "x-ms-request-id": "198b95a4-bb6c-4d66-a8dc-bc710f00f74c"
       },
       "ResponseBody": {
         "value": [
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/2057312876",
-            "deletedDate": 1560378864,
-            "scheduledPurgeDate": 1568154864,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/2057312876",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/867177712",
+            "deletedDate": 1667258245,
+            "scheduledPurgeDate": 1667863045,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/867177712",
             "attributes": {
               "enabled": true,
-              "created": 1560378694,
-              "updated": 1560378694,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258245,
+              "updated": 1667258245,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/2062687594",
-            "deletedDate": 1560375970,
-            "scheduledPurgeDate": 1568151970,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/2062687594",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/874571832",
+            "deletedDate": 1667258290,
+            "scheduledPurgeDate": 1667863090,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/874571832",
             "attributes": {
               "enabled": true,
-              "created": 1560375907,
-              "updated": 1560375907,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258290,
+              "updated": 1667258290,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/20980359740",
-            "deletedDate": 1560889914,
-            "scheduledPurgeDate": 1568665914,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/20980359740",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/880465987",
+            "deletedDate": 1667258273,
+            "scheduledPurgeDate": 1667863073,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/880465987",
             "attributes": {
               "enabled": true,
-              "created": 1560889914,
-              "updated": 1560889914,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258273,
+              "updated": 1667258273,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/20980359741",
-            "deletedDate": 1560889914,
-            "scheduledPurgeDate": 1568665914,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/20980359741",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/894606798",
+            "deletedDate": 1667258314,
+            "scheduledPurgeDate": 1667863114,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/894606798",
             "attributes": {
               "enabled": true,
-              "created": 1560889914,
-              "updated": 1560889914,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258313,
+              "updated": 1667258313,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/21289878",
-            "deletedDate": 1560377998,
-            "scheduledPurgeDate": 1568153998,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/21289878",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/912725547",
+            "deletedDate": 1667258241,
+            "scheduledPurgeDate": 1667863041,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/912725547",
             "attributes": {
               "enabled": true,
-              "created": 1560377998,
-              "updated": 1560377998,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258241,
+              "updated": 1667258241,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/215983568",
-            "deletedDate": 1560373969,
-            "scheduledPurgeDate": 1568149969,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/215983568",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/915246108",
+            "deletedDate": 1667258282,
+            "scheduledPurgeDate": 1667863082,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/915246108",
             "attributes": {
               "enabled": true,
-              "created": 1560373969,
-              "updated": 1560373969,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258282,
+              "updated": 1667258282,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/241663833",
-            "deletedDate": 1560363624,
-            "scheduledPurgeDate": 1568139624,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/241663833",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/926766631",
+            "deletedDate": 1667258350,
+            "scheduledPurgeDate": 1667863150,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/926766631",
             "attributes": {
               "enabled": true,
-              "created": 1560363582,
-              "updated": 1560363582,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258350,
+              "updated": 1667258350,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/244695609",
-            "deletedDate": 1560378077,
-            "scheduledPurgeDate": 1568154077,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/244695609",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/92920558",
+            "deletedDate": 1667258280,
+            "scheduledPurgeDate": 1667863080,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/92920558",
             "attributes": {
               "enabled": true,
-              "created": 1560378077,
-              "updated": 1560378077,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258280,
+              "updated": 1667258280,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/26110913",
-            "deletedDate": 1560374270,
-            "scheduledPurgeDate": 1568150270,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/26110913",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/943246940",
+            "deletedDate": 1667258407,
+            "scheduledPurgeDate": 1667863207,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/943246940",
             "attributes": {
               "enabled": true,
-              "created": 1560374270,
-              "updated": 1560374270,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258407,
+              "updated": 1667258407,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/27973667",
-            "deletedDate": 1560363474,
-            "scheduledPurgeDate": 1568139474,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/27973667",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/947408945",
+            "deletedDate": 1667258348,
+            "scheduledPurgeDate": 1667863148,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/947408945",
             "attributes": {
               "enabled": true,
-              "created": 1560363474,
-              "updated": 1560363474,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258348,
+              "updated": 1667258348,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           },
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/280358434",
-            "deletedDate": 1560373002,
-            "scheduledPurgeDate": 1568149002,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/280358434",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/975471443",
+            "deletedDate": 1667258328,
+            "scheduledPurgeDate": 1667863128,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/975471443",
             "attributes": {
               "enabled": true,
-              "created": 1560373002,
-              "updated": 1560373002,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/283986871",
-            "deletedDate": 1560379648,
-            "scheduledPurgeDate": 1568155648,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/283986871",
-            "attributes": {
-              "enabled": true,
-              "created": 1560379648,
-              "updated": 1560379648,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258328,
+              "updated": 1667258328,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           }
         ],
-        "nextLink": "https://pakrym-keyvault.vault.azure.net:443/deletedkeys?api-version=7.0\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiExMjAhTURBd01EUTJJV3RsZVM4eU9ETTVPRFk0TnpFdk9EVXlSakJDT0RFNVFrRTNOREkzUmtFd01qYzNNREU0TXpVd05FVXpNRVFoTURBd01ESTRJVGs1T1RrdE1USXRNekZVTWpNNk5UazZOVGt1T1RrNU9UazVPVm9oIiwiVGFyZ2V0TG9jYXRpb24iOjB9"
+        "nextLink": "https://heathskeyvault.vault.azure.net:443/deletedkeys?api-version=7.4-preview.1\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiExMjAhTURBd01EUTJJV3RsZVM4NU56VTBOekUwTkRNdlJUUkNSVGMxUXpCQk4wTTVORVF4UVVFM1FVSkdNamhHTlVORVFqZERNa0loTURBd01ESTRJVGs1T1RrdE1USXRNekZVTWpNNk5UazZOVGt1T1RrNU9UazVPVm9oIiwiVGFyZ2V0TG9jYXRpb24iOjB9"
       }
     },
     {
-      "RequestUri": "https://pakrym-keyvault.vault.azure.net/deletedkeys?api-version=7.0\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiExMjAhTURBd01EUTJJV3RsZVM4eU9ETTVPRFk0TnpFdk9EVXlSakJDT0RFNVFrRTNOREkzUmtFd01qYzNNREU0TXpVd05FVXpNRVFoTURBd01ESTRJVGs1T1RrdE1USXRNekZVTWpNNk5UazZOVGt1T1RrNU9UazVPVm9oIiwiVGFyZ2V0TG9jYXRpb24iOjB9",
+      "RequestUri": "https://heathskeyvault.vault.azure.net/deletedkeys?api-version=7.4-preview.1\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiExMjAhTURBd01EUTJJV3RsZVM4NU56VTBOekUwTkRNdlJUUkNSVGMxUXpCQk4wTTVORVF4UVVFM1FVSkdNamhHTlVORVFqZERNa0loTURBd01ESTRJVGs1T1RrdE1USXRNekZVTWpNNk5UazZOVGt1T1RrNU9UazVPVm9oIiwiVGFyZ2V0TG9jYXRpb24iOjB9",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Type": "application/json",
-        "User-Agent": [
-          "azsdk-net-keyvault-secret/1.0.0.0",
-          "(.NET Core 4.6.27617.04; Microsoft Windows 10.0.18362 )"
-        ],
-        "x-ms-client-request-id": "2a8c85155f4feef982d44a2d7e6c05c1",
+        "traceparent": "00-5fac1ff5488b9c6aa25ca770134c10b1-86a04180896eb9f5-00",
+        "User-Agent": "azsdk-net-Security.KeyVault.Keys/4.5.0-alpha.20221031.1 (.NET 6.0.10; Microsoft Windows 10.0.22621)",
+        "x-ms-client-request-id": "9b0df9f777d38a41a0184bac7758f513",
         "x-ms-return-client-request-id": "true"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
         "Cache-Control": "no-cache",
-        "Content-Length": "3411",
+        "Content-Length": "385",
         "Content-Type": "application/json; charset=utf-8",
-        "Date": "Tue, 18 Jun 2019 20:32:14 GMT",
+        "Date": "Mon, 31 Oct 2022 23:20:21 GMT",
         "Expires": "-1",
         "Pragma": "no-cache",
-        "Server": "Microsoft-IIS/10.0",
         "Strict-Transport-Security": "max-age=31536000;includeSubDomains",
-        "X-AspNet-Version": "4.0.30319",
         "X-Content-Type-Options": "nosniff",
-        "x-ms-keyvault-network-info": "addr=131.107.174.199;act_addr_fam=InterNetwork;",
+        "x-ms-client-request-id": "9b0df9f777d38a41a0184bac7758f513",
+        "x-ms-keyvault-network-info": "conn_type=Ipv4;addr=24.16.19.131;act_addr_fam=InterNetwork;",
+        "x-ms-keyvault-rbac-assignment-id": "0ecc3e39-c3aa-550c-9221-2cec9776c051",
+        "x-ms-keyvault-rbac-cache": "ra_age=188;da_age=188;rd_age=188;brd_age=11092;ra_notif_age=603;dec_lev=0;",
         "x-ms-keyvault-region": "westus",
-        "x-ms-keyvault-service-version": "1.1.0.866",
-        "x-ms-request-id": "627ea2de-a6ea-4c19-aa03-e76b5128427e",
-        "X-Powered-By": "ASP.NET"
+        "x-ms-keyvault-service-version": "1.9.538.1",
+        "x-ms-request-id": "2820c09f-fd5c-4b9c-ba10-4b9b90c645ad"
       },
       "ResponseBody": {
         "value": [
           {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/319106794",
-            "deletedDate": 1560363847,
-            "scheduledPurgeDate": 1568139847,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/319106794",
+            "recoveryId": "https://heathskeyvault.vault.azure.net/deletedkeys/998521990",
+            "deletedDate": 1667258320,
+            "scheduledPurgeDate": 1667863120,
+            "kid": "https://heathskeyvault.vault.azure.net/keys/998521990",
             "attributes": {
               "enabled": true,
-              "created": 1560363847,
-              "updated": 1560363847,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/357892868",
-            "deletedDate": 1560377297,
-            "scheduledPurgeDate": 1568153297,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/357892868",
-            "attributes": {
-              "enabled": true,
-              "exp": 1560377597347,
-              "created": 1560377297,
-              "updated": 1560377297,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/365175570",
-            "deletedDate": 1560365000,
-            "scheduledPurgeDate": 1568141000,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/365175570",
-            "attributes": {
-              "enabled": true,
-              "created": 1560364976,
-              "updated": 1560364976,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/437156052",
-            "deletedDate": 1560380323,
-            "scheduledPurgeDate": 1568156323,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/437156052",
-            "attributes": {
-              "enabled": true,
-              "created": 1560380323,
-              "updated": 1560380323,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/490679838",
-            "deletedDate": 1560373953,
-            "scheduledPurgeDate": 1568149953,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/490679838",
-            "attributes": {
-              "enabled": true,
-              "created": 1560373953,
-              "updated": 1560373953,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/521919761",
-            "deletedDate": 1560378045,
-            "scheduledPurgeDate": 1568154045,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/521919761",
-            "attributes": {
-              "enabled": true,
-              "created": 1560378045,
-              "updated": 1560378045,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/562530938",
-            "deletedDate": 1560378420,
-            "scheduledPurgeDate": 1568154420,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/562530938",
-            "attributes": {
-              "enabled": true,
-              "created": 1560378420,
-              "updated": 1560378420,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/565039940",
-            "deletedDate": 1560374276,
-            "scheduledPurgeDate": 1568150276,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/565039940",
-            "attributes": {
-              "enabled": true,
-              "created": 1560374276,
-              "updated": 1560374276,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/577460393",
-            "deletedDate": 1560378305,
-            "scheduledPurgeDate": 1568154305,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/577460393",
-            "attributes": {
-              "enabled": true,
-              "exp": 1560378305,
-              "created": 1560378305,
-              "updated": 1560378305,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/590522683",
-            "deletedDate": 1560378515,
-            "scheduledPurgeDate": 1568154515,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/590522683",
-            "attributes": {
-              "enabled": true,
-              "created": 1560378515,
-              "updated": 1560378515,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          }
-        ],
-        "nextLink": "https://pakrym-keyvault.vault.azure.net:443/deletedkeys?api-version=7.0\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiE3NiFNREF3TURFeUlXdGxlUzgxT1RNeU1UazJNeUV3TURBd01qZ2hPVGs1T1MweE1pMHpNVlF5TXpvMU9UbzFPUzQ1T1RrNU9UazVXaUUtIiwiVGFyZ2V0TG9jYXRpb24iOjB9"
-      }
-    },
-    {
-      "RequestUri": "https://pakrym-keyvault.vault.azure.net/deletedkeys?api-version=7.0\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiE3NiFNREF3TURFeUlXdGxlUzgxT1RNeU1UazJNeUV3TURBd01qZ2hPVGs1T1MweE1pMHpNVlF5TXpvMU9UbzFPUzQ1T1RrNU9UazVXaUUtIiwiVGFyZ2V0TG9jYXRpb24iOjB9",
-      "RequestMethod": "GET",
-      "RequestHeaders": {
-        "Accept": "application/json",
-        "Authorization": "Sanitized",
-        "Content-Type": "application/json",
-        "User-Agent": [
-          "azsdk-net-keyvault-secret/1.0.0.0",
-          "(.NET Core 4.6.27617.04; Microsoft Windows 10.0.18362 )"
-        ],
-        "x-ms-client-request-id": "41b6ec74396fa3ecc888c06a4243f099",
-        "x-ms-return-client-request-id": "true"
-      },
-      "RequestBody": null,
-      "StatusCode": 200,
-      "ResponseHeaders": {
-        "Cache-Control": "no-cache",
-        "Content-Length": "4050",
-        "Content-Type": "application/json; charset=utf-8",
-        "Date": "Tue, 18 Jun 2019 20:32:15 GMT",
-        "Expires": "-1",
-        "Pragma": "no-cache",
-        "Server": "Microsoft-IIS/10.0",
-        "Strict-Transport-Security": "max-age=31536000;includeSubDomains",
-        "X-AspNet-Version": "4.0.30319",
-        "X-Content-Type-Options": "nosniff",
-        "x-ms-keyvault-network-info": "addr=131.107.174.199;act_addr_fam=InterNetwork;",
-        "x-ms-keyvault-region": "westus",
-        "x-ms-keyvault-service-version": "1.1.0.866",
-        "x-ms-request-id": "299ad1cc-e9e9-4b74-bc37-cd33157741fd",
-        "X-Powered-By": "ASP.NET"
-      },
-      "ResponseBody": {
-        "value": [
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/59321963",
-            "deletedDate": 1560378247,
-            "scheduledPurgeDate": 1568154247,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/59321963",
-            "attributes": {
-              "enabled": true,
-              "created": 1560378247,
-              "updated": 1560378247,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/619915962",
-            "deletedDate": 1560378093,
-            "scheduledPurgeDate": 1568154093,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/619915962",
-            "attributes": {
-              "enabled": false,
-              "created": 1560378093,
-              "updated": 1560378093,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/624131602",
-            "deletedDate": 1560379208,
-            "scheduledPurgeDate": 1568155208,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/624131602",
-            "attributes": {
-              "enabled": true,
-              "created": 1560379176,
-              "updated": 1560379176,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/6529598",
-            "deletedDate": 1560378273,
-            "scheduledPurgeDate": 1568154273,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/6529598",
-            "attributes": {
-              "enabled": true,
-              "created": 1560378273,
-              "updated": 1560378273,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/699277896",
-            "deletedDate": 1560378262,
-            "scheduledPurgeDate": 1568154262,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/699277896",
-            "attributes": {
-              "enabled": true,
-              "created": 1560378262,
-              "updated": 1560378262,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/719950631",
-            "deletedDate": 1560379429,
-            "scheduledPurgeDate": 1568155429,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/719950631",
-            "attributes": {
-              "enabled": true,
-              "created": 1560379407,
-              "updated": 1560379407,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/721281196",
-            "deletedDate": 1560363953,
-            "scheduledPurgeDate": 1568139953,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/721281196",
-            "attributes": {
-              "enabled": true,
-              "created": 1560363908,
-              "updated": 1560363908,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/723978838",
-            "deletedDate": 1560378890,
-            "scheduledPurgeDate": 1568154890,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/723978838",
-            "attributes": {
-              "enabled": true,
-              "created": 1560378707,
-              "updated": 1560378707,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/738039742",
-            "deletedDate": 1560363374,
-            "scheduledPurgeDate": 1568139374,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/738039742",
-            "attributes": {
-              "enabled": true,
-              "created": 1560363374,
-              "updated": 1560363374,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/783977228",
-            "deletedDate": 1560374970,
-            "scheduledPurgeDate": 1568150970,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/783977228",
-            "attributes": {
-              "enabled": true,
-              "created": 1560374969,
-              "updated": 1560374969,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/79085616",
-            "deletedDate": 1560380730,
-            "scheduledPurgeDate": 1568156730,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/79085616",
-            "attributes": {
-              "enabled": true,
-              "created": 1560380730,
-              "updated": 1560380730,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/809369582",
-            "deletedDate": 1560378014,
-            "scheduledPurgeDate": 1568154014,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/809369582",
-            "attributes": {
-              "enabled": false,
-              "created": 1560378014,
-              "updated": 1560378014,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          }
-        ],
-        "nextLink": "https://pakrym-keyvault.vault.azure.net:443/deletedkeys?api-version=7.0\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiExMjAhTURBd01EUTJJV3RsZVM4NE1Ea3pOamsxT0RJdk16TkNRVU5CUWpBMlJERkNORFF6UkRreE9UTXdSRFEyUkRnNE5ERTVRalloTURBd01ESTRJVGs1T1RrdE1USXRNekZVTWpNNk5UazZOVGt1T1RrNU9UazVPVm9oIiwiVGFyZ2V0TG9jYXRpb24iOjB9"
-      }
-    },
-    {
-      "RequestUri": "https://pakrym-keyvault.vault.azure.net/deletedkeys?api-version=7.0\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiExMjAhTURBd01EUTJJV3RsZVM4NE1Ea3pOamsxT0RJdk16TkNRVU5CUWpBMlJERkNORFF6UkRreE9UTXdSRFEyUkRnNE5ERTVRalloTURBd01ESTRJVGs1T1RrdE1USXRNekZVTWpNNk5UazZOVGt1T1RrNU9UazVPVm9oIiwiVGFyZ2V0TG9jYXRpb24iOjB9",
-      "RequestMethod": "GET",
-      "RequestHeaders": {
-        "Accept": "application/json",
-        "Authorization": "Sanitized",
-        "Content-Type": "application/json",
-        "User-Agent": [
-          "azsdk-net-keyvault-secret/1.0.0.0",
-          "(.NET Core 4.6.27617.04; Microsoft Windows 10.0.18362 )"
-        ],
-        "x-ms-client-request-id": "efc6ca55747eb0cebfe8d26a9fc2cd22",
-        "x-ms-return-client-request-id": "true"
-      },
-      "RequestBody": null,
-      "StatusCode": 200,
-      "ResponseHeaders": {
-        "Cache-Control": "no-cache",
-        "Content-Length": "3371",
-        "Content-Type": "application/json; charset=utf-8",
-        "Date": "Tue, 18 Jun 2019 20:32:16 GMT",
-        "Expires": "-1",
-        "Pragma": "no-cache",
-        "Server": "Microsoft-IIS/10.0",
-        "Strict-Transport-Security": "max-age=31536000;includeSubDomains",
-        "X-AspNet-Version": "4.0.30319",
-        "X-Content-Type-Options": "nosniff",
-        "x-ms-keyvault-network-info": "addr=131.107.174.199;act_addr_fam=InterNetwork;",
-        "x-ms-keyvault-region": "westus",
-        "x-ms-keyvault-service-version": "1.1.0.866",
-        "x-ms-request-id": "137e2586-5511-478b-b714-4a8e3bc88478",
-        "X-Powered-By": "ASP.NET"
-      },
-      "ResponseBody": {
-        "value": [
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/825940204",
-            "deletedDate": 1560378185,
-            "scheduledPurgeDate": 1568154185,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/825940204",
-            "attributes": {
-              "enabled": false,
-              "created": 1560378184,
-              "updated": 1560378184,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/880893243",
-            "deletedDate": 1560363848,
-            "scheduledPurgeDate": 1568139848,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/880893243",
-            "attributes": {
-              "enabled": true,
-              "created": 1560363847,
-              "updated": 1560363847,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/884455615",
-            "deletedDate": 1560371877,
-            "scheduledPurgeDate": 1568147877,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/884455615",
-            "attributes": {
-              "enabled": true,
-              "created": 1560371877,
-              "updated": 1560371877,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/901778190",
-            "deletedDate": 1560378137,
-            "scheduledPurgeDate": 1568154137,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/901778190",
-            "attributes": {
-              "enabled": true,
-              "created": 1560378137,
-              "updated": 1560378137,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/909338541",
-            "deletedDate": 1560373020,
-            "scheduledPurgeDate": 1568149020,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/909338541",
-            "attributes": {
-              "enabled": true,
-              "created": 1560373020,
-              "updated": 1560373020,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/913233938",
-            "deletedDate": 1560364888,
-            "scheduledPurgeDate": 1568140888,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/913233938",
-            "attributes": {
-              "enabled": true,
-              "created": 1560364888,
-              "updated": 1560364888,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/91566257",
-            "deletedDate": 1560363475,
-            "scheduledPurgeDate": 1568139475,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/91566257",
-            "attributes": {
-              "enabled": true,
-              "created": 1560363474,
-              "updated": 1560363474,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/919550051",
-            "deletedDate": 1560363953,
-            "scheduledPurgeDate": 1568139953,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/919550051",
-            "attributes": {
-              "enabled": true,
-              "created": 1560363908,
-              "updated": 1560363908,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/94332741",
-            "deletedDate": 1560375250,
-            "scheduledPurgeDate": 1568151250,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/94332741",
-            "attributes": {
-              "enabled": true,
-              "created": 1560375241,
-              "updated": 1560375241,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          },
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/967911834",
-            "deletedDate": 1560379648,
-            "scheduledPurgeDate": 1568155648,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/967911834",
-            "attributes": {
-              "enabled": true,
-              "created": 1560379648,
-              "updated": 1560379648,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
-            }
-          }
-        ],
-        "nextLink": "https://pakrym-keyvault.vault.azure.net:443/deletedkeys?api-version=7.0\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiE3NiFNREF3TURFeklXdGxlUzg1TnpFd01EUTBPRGNoTURBd01ESTRJVGs1T1RrdE1USXRNekZVTWpNNk5UazZOVGt1T1RrNU9UazVPVm9oIiwiVGFyZ2V0TG9jYXRpb24iOjB9"
-      }
-    },
-    {
-      "RequestUri": "https://pakrym-keyvault.vault.azure.net/deletedkeys?api-version=7.0\u0026$skiptoken=eyJOZXh0TWFya2VyIjoiMiE3NiFNREF3TURFeklXdGxlUzg1TnpFd01EUTBPRGNoTURBd01ESTRJVGs1T1RrdE1USXRNekZVTWpNNk5UazZOVGt1T1RrNU9UazVPVm9oIiwiVGFyZ2V0TG9jYXRpb24iOjB9",
-      "RequestMethod": "GET",
-      "RequestHeaders": {
-        "Accept": "application/json",
-        "Authorization": "Sanitized",
-        "Content-Type": "application/json",
-        "User-Agent": [
-          "azsdk-net-keyvault-secret/1.0.0.0",
-          "(.NET Core 4.6.27617.04; Microsoft Windows 10.0.18362 )"
-        ],
-        "x-ms-client-request-id": "121fa65a74e5dc1c98e862c69f8eab3e",
-        "x-ms-return-client-request-id": "true"
-      },
-      "RequestBody": null,
-      "StatusCode": 200,
-      "ResponseHeaders": {
-        "Cache-Control": "no-cache",
-        "Content-Length": "339",
-        "Content-Type": "application/json; charset=utf-8",
-        "Date": "Tue, 18 Jun 2019 20:32:17 GMT",
-        "Expires": "-1",
-        "Pragma": "no-cache",
-        "Server": "Microsoft-IIS/10.0",
-        "Strict-Transport-Security": "max-age=31536000;includeSubDomains",
-        "X-AspNet-Version": "4.0.30319",
-        "X-Content-Type-Options": "nosniff",
-        "x-ms-keyvault-network-info": "addr=131.107.174.199;act_addr_fam=InterNetwork;",
-        "x-ms-keyvault-region": "westus",
-        "x-ms-keyvault-service-version": "1.1.0.866",
-        "x-ms-request-id": "1c749087-d7be-4b7c-a230-4c9684cd2c76",
-        "X-Powered-By": "ASP.NET"
-      },
-      "ResponseBody": {
-        "value": [
-          {
-            "recoveryId": "https://pakrym-keyvault.vault.azure.net/deletedkeys/971004487",
-            "deletedDate": 1560365103,
-            "scheduledPurgeDate": 1568141103,
-            "kid": "https://pakrym-keyvault.vault.azure.net/keys/971004487",
-            "attributes": {
-              "enabled": false,
-              "created": 1560365103,
-              "updated": 1560365103,
-              "recoveryLevel": "Recoverable\u002bPurgeable"
+              "created": 1667258320,
+              "updated": 1667258320,
+              "recoveryLevel": "CustomizedRecoverable\u002BPurgeable",
+              "recoverableDays": 7,
+              "exportable": false
             }
           }
         ],
         "nextLink": null
       }
-    },
-    {
-      "RequestUri": "https://pakrym-keyvault.vault.azure.net/deletedkeys/20980359740?api-version=7.0",
-      "RequestMethod": "DELETE",
-      "RequestHeaders": {
-        "Accept": "application/json",
-        "Authorization": "Sanitized",
-        "Content-Type": "application/json",
-        "User-Agent": [
-          "azsdk-net-keyvault-secret/1.0.0.0",
-          "(.NET Core 4.6.27617.04; Microsoft Windows 10.0.18362 )"
-        ],
-        "x-ms-client-request-id": "ee86933d1aea447c6320f5e0f1957415",
-        "x-ms-return-client-request-id": "true"
-      },
-      "RequestBody": null,
-      "StatusCode": 204,
-      "ResponseHeaders": {
-        "Cache-Control": "no-cache",
-        "Date": "Tue, 18 Jun 2019 20:32:17 GMT",
-        "Expires": "-1",
-        "Pragma": "no-cache",
-        "Server": "Microsoft-IIS/10.0",
-        "Strict-Transport-Security": "max-age=31536000;includeSubDomains",
-        "X-AspNet-Version": "4.0.30319",
-        "X-Content-Type-Options": "nosniff",
-        "x-ms-keyvault-network-info": "addr=131.107.174.199;act_addr_fam=InterNetwork;",
-        "x-ms-keyvault-region": "westus",
-        "x-ms-keyvault-service-version": "1.1.0.866",
-        "x-ms-request-id": "ee8c735c-5730-4644-8e4d-f7c1f5b950b0",
-        "X-Powered-By": "ASP.NET"
-      },
-      "ResponseBody": null
-    },
-    {
-      "RequestUri": "https://pakrym-keyvault.vault.azure.net/deletedkeys/20980359741?api-version=7.0",
-      "RequestMethod": "DELETE",
-      "RequestHeaders": {
-        "Accept": "application/json",
-        "Authorization": "Sanitized",
-        "Content-Type": "application/json",
-        "User-Agent": [
-          "azsdk-net-keyvault-secret/1.0.0.0",
-          "(.NET Core 4.6.27617.04; Microsoft Windows 10.0.18362 )"
-        ],
-        "x-ms-client-request-id": "010b5be40e7e051bfcf604bbbdadec15",
-        "x-ms-return-client-request-id": "true"
-      },
-      "RequestBody": null,
-      "StatusCode": 204,
-      "ResponseHeaders": {
-        "Cache-Control": "no-cache",
-        "Date": "Tue, 18 Jun 2019 20:32:17 GMT",
-        "Expires": "-1",
-        "Pragma": "no-cache",
-        "Server": "Microsoft-IIS/10.0",
-        "Strict-Transport-Security": "max-age=31536000;includeSubDomains",
-        "X-AspNet-Version": "4.0.30319",
-        "X-Content-Type-Options": "nosniff",
-        "x-ms-keyvault-network-info": "addr=131.107.174.199;act_addr_fam=InterNetwork;",
-        "x-ms-keyvault-region": "westus",
-        "x-ms-keyvault-service-version": "1.1.0.866",
-        "x-ms-request-id": "830c4864-2551-4261-9cce-d39626721f2c",
-        "X-Powered-By": "ASP.NET"
-      },
-      "ResponseBody": null
     }
   ],
   "Variables": {
-    "AZURE_KEYVAULT_URL": "https://pakrym-keyvault.vault.azure.net/",
-    "RandomSeed": "396019524"
+    "AZURE_AUTHORITY_HOST": "https://login.microsoftonline.com/",
+    "AZURE_KEYVAULT_URL": "https://heathskeyvault.vault.azure.net/",
+    "RandomSeed": "2005255768"
   }
 }

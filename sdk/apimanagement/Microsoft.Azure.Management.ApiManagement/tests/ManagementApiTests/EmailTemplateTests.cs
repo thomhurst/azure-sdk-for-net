@@ -16,11 +16,12 @@ namespace ApiManagement.Tests.ManagementApiTests
     public class EmailTemplateTests : TestBase
     {
         [Fact]
+        [Trait("owner", "jikang")]
         public async Task CreateListUpdateDelete()
         {
             Environment.SetEnvironmentVariable("AZURE_TEST_MODE", "Playback");
 
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 var testBase = new ApiManagementTestBase(context);
                 testBase.TryCreateApiManagementService();
@@ -62,12 +63,30 @@ namespace ApiManagement.Tests.ManagementApiTests
                     Assert.NotNull(publisherEmailTemplateResponse.Body.Parameters);
                     Assert.NotNull(publisherEmailTemplateResponse.Headers.ETag);
 
+                    var updatePublisherEmailTemplate = await testBase.client.EmailTemplate.UpdateWithHttpMessagesAsync(
+                        testBase.rgName,
+                        testBase.serviceName,
+                        firstTemplate.Name,
+                        "*",
+                        new EmailTemplateUpdateParameters()
+                        {
+                            Subject = "Updated Subject"
+                        });
+
+                    var updatePublisherEmailTemplateResponse = await testBase.client.EmailTemplate.GetWithHttpMessagesAsync(
+                        testBase.rgName,
+                        testBase.serviceName,
+                        firstTemplate.Name);
+
+                    Assert.NotNull(updatePublisherEmailTemplateResponse);
+                    Assert.Equal("Updated Subject", updatePublisherEmailTemplateResponse.Body.Subject);
+
                     // reset the template to default
                     testBase.client.EmailTemplate.Delete(
                         testBase.rgName,
                         testBase.serviceName,
                         firstTemplate.Name,
-                        publisherEmailTemplateResponse.Headers.ETag);
+                        updatePublisherEmailTemplateResponse.Headers.ETag);
 
                     publisherEmailTemplate = testBase.client.EmailTemplate.Get(
                         testBase.rgName,
@@ -75,7 +94,7 @@ namespace ApiManagement.Tests.ManagementApiTests
                         firstTemplate.Name);
 
                     Assert.NotNull(publisherEmailTemplate);
-                    Assert.True(publisherEmailTemplate.IsDefault);                    
+                    Assert.True(publisherEmailTemplate.IsDefault);
                 }
                 finally
                 {

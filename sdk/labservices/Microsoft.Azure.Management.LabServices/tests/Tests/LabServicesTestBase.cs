@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using Microsoft.Azure.Management.LabServices;
@@ -47,9 +47,9 @@ namespace LabServices.Tests
             return result;
         }
 
-        public ManagedLabsClient GetManagedLabsClient(MockContext context)
+        public LabServicesClient GetManagedLabsClient(MockContext context)
         {
-            var client = context.GetServiceClient<ManagedLabsClient>();
+            var client = context.GetServiceClient<LabServicesClient>();
 
             client.SubscriptionId = GetEnvironmentInfo().SubscriptionId;
 
@@ -67,3 +67,4 @@ namespace LabServices.Tests
         }
     }
 }
+

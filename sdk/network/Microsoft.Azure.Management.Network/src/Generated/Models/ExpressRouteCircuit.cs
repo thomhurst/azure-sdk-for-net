@@ -62,15 +62,16 @@ namespace Microsoft.Azure.Management.Network.Models
         /// circuit is provisioned on an ExpressRoutePort resource.</param>
         /// <param name="stag">The identifier of the circuit traffic. Outer tag
         /// for QinQ encapsulation.</param>
-        /// <param name="provisioningState">Gets the provisioning state of the
-        /// public IP resource. Possible values are: 'Updating', 'Deleting',
-        /// and 'Failed'.</param>
+        /// <param name="provisioningState">The provisioning state of the
+        /// express route circuit resource. Possible values include:
+        /// 'Succeeded', 'Updating', 'Deleting', 'Failed'</param>
         /// <param name="gatewayManagerEtag">The GatewayManager Etag.</param>
-        /// <param name="globalReachEnabled">Flag denoting Global reach
+        /// <param name="globalReachEnabled">Flag denoting global reach
         /// status.</param>
-        /// <param name="etag">Gets a unique read-only string that changes
-        /// whenever the resource is updated.</param>
-        public ExpressRouteCircuit(string id = default(string), string name = default(string), string type = default(string), string location = default(string), IDictionary<string, string> tags = default(IDictionary<string, string>), ExpressRouteCircuitSku sku = default(ExpressRouteCircuitSku), bool? allowClassicOperations = default(bool?), string circuitProvisioningState = default(string), string serviceProviderProvisioningState = default(string), IList<ExpressRouteCircuitAuthorization> authorizations = default(IList<ExpressRouteCircuitAuthorization>), IList<ExpressRouteCircuitPeering> peerings = default(IList<ExpressRouteCircuitPeering>), string serviceKey = default(string), string serviceProviderNotes = default(string), ExpressRouteCircuitServiceProviderProperties serviceProviderProperties = default(ExpressRouteCircuitServiceProviderProperties), SubResource expressRoutePort = default(SubResource), double? bandwidthInGbps = default(double?), int? stag = default(int?), string provisioningState = default(string), string gatewayManagerEtag = default(string), bool? globalReachEnabled = default(bool?), string etag = default(string))
+        /// <param name="authorizationKey">The authorizationKey.</param>
+        /// <param name="etag">A unique read-only string that changes whenever
+        /// the resource is updated.</param>
+        public ExpressRouteCircuit(string id = default(string), string name = default(string), string type = default(string), string location = default(string), IDictionary<string, string> tags = default(IDictionary<string, string>), ExpressRouteCircuitSku sku = default(ExpressRouteCircuitSku), bool? allowClassicOperations = default(bool?), string circuitProvisioningState = default(string), string serviceProviderProvisioningState = default(string), IList<ExpressRouteCircuitAuthorization> authorizations = default(IList<ExpressRouteCircuitAuthorization>), IList<ExpressRouteCircuitPeering> peerings = default(IList<ExpressRouteCircuitPeering>), string serviceKey = default(string), string serviceProviderNotes = default(string), ExpressRouteCircuitServiceProviderProperties serviceProviderProperties = default(ExpressRouteCircuitServiceProviderProperties), SubResource expressRoutePort = default(SubResource), double? bandwidthInGbps = default(double?), int? stag = default(int?), string provisioningState = default(string), string gatewayManagerEtag = default(string), bool? globalReachEnabled = default(bool?), string authorizationKey = default(string), string etag = default(string))
             : base(id, name, type, location, tags)
         {
             Sku = sku;
@@ -88,6 +89,7 @@ namespace Microsoft.Azure.Management.Network.Models
             ProvisioningState = provisioningState;
             GatewayManagerEtag = gatewayManagerEtag;
             GlobalReachEnabled = globalReachEnabled;
+            AuthorizationKey = authorizationKey;
             Etag = etag;
             CustomInit();
         }
@@ -175,11 +177,12 @@ namespace Microsoft.Azure.Management.Network.Models
         public int? Stag { get; private set; }
 
         /// <summary>
-        /// Gets the provisioning state of the public IP resource. Possible
-        /// values are: 'Updating', 'Deleting', and 'Failed'.
+        /// Gets the provisioning state of the express route circuit resource.
+        /// Possible values include: 'Succeeded', 'Updating', 'Deleting',
+        /// 'Failed'
         /// </summary>
         [JsonProperty(PropertyName = "properties.provisioningState")]
-        public string ProvisioningState { get; set; }
+        public string ProvisioningState { get; private set; }
 
         /// <summary>
         /// Gets or sets the GatewayManager Etag.
@@ -188,10 +191,16 @@ namespace Microsoft.Azure.Management.Network.Models
         public string GatewayManagerEtag { get; set; }
 
         /// <summary>
-        /// Gets or sets flag denoting Global reach status.
+        /// Gets or sets flag denoting global reach status.
         /// </summary>
         [JsonProperty(PropertyName = "properties.globalReachEnabled")]
         public bool? GlobalReachEnabled { get; set; }
+
+        /// <summary>
+        /// Gets or sets the authorizationKey.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.authorizationKey")]
+        public string AuthorizationKey { get; set; }
 
         /// <summary>
         /// Gets a unique read-only string that changes whenever the resource

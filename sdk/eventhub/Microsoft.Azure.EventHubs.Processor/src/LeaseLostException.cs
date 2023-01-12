@@ -14,7 +14,10 @@ namespace Microsoft.Azure.EventHubs.Processor
     {
         readonly string partitionId;
 
-        internal LeaseLostException(string partitionId, Exception innerException)
+		/// <summary>
+		/// Provides 
+		/// </summary>
+        public LeaseLostException(string partitionId, Exception innerException)
             : base(innerException.Message, innerException)
         {
             Guard.ArgumentNotNullOrWhiteSpace(nameof(partitionId), partitionId);
@@ -22,7 +25,7 @@ namespace Microsoft.Azure.EventHubs.Processor
         }
 
         /// <summary>
-        /// Gets the partition ID where the exception occured.
+        /// Gets the partition ID where the exception occurred.
         /// </summary>
         public string PartitionId => this.partitionId;
     }

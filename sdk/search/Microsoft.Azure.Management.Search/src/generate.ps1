@@ -24,10 +24,10 @@
 
 Param(
     [string] $SpecsRepoFork = "Azure",
-    [string] $SpecsRepoBranch = "master"
+    [string] $SpecsRepoBranch = "master",
+    [string] $Tag = ""
 )
 
-$repoRoot = "$PSScriptRoot\..\..\..\..\.."
-$generateFolder = "$PSScriptRoot\Generated"
+"$PSScriptRoot\..\..\Install-BuildTools.ps1"
 
-Start-AutoRestCodeGeneration -ResourceProvider "search/resource-manager" -AutoRestVersion "latest" -SpecsRepoFork $SpecsRepoFork -SpecsRepoBranch $SpecsRepoBranch
+Start-AutoRestCodeGeneration -ResourceProvider "search/resource-manager" -AutoRestVersion "v2" -SpecsRepoFork $SpecsRepoFork -SpecsRepoBranch $SpecsRepoBranch -ConfigFileTag $Tag

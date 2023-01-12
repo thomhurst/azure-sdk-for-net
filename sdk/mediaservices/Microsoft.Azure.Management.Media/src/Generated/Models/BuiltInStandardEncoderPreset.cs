@@ -37,10 +37,18 @@ namespace Microsoft.Azure.Management.Media.Models
         /// encoding videos. Possible values include: 'H264SingleBitrateSD',
         /// 'H264SingleBitrate720p', 'H264SingleBitrate1080p',
         /// 'AdaptiveStreaming', 'AACGoodQualityAudio',
-        /// 'ContentAwareEncodingExperimental', 'H264MultipleBitrate1080p',
-        /// 'H264MultipleBitrate720p', 'H264MultipleBitrateSD'</param>
-        public BuiltInStandardEncoderPreset(EncoderNamedPreset presetName)
+        /// 'ContentAwareEncodingExperimental', 'ContentAwareEncoding',
+        /// 'CopyAllBitrateNonInterleaved', 'H264MultipleBitrate1080p',
+        /// 'H264MultipleBitrate720p', 'H264MultipleBitrateSD',
+        /// 'H265ContentAwareEncoding', 'H265AdaptiveStreaming',
+        /// 'H265SingleBitrate720p', 'H265SingleBitrate1080p',
+        /// 'H265SingleBitrate4K'</param>
+        /// <param name="configurations">Optional configuration settings for
+        /// encoder. Configurations is only supported for ContentAwareEncoding
+        /// and H265ContentAwareEncoding BuiltInStandardEncoderPreset.</param>
+        public BuiltInStandardEncoderPreset(EncoderNamedPreset presetName, PresetConfigurations configurations = default(PresetConfigurations))
         {
+            Configurations = configurations;
             PresetName = presetName;
             CustomInit();
         }
@@ -51,12 +59,24 @@ namespace Microsoft.Azure.Management.Media.Models
         partial void CustomInit();
 
         /// <summary>
+        /// Gets or sets optional configuration settings for encoder.
+        /// Configurations is only supported for ContentAwareEncoding and
+        /// H265ContentAwareEncoding BuiltInStandardEncoderPreset.
+        /// </summary>
+        [JsonProperty(PropertyName = "configurations")]
+        public PresetConfigurations Configurations { get; set; }
+
+        /// <summary>
         /// Gets or sets the built-in preset to be used for encoding videos.
         /// Possible values include: 'H264SingleBitrateSD',
         /// 'H264SingleBitrate720p', 'H264SingleBitrate1080p',
         /// 'AdaptiveStreaming', 'AACGoodQualityAudio',
-        /// 'ContentAwareEncodingExperimental', 'H264MultipleBitrate1080p',
-        /// 'H264MultipleBitrate720p', 'H264MultipleBitrateSD'
+        /// 'ContentAwareEncodingExperimental', 'ContentAwareEncoding',
+        /// 'CopyAllBitrateNonInterleaved', 'H264MultipleBitrate1080p',
+        /// 'H264MultipleBitrate720p', 'H264MultipleBitrateSD',
+        /// 'H265ContentAwareEncoding', 'H265AdaptiveStreaming',
+        /// 'H265SingleBitrate720p', 'H265SingleBitrate1080p',
+        /// 'H265SingleBitrate4K'
         /// </summary>
         [JsonProperty(PropertyName = "presetName")]
         public EncoderNamedPreset PresetName { get; set; }

@@ -320,7 +320,7 @@ namespace Microsoft.Azure.ServiceBus
             }
             catch (Exception exception)
             {
-                if (isDiagnosticSourceEnabled)
+                if (isDiagnosticSourceEnabled && !(exception is ServiceBusTimeoutException))
                 {
                     this.diagnosticSource.ReportException(exception);
                 }
@@ -331,7 +331,7 @@ namespace Microsoft.Azure.ServiceBus
                     exception);
 
                 await session.CloseAsync().ConfigureAwait(false);
-                throw AmqpExceptionHelper.GetClientException(exception);
+                throw AmqpExceptionHelper.GetClientException(exception, false);
             }
             finally
             {

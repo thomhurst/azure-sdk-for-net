@@ -45,14 +45,17 @@ namespace Microsoft.Azure.Management.Network.Models
         /// if the user changes its name or migrate the resource across
         /// subscriptions or resource groups.</param>
         /// <param name="provisioningState">The provisioning state of the DDoS
-        /// protection plan resource. Possible values are: 'Succeeded',
-        /// 'Updating', 'Deleting', and 'Failed'.</param>
+        /// protection plan resource. Possible values include: 'Succeeded',
+        /// 'Updating', 'Deleting', 'Failed'</param>
+        /// <param name="publicIPAddresses">The list of public IPs associated
+        /// with the DDoS protection plan resource. This list is
+        /// read-only.</param>
         /// <param name="virtualNetworks">The list of virtual networks
         /// associated with the DDoS protection plan resource. This list is
         /// read-only.</param>
         /// <param name="etag">A unique read-only string that changes whenever
         /// the resource is updated.</param>
-        public DdosProtectionPlan(string id = default(string), string name = default(string), string type = default(string), string location = default(string), IDictionary<string, string> tags = default(IDictionary<string, string>), string resourceGuid = default(string), string provisioningState = default(string), IList<SubResource> virtualNetworks = default(IList<SubResource>), string etag = default(string))
+        public DdosProtectionPlan(string id = default(string), string name = default(string), string type = default(string), string location = default(string), IDictionary<string, string> tags = default(IDictionary<string, string>), string resourceGuid = default(string), string provisioningState = default(string), IList<SubResource> publicIPAddresses = default(IList<SubResource>), IList<SubResource> virtualNetworks = default(IList<SubResource>), string etag = default(string))
         {
             Id = id;
             Name = name;
@@ -61,6 +64,7 @@ namespace Microsoft.Azure.Management.Network.Models
             Tags = tags;
             ResourceGuid = resourceGuid;
             ProvisioningState = provisioningState;
+            PublicIPAddresses = publicIPAddresses;
             VirtualNetworks = virtualNetworks;
             Etag = etag;
             CustomInit();
@@ -112,11 +116,18 @@ namespace Microsoft.Azure.Management.Network.Models
 
         /// <summary>
         /// Gets the provisioning state of the DDoS protection plan resource.
-        /// Possible values are: 'Succeeded', 'Updating', 'Deleting', and
-        /// 'Failed'.
+        /// Possible values include: 'Succeeded', 'Updating', 'Deleting',
+        /// 'Failed'
         /// </summary>
         [JsonProperty(PropertyName = "properties.provisioningState")]
         public string ProvisioningState { get; private set; }
+
+        /// <summary>
+        /// Gets the list of public IPs associated with the DDoS protection
+        /// plan resource. This list is read-only.
+        /// </summary>
+        [JsonProperty(PropertyName = "properties.publicIPAddresses")]
+        public IList<SubResource> PublicIPAddresses { get; private set; }
 
         /// <summary>
         /// Gets the list of virtual networks associated with the DDoS

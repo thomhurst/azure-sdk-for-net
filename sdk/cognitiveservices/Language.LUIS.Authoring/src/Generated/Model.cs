@@ -68,7 +68,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
         /// <param name='cancellationToken'>
         /// The cancellation token.
         /// </param>
-        /// <exception cref="HttpOperationException">
+        /// <exception cref="ErrorResponseException">
         /// Thrown when the operation returned an invalid status code
         /// </exception>
         /// <exception cref="SerializationException">
@@ -166,12 +166,19 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
             string _responseContent = null;
             if ((int)_statusCode != 201)
             {
-                var ex = new HttpOperationException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                if (_httpResponse.Content != null) {
+                var ex = new ErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                try
+                {
                     _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    ErrorResponse _errorBody =  Rest.Serialization.SafeJsonConvert.DeserializeObject<ErrorResponse>(_responseContent, Client.DeserializationSettings);
+                    if (_errorBody != null)
+                    {
+                        ex.Body = _errorBody;
+                    }
                 }
-                else {
-                    _responseContent = string.Empty;
+                catch (JsonException)
+                {
+                    // Ignore the exception
                 }
                 ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
                 ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
@@ -261,17 +268,31 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
             }
-            if (skip < 0)
+            if (skip != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "skip", 0);
+                if (skip < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "skip", 0);
+                }
             }
-            if (take > 500)
+            else if (skip == null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
+                throw new ValidationException(ValidationRules.CannotBeNull, "skip", 0);
             }
-            if (take < 0)
+            if (take != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                if (take > 500)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
+                }
+                if (take < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                }
+            }
+            else if (take == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "take", 0);
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -407,7 +428,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
         }
 
         /// <summary>
-        /// Adds a simple entity extractor to a version of the application.
+        /// Adds an entity extractor to a version of the application.
         /// </summary>
         /// <param name='appId'>
         /// The application ID.
@@ -415,8 +436,9 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
         /// <param name='versionId'>
         /// The version ID.
         /// </param>
-        /// <param name='modelCreateObject'>
-        /// A model object containing the name for the new simple entity extractor.
+        /// <param name='entityModelCreateObject'>
+        /// A model object containing the name of the new entity extractor and its
+        /// children.
         /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
@@ -439,7 +461,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<System.Guid>> AddEntityWithHttpMessagesAsync(System.Guid appId, string versionId, ModelCreateObject modelCreateObject, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<System.Guid>> AddEntityWithHttpMessagesAsync(System.Guid appId, string versionId, EntityModelCreateObject entityModelCreateObject, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (Client.Endpoint == null)
             {
@@ -449,9 +471,9 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
             }
-            if (modelCreateObject == null)
+            if (entityModelCreateObject == null)
             {
-                throw new ValidationException(ValidationRules.CannotBeNull, "modelCreateObject");
+                throw new ValidationException(ValidationRules.CannotBeNull, "entityModelCreateObject");
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -462,7 +484,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
                 tracingParameters.Add("appId", appId);
                 tracingParameters.Add("versionId", versionId);
-                tracingParameters.Add("modelCreateObject", modelCreateObject);
+                tracingParameters.Add("entityModelCreateObject", entityModelCreateObject);
                 tracingParameters.Add("cancellationToken", cancellationToken);
                 ServiceClientTracing.Enter(_invocationId, this, "AddEntity", tracingParameters);
             }
@@ -494,9 +516,9 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
 
             // Serialize Request
             string _requestContent = null;
-            if(modelCreateObject != null)
+            if(entityModelCreateObject != null)
             {
-                _requestContent = Rest.Serialization.SafeJsonConvert.SerializeObject(modelCreateObject, Client.SerializationSettings);
+                _requestContent = Rest.Serialization.SafeJsonConvert.SerializeObject(entityModelCreateObject, Client.SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
                 _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
@@ -615,7 +637,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<IList<EntityExtractor>>> ListEntitiesWithHttpMessagesAsync(System.Guid appId, string versionId, int? skip = 0, int? take = 100, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<IList<NDepthEntityExtractor>>> ListEntitiesWithHttpMessagesAsync(System.Guid appId, string versionId, int? skip = 0, int? take = 100, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (Client.Endpoint == null)
             {
@@ -625,17 +647,31 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
             }
-            if (skip < 0)
+            if (skip != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "skip", 0);
+                if (skip < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "skip", 0);
+                }
             }
-            if (take > 500)
+            else if (skip == null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
+                throw new ValidationException(ValidationRules.CannotBeNull, "skip", 0);
             }
-            if (take < 0)
+            if (take != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                if (take > 500)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
+                }
+                if (take < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                }
+            }
+            else if (take == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "take", 0);
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -742,7 +778,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<IList<EntityExtractor>>();
+            var _result = new HttpOperationResponse<IList<NDepthEntityExtractor>>();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             // Deserialize Response
@@ -751,179 +787,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = Rest.Serialization.SafeJsonConvert.DeserializeObject<IList<EntityExtractor>>(_responseContent, Client.DeserializationSettings);
-                }
-                catch (JsonException ex)
-                {
-                    _httpRequest.Dispose();
-                    if (_httpResponse != null)
-                    {
-                        _httpResponse.Dispose();
-                    }
-                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
-                }
-            }
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.Exit(_invocationId, _result);
-            }
-            return _result;
-        }
-
-        /// <summary>
-        /// Adds a hierarchical entity extractor to a version of the application.
-        /// </summary>
-        /// <param name='appId'>
-        /// The application ID.
-        /// </param>
-        /// <param name='versionId'>
-        /// The version ID.
-        /// </param>
-        /// <param name='hierarchicalModelCreateObject'>
-        /// A model containing the name and children of the new entity extractor.
-        /// </param>
-        /// <param name='customHeaders'>
-        /// Headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        /// <exception cref="ErrorResponseException">
-        /// Thrown when the operation returned an invalid status code
-        /// </exception>
-        /// <exception cref="SerializationException">
-        /// Thrown when unable to deserialize the response
-        /// </exception>
-        /// <exception cref="ValidationException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <exception cref="System.ArgumentNullException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <return>
-        /// A response object containing the response body and response headers.
-        /// </return>
-        public async Task<HttpOperationResponse<System.Guid>> AddHierarchicalEntityWithHttpMessagesAsync(System.Guid appId, string versionId, HierarchicalEntityModel hierarchicalModelCreateObject, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (Client.Endpoint == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.Endpoint");
-            }
-            if (versionId == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
-            }
-            if (hierarchicalModelCreateObject == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "hierarchicalModelCreateObject");
-            }
-            // Tracing
-            bool _shouldTrace = ServiceClientTracing.IsEnabled;
-            string _invocationId = null;
-            if (_shouldTrace)
-            {
-                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("appId", appId);
-                tracingParameters.Add("versionId", versionId);
-                tracingParameters.Add("hierarchicalModelCreateObject", hierarchicalModelCreateObject);
-                tracingParameters.Add("cancellationToken", cancellationToken);
-                ServiceClientTracing.Enter(_invocationId, this, "AddHierarchicalEntity", tracingParameters);
-            }
-            // Construct URL
-            var _baseUrl = Client.BaseUri;
-            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "apps/{appId}/versions/{versionId}/hierarchicalentities";
-            _url = _url.Replace("{Endpoint}", Client.Endpoint);
-            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(appId, Client.SerializationSettings).Trim('"')));
-            _url = _url.Replace("{versionId}", System.Uri.EscapeDataString(versionId));
-            // Create HTTP transport objects
-            var _httpRequest = new HttpRequestMessage();
-            HttpResponseMessage _httpResponse = null;
-            _httpRequest.Method = new HttpMethod("POST");
-            _httpRequest.RequestUri = new System.Uri(_url);
-            // Set Headers
-
-
-            if (customHeaders != null)
-            {
-                foreach(var _header in customHeaders)
-                {
-                    if (_httpRequest.Headers.Contains(_header.Key))
-                    {
-                        _httpRequest.Headers.Remove(_header.Key);
-                    }
-                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
-                }
-            }
-
-            // Serialize Request
-            string _requestContent = null;
-            if(hierarchicalModelCreateObject != null)
-            {
-                _requestContent = Rest.Serialization.SafeJsonConvert.SerializeObject(hierarchicalModelCreateObject, Client.SerializationSettings);
-                _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
-            }
-            // Set Credentials
-            if (Client.Credentials != null)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await Client.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            }
-            // Send Request
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
-            }
-            cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await Client.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
-            }
-            HttpStatusCode _statusCode = _httpResponse.StatusCode;
-            cancellationToken.ThrowIfCancellationRequested();
-            string _responseContent = null;
-            if ((int)_statusCode != 201)
-            {
-                var ex = new ErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                try
-                {
-                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    ErrorResponse _errorBody =  Rest.Serialization.SafeJsonConvert.DeserializeObject<ErrorResponse>(_responseContent, Client.DeserializationSettings);
-                    if (_errorBody != null)
-                    {
-                        ex.Body = _errorBody;
-                    }
-                }
-                catch (JsonException)
-                {
-                    // Ignore the exception
-                }
-                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
-                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
-                {
-                    ServiceClientTracing.Error(_invocationId, ex);
-                }
-                _httpRequest.Dispose();
-                if (_httpResponse != null)
-                {
-                    _httpResponse.Dispose();
-                }
-                throw ex;
-            }
-            // Create Result
-            var _result = new HttpOperationResponse<System.Guid>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
-            // Deserialize Response
-            if ((int)_statusCode == 201)
-            {
-                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                try
-                {
-                    _result.Body = Rest.Serialization.SafeJsonConvert.DeserializeObject<System.Guid>(_responseContent, Client.DeserializationSettings);
+                    _result.Body = Rest.Serialization.SafeJsonConvert.DeserializeObject<IList<NDepthEntityExtractor>>(_responseContent, Client.DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -989,17 +853,31 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
             }
-            if (skip < 0)
+            if (skip != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "skip", 0);
+                if (skip < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "skip", 0);
+                }
             }
-            if (take > 500)
+            else if (skip == null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
+                throw new ValidationException(ValidationRules.CannotBeNull, "skip", 0);
             }
-            if (take < 0)
+            if (take != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                if (take > 500)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
+                }
+                if (take < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                }
+            }
+            else if (take == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "take", 0);
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -1135,178 +1013,6 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
         }
 
         /// <summary>
-        /// Adds a composite entity extractor to a version of the application.
-        /// </summary>
-        /// <param name='appId'>
-        /// The application ID.
-        /// </param>
-        /// <param name='versionId'>
-        /// The version ID.
-        /// </param>
-        /// <param name='compositeModelCreateObject'>
-        /// A model containing the name and children of the new entity extractor.
-        /// </param>
-        /// <param name='customHeaders'>
-        /// Headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        /// <exception cref="ErrorResponseException">
-        /// Thrown when the operation returned an invalid status code
-        /// </exception>
-        /// <exception cref="SerializationException">
-        /// Thrown when unable to deserialize the response
-        /// </exception>
-        /// <exception cref="ValidationException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <exception cref="System.ArgumentNullException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <return>
-        /// A response object containing the response body and response headers.
-        /// </return>
-        public async Task<HttpOperationResponse<System.Guid>> AddCompositeEntityWithHttpMessagesAsync(System.Guid appId, string versionId, CompositeEntityModel compositeModelCreateObject, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (Client.Endpoint == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.Endpoint");
-            }
-            if (versionId == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
-            }
-            if (compositeModelCreateObject == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "compositeModelCreateObject");
-            }
-            // Tracing
-            bool _shouldTrace = ServiceClientTracing.IsEnabled;
-            string _invocationId = null;
-            if (_shouldTrace)
-            {
-                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("appId", appId);
-                tracingParameters.Add("versionId", versionId);
-                tracingParameters.Add("compositeModelCreateObject", compositeModelCreateObject);
-                tracingParameters.Add("cancellationToken", cancellationToken);
-                ServiceClientTracing.Enter(_invocationId, this, "AddCompositeEntity", tracingParameters);
-            }
-            // Construct URL
-            var _baseUrl = Client.BaseUri;
-            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "apps/{appId}/versions/{versionId}/compositeentities";
-            _url = _url.Replace("{Endpoint}", Client.Endpoint);
-            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(appId, Client.SerializationSettings).Trim('"')));
-            _url = _url.Replace("{versionId}", System.Uri.EscapeDataString(versionId));
-            // Create HTTP transport objects
-            var _httpRequest = new HttpRequestMessage();
-            HttpResponseMessage _httpResponse = null;
-            _httpRequest.Method = new HttpMethod("POST");
-            _httpRequest.RequestUri = new System.Uri(_url);
-            // Set Headers
-
-
-            if (customHeaders != null)
-            {
-                foreach(var _header in customHeaders)
-                {
-                    if (_httpRequest.Headers.Contains(_header.Key))
-                    {
-                        _httpRequest.Headers.Remove(_header.Key);
-                    }
-                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
-                }
-            }
-
-            // Serialize Request
-            string _requestContent = null;
-            if(compositeModelCreateObject != null)
-            {
-                _requestContent = Rest.Serialization.SafeJsonConvert.SerializeObject(compositeModelCreateObject, Client.SerializationSettings);
-                _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
-            }
-            // Set Credentials
-            if (Client.Credentials != null)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await Client.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            }
-            // Send Request
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
-            }
-            cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await Client.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
-            }
-            HttpStatusCode _statusCode = _httpResponse.StatusCode;
-            cancellationToken.ThrowIfCancellationRequested();
-            string _responseContent = null;
-            if ((int)_statusCode != 201)
-            {
-                var ex = new ErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                try
-                {
-                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    ErrorResponse _errorBody =  Rest.Serialization.SafeJsonConvert.DeserializeObject<ErrorResponse>(_responseContent, Client.DeserializationSettings);
-                    if (_errorBody != null)
-                    {
-                        ex.Body = _errorBody;
-                    }
-                }
-                catch (JsonException)
-                {
-                    // Ignore the exception
-                }
-                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
-                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
-                {
-                    ServiceClientTracing.Error(_invocationId, ex);
-                }
-                _httpRequest.Dispose();
-                if (_httpResponse != null)
-                {
-                    _httpResponse.Dispose();
-                }
-                throw ex;
-            }
-            // Create Result
-            var _result = new HttpOperationResponse<System.Guid>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
-            // Deserialize Response
-            if ((int)_statusCode == 201)
-            {
-                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                try
-                {
-                    _result.Body = Rest.Serialization.SafeJsonConvert.DeserializeObject<System.Guid>(_responseContent, Client.DeserializationSettings);
-                }
-                catch (JsonException ex)
-                {
-                    _httpRequest.Dispose();
-                    if (_httpResponse != null)
-                    {
-                        _httpResponse.Dispose();
-                    }
-                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
-                }
-            }
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.Exit(_invocationId, _result);
-            }
-            return _result;
-        }
-
-        /// <summary>
         /// Gets information about all the composite entity models in a version of the
         /// application.
         /// </summary>
@@ -1353,17 +1059,31 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
             }
-            if (skip < 0)
+            if (skip != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "skip", 0);
+                if (skip < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "skip", 0);
+                }
             }
-            if (take > 500)
+            else if (skip == null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
+                throw new ValidationException(ValidationRules.CannotBeNull, "skip", 0);
             }
-            if (take < 0)
+            if (take != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                if (take > 500)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
+                }
+                if (take < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                }
+            }
+            else if (take == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "take", 0);
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -1545,17 +1265,31 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
             }
-            if (skip < 0)
+            if (skip != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "skip", 0);
+                if (skip < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "skip", 0);
+                }
             }
-            if (take > 500)
+            else if (skip == null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
+                throw new ValidationException(ValidationRules.CannotBeNull, "skip", 0);
             }
-            if (take < 0)
+            if (take != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                if (take > 500)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
+                }
+                if (take < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                }
+            }
+            else if (take == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "take", 0);
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -2081,17 +1815,31 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
             }
-            if (skip < 0)
+            if (skip != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "skip", 0);
+                if (skip < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "skip", 0);
+                }
             }
-            if (take > 500)
+            else if (skip == null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
+                throw new ValidationException(ValidationRules.CannotBeNull, "skip", 0);
             }
-            if (take < 0)
+            if (take != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                if (take > 500)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
+                }
+                if (take < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                }
+            }
+            else if (take == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "take", 0);
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -2431,17 +2179,31 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
             }
-            if (skip < 0)
+            if (skip != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "skip", 0);
+                if (skip < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "skip", 0);
+                }
             }
-            if (take > 500)
+            else if (skip == null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
+                throw new ValidationException(ValidationRules.CannotBeNull, "skip", 0);
             }
-            if (take < 0)
+            if (take != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                if (take > 500)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
+                }
+                if (take < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                }
+            }
+            else if (take == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "take", 0);
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -2630,17 +2392,31 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "modelId");
             }
-            if (skip < 0)
+            if (skip != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "skip", 0);
+                if (skip < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "skip", 0);
+                }
             }
-            if (take > 500)
+            else if (skip == null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
+                throw new ValidationException(ValidationRules.CannotBeNull, "skip", 0);
             }
-            if (take < 0)
+            if (take != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                if (take > 500)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
+                }
+                if (take < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                }
+            }
+            else if (take == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "take", 0);
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -3327,7 +3103,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<EntityExtractor>> GetEntityWithHttpMessagesAsync(System.Guid appId, string versionId, System.Guid entityId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<NDepthEntityExtractor>> GetEntityWithHttpMessagesAsync(System.Guid appId, string versionId, System.Guid entityId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (Client.Endpoint == null)
             {
@@ -3429,7 +3205,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
                 throw ex;
             }
             // Create Result
-            var _result = new HttpOperationResponse<EntityExtractor>();
+            var _result = new HttpOperationResponse<NDepthEntityExtractor>();
             _result.Request = _httpRequest;
             _result.Response = _httpResponse;
             // Deserialize Response
@@ -3438,7 +3214,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
                 _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 try
                 {
-                    _result.Body = Rest.Serialization.SafeJsonConvert.DeserializeObject<EntityExtractor>(_responseContent, Client.DeserializationSettings);
+                    _result.Body = Rest.Serialization.SafeJsonConvert.DeserializeObject<NDepthEntityExtractor>(_responseContent, Client.DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -3458,7 +3234,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
         }
 
         /// <summary>
-        /// Updates the name of an entity in a version of the application.
+        /// Deletes an entity or a child from a version of the application.
         /// </summary>
         /// <param name='appId'>
         /// The application ID.
@@ -3467,10 +3243,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
         /// The version ID.
         /// </param>
         /// <param name='entityId'>
-        /// The entity extractor ID.
-        /// </param>
-        /// <param name='modelUpdateObject'>
-        /// A model object containing the new entity extractor name.
+        /// The entity extractor or the child entity extractor ID.
         /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
@@ -3493,7 +3266,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<OperationStatus>> UpdateEntityWithHttpMessagesAsync(System.Guid appId, string versionId, System.Guid entityId, ModelUpdateObject modelUpdateObject, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<OperationStatus>> DeleteEntityWithHttpMessagesAsync(System.Guid appId, string versionId, System.Guid entityId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (Client.Endpoint == null)
             {
@@ -3502,10 +3275,6 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
             if (versionId == null)
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
-            }
-            if (modelUpdateObject == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "modelUpdateObject");
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -3517,9 +3286,8 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
                 tracingParameters.Add("appId", appId);
                 tracingParameters.Add("versionId", versionId);
                 tracingParameters.Add("entityId", entityId);
-                tracingParameters.Add("modelUpdateObject", modelUpdateObject);
                 tracingParameters.Add("cancellationToken", cancellationToken);
-                ServiceClientTracing.Enter(_invocationId, this, "UpdateEntity", tracingParameters);
+                ServiceClientTracing.Enter(_invocationId, this, "DeleteEntity", tracingParameters);
             }
             // Construct URL
             var _baseUrl = Client.BaseUri;
@@ -3531,7 +3299,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
             // Create HTTP transport objects
             var _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
-            _httpRequest.Method = new HttpMethod("PUT");
+            _httpRequest.Method = new HttpMethod("DELETE");
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
@@ -3550,9 +3318,182 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
 
             // Serialize Request
             string _requestContent = null;
-            if(modelUpdateObject != null)
+            // Set Credentials
+            if (Client.Credentials != null)
             {
-                _requestContent = Rest.Serialization.SafeJsonConvert.SerializeObject(modelUpdateObject, Client.SerializationSettings);
+                cancellationToken.ThrowIfCancellationRequested();
+                await Client.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            }
+            // Send Request
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            _httpResponse = await Client.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
+            }
+            HttpStatusCode _statusCode = _httpResponse.StatusCode;
+            cancellationToken.ThrowIfCancellationRequested();
+            string _responseContent = null;
+            if ((int)_statusCode != 200)
+            {
+                var ex = new ErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                try
+                {
+                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    ErrorResponse _errorBody =  Rest.Serialization.SafeJsonConvert.DeserializeObject<ErrorResponse>(_responseContent, Client.DeserializationSettings);
+                    if (_errorBody != null)
+                    {
+                        ex.Body = _errorBody;
+                    }
+                }
+                catch (JsonException)
+                {
+                    // Ignore the exception
+                }
+                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
+                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
+                if (_shouldTrace)
+                {
+                    ServiceClientTracing.Error(_invocationId, ex);
+                }
+                _httpRequest.Dispose();
+                if (_httpResponse != null)
+                {
+                    _httpResponse.Dispose();
+                }
+                throw ex;
+            }
+            // Create Result
+            var _result = new HttpOperationResponse<OperationStatus>();
+            _result.Request = _httpRequest;
+            _result.Response = _httpResponse;
+            // Deserialize Response
+            if ((int)_statusCode == 200)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = Rest.Serialization.SafeJsonConvert.DeserializeObject<OperationStatus>(_responseContent, Client.DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.Exit(_invocationId, _result);
+            }
+            return _result;
+        }
+
+        /// <summary>
+        /// Updates the name of an entity extractor or the name and instanceOf model of
+        /// a child entity extractor.
+        /// </summary>
+        /// <param name='appId'>
+        /// The application ID.
+        /// </param>
+        /// <param name='versionId'>
+        /// The version ID.
+        /// </param>
+        /// <param name='entityId'>
+        /// The entity extractor or the child entity extractor ID.
+        /// </param>
+        /// <param name='entityModelUpdateObject'>
+        /// A model object containing the name new entity extractor or the name and
+        /// instance of model of a child entity extractor
+        /// </param>
+        /// <param name='customHeaders'>
+        /// Headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        /// <exception cref="ErrorResponseException">
+        /// Thrown when the operation returned an invalid status code
+        /// </exception>
+        /// <exception cref="SerializationException">
+        /// Thrown when unable to deserialize the response
+        /// </exception>
+        /// <exception cref="ValidationException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <return>
+        /// A response object containing the response body and response headers.
+        /// </return>
+        public async Task<HttpOperationResponse<OperationStatus>> UpdateEntityChildWithHttpMessagesAsync(System.Guid appId, string versionId, System.Guid entityId, EntityModelUpdateObject entityModelUpdateObject, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (Client.Endpoint == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.Endpoint");
+            }
+            if (versionId == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
+            }
+            if (entityModelUpdateObject == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "entityModelUpdateObject");
+            }
+            // Tracing
+            bool _shouldTrace = ServiceClientTracing.IsEnabled;
+            string _invocationId = null;
+            if (_shouldTrace)
+            {
+                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("appId", appId);
+                tracingParameters.Add("versionId", versionId);
+                tracingParameters.Add("entityId", entityId);
+                tracingParameters.Add("entityModelUpdateObject", entityModelUpdateObject);
+                tracingParameters.Add("cancellationToken", cancellationToken);
+                ServiceClientTracing.Enter(_invocationId, this, "UpdateEntityChild", tracingParameters);
+            }
+            // Construct URL
+            var _baseUrl = Client.BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "apps/{appId}/versions/{versionId}/entities/{entityId}";
+            _url = _url.Replace("{Endpoint}", Client.Endpoint);
+            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(appId, Client.SerializationSettings).Trim('"')));
+            _url = _url.Replace("{versionId}", System.Uri.EscapeDataString(versionId));
+            _url = _url.Replace("{entityId}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(entityId, Client.SerializationSettings).Trim('"')));
+            // Create HTTP transport objects
+            var _httpRequest = new HttpRequestMessage();
+            HttpResponseMessage _httpResponse = null;
+            _httpRequest.Method = new HttpMethod("PATCH");
+            _httpRequest.RequestUri = new System.Uri(_url);
+            // Set Headers
+
+
+            if (customHeaders != null)
+            {
+                foreach(var _header in customHeaders)
+                {
+                    if (_httpRequest.Headers.Contains(_header.Key))
+                    {
+                        _httpRequest.Headers.Remove(_header.Key);
+                    }
+                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
+                }
+            }
+
+            // Serialize Request
+            string _requestContent = null;
+            if(entityModelUpdateObject != null)
+            {
+                _requestContent = Rest.Serialization.SafeJsonConvert.SerializeObject(entityModelUpdateObject, Client.SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
                 _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
@@ -3635,7 +3576,528 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
         }
 
         /// <summary>
-        /// Deletes an entity from a version of the application.
+        /// Gets the information of the features used by the intent in a version of the
+        /// application.
+        /// </summary>
+        /// <param name='appId'>
+        /// The application ID.
+        /// </param>
+        /// <param name='versionId'>
+        /// The version ID.
+        /// </param>
+        /// <param name='intentId'>
+        /// The intent classifier ID.
+        /// </param>
+        /// <param name='customHeaders'>
+        /// Headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        /// <exception cref="ErrorResponseException">
+        /// Thrown when the operation returned an invalid status code
+        /// </exception>
+        /// <exception cref="SerializationException">
+        /// Thrown when unable to deserialize the response
+        /// </exception>
+        /// <exception cref="ValidationException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <return>
+        /// A response object containing the response body and response headers.
+        /// </return>
+        public async Task<HttpOperationResponse<IList<ModelFeatureInformation>>> GetIntentFeaturesWithHttpMessagesAsync(System.Guid appId, string versionId, System.Guid intentId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (Client.Endpoint == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.Endpoint");
+            }
+            if (versionId == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
+            }
+            // Tracing
+            bool _shouldTrace = ServiceClientTracing.IsEnabled;
+            string _invocationId = null;
+            if (_shouldTrace)
+            {
+                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("appId", appId);
+                tracingParameters.Add("versionId", versionId);
+                tracingParameters.Add("intentId", intentId);
+                tracingParameters.Add("cancellationToken", cancellationToken);
+                ServiceClientTracing.Enter(_invocationId, this, "GetIntentFeatures", tracingParameters);
+            }
+            // Construct URL
+            var _baseUrl = Client.BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "apps/{appId}/versions/{versionId}/intents/{intentId}/features";
+            _url = _url.Replace("{Endpoint}", Client.Endpoint);
+            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(appId, Client.SerializationSettings).Trim('"')));
+            _url = _url.Replace("{versionId}", System.Uri.EscapeDataString(versionId));
+            _url = _url.Replace("{intentId}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(intentId, Client.SerializationSettings).Trim('"')));
+            // Create HTTP transport objects
+            var _httpRequest = new HttpRequestMessage();
+            HttpResponseMessage _httpResponse = null;
+            _httpRequest.Method = new HttpMethod("GET");
+            _httpRequest.RequestUri = new System.Uri(_url);
+            // Set Headers
+
+
+            if (customHeaders != null)
+            {
+                foreach(var _header in customHeaders)
+                {
+                    if (_httpRequest.Headers.Contains(_header.Key))
+                    {
+                        _httpRequest.Headers.Remove(_header.Key);
+                    }
+                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
+                }
+            }
+
+            // Serialize Request
+            string _requestContent = null;
+            // Set Credentials
+            if (Client.Credentials != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await Client.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            }
+            // Send Request
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            _httpResponse = await Client.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
+            }
+            HttpStatusCode _statusCode = _httpResponse.StatusCode;
+            cancellationToken.ThrowIfCancellationRequested();
+            string _responseContent = null;
+            if ((int)_statusCode != 200)
+            {
+                var ex = new ErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                try
+                {
+                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    ErrorResponse _errorBody =  Rest.Serialization.SafeJsonConvert.DeserializeObject<ErrorResponse>(_responseContent, Client.DeserializationSettings);
+                    if (_errorBody != null)
+                    {
+                        ex.Body = _errorBody;
+                    }
+                }
+                catch (JsonException)
+                {
+                    // Ignore the exception
+                }
+                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
+                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
+                if (_shouldTrace)
+                {
+                    ServiceClientTracing.Error(_invocationId, ex);
+                }
+                _httpRequest.Dispose();
+                if (_httpResponse != null)
+                {
+                    _httpResponse.Dispose();
+                }
+                throw ex;
+            }
+            // Create Result
+            var _result = new HttpOperationResponse<IList<ModelFeatureInformation>>();
+            _result.Request = _httpRequest;
+            _result.Response = _httpResponse;
+            // Deserialize Response
+            if ((int)_statusCode == 200)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = Rest.Serialization.SafeJsonConvert.DeserializeObject<IList<ModelFeatureInformation>>(_responseContent, Client.DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.Exit(_invocationId, _result);
+            }
+            return _result;
+        }
+
+        /// <summary>
+        /// Updates the information of the features used by the intent in a version of
+        /// the application.
+        /// </summary>
+        /// <param name='appId'>
+        /// The application ID.
+        /// </param>
+        /// <param name='versionId'>
+        /// The version ID.
+        /// </param>
+        /// <param name='intentId'>
+        /// The intent classifier ID.
+        /// </param>
+        /// <param name='featureRelationsUpdateObject'>
+        /// A list of feature information objects containing the new feature relations.
+        /// </param>
+        /// <param name='customHeaders'>
+        /// Headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        /// <exception cref="ErrorResponseException">
+        /// Thrown when the operation returned an invalid status code
+        /// </exception>
+        /// <exception cref="SerializationException">
+        /// Thrown when unable to deserialize the response
+        /// </exception>
+        /// <exception cref="ValidationException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <return>
+        /// A response object containing the response body and response headers.
+        /// </return>
+        public async Task<HttpOperationResponse<OperationStatus>> ReplaceIntentFeaturesWithHttpMessagesAsync(System.Guid appId, string versionId, System.Guid intentId, IList<ModelFeatureInformation> featureRelationsUpdateObject, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (Client.Endpoint == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.Endpoint");
+            }
+            if (versionId == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
+            }
+            if (featureRelationsUpdateObject == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "featureRelationsUpdateObject");
+            }
+            // Tracing
+            bool _shouldTrace = ServiceClientTracing.IsEnabled;
+            string _invocationId = null;
+            if (_shouldTrace)
+            {
+                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("appId", appId);
+                tracingParameters.Add("versionId", versionId);
+                tracingParameters.Add("intentId", intentId);
+                tracingParameters.Add("featureRelationsUpdateObject", featureRelationsUpdateObject);
+                tracingParameters.Add("cancellationToken", cancellationToken);
+                ServiceClientTracing.Enter(_invocationId, this, "ReplaceIntentFeatures", tracingParameters);
+            }
+            // Construct URL
+            var _baseUrl = Client.BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "apps/{appId}/versions/{versionId}/intents/{intentId}/features";
+            _url = _url.Replace("{Endpoint}", Client.Endpoint);
+            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(appId, Client.SerializationSettings).Trim('"')));
+            _url = _url.Replace("{versionId}", System.Uri.EscapeDataString(versionId));
+            _url = _url.Replace("{intentId}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(intentId, Client.SerializationSettings).Trim('"')));
+            // Create HTTP transport objects
+            var _httpRequest = new HttpRequestMessage();
+            HttpResponseMessage _httpResponse = null;
+            _httpRequest.Method = new HttpMethod("PUT");
+            _httpRequest.RequestUri = new System.Uri(_url);
+            // Set Headers
+
+
+            if (customHeaders != null)
+            {
+                foreach(var _header in customHeaders)
+                {
+                    if (_httpRequest.Headers.Contains(_header.Key))
+                    {
+                        _httpRequest.Headers.Remove(_header.Key);
+                    }
+                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
+                }
+            }
+
+            // Serialize Request
+            string _requestContent = null;
+            if(featureRelationsUpdateObject != null)
+            {
+                _requestContent = Rest.Serialization.SafeJsonConvert.SerializeObject(featureRelationsUpdateObject, Client.SerializationSettings);
+                _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
+                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+            }
+            // Set Credentials
+            if (Client.Credentials != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await Client.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            }
+            // Send Request
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            _httpResponse = await Client.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
+            }
+            HttpStatusCode _statusCode = _httpResponse.StatusCode;
+            cancellationToken.ThrowIfCancellationRequested();
+            string _responseContent = null;
+            if ((int)_statusCode != 200)
+            {
+                var ex = new ErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                try
+                {
+                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    ErrorResponse _errorBody =  Rest.Serialization.SafeJsonConvert.DeserializeObject<ErrorResponse>(_responseContent, Client.DeserializationSettings);
+                    if (_errorBody != null)
+                    {
+                        ex.Body = _errorBody;
+                    }
+                }
+                catch (JsonException)
+                {
+                    // Ignore the exception
+                }
+                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
+                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
+                if (_shouldTrace)
+                {
+                    ServiceClientTracing.Error(_invocationId, ex);
+                }
+                _httpRequest.Dispose();
+                if (_httpResponse != null)
+                {
+                    _httpResponse.Dispose();
+                }
+                throw ex;
+            }
+            // Create Result
+            var _result = new HttpOperationResponse<OperationStatus>();
+            _result.Request = _httpRequest;
+            _result.Response = _httpResponse;
+            // Deserialize Response
+            if ((int)_statusCode == 200)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = Rest.Serialization.SafeJsonConvert.DeserializeObject<OperationStatus>(_responseContent, Client.DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.Exit(_invocationId, _result);
+            }
+            return _result;
+        }
+
+        /// <summary>
+        /// Deletes a relation from the feature relations used by the intent in a
+        /// version of the application.
+        /// </summary>
+        /// <param name='appId'>
+        /// The application ID.
+        /// </param>
+        /// <param name='versionId'>
+        /// The version ID.
+        /// </param>
+        /// <param name='intentId'>
+        /// The intent classifier ID.
+        /// </param>
+        /// <param name='featureRelationDeleteObject'>
+        /// A feature information object containing the feature relation to delete.
+        /// </param>
+        /// <param name='customHeaders'>
+        /// Headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        /// <exception cref="ErrorResponseException">
+        /// Thrown when the operation returned an invalid status code
+        /// </exception>
+        /// <exception cref="SerializationException">
+        /// Thrown when unable to deserialize the response
+        /// </exception>
+        /// <exception cref="ValidationException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <return>
+        /// A response object containing the response body and response headers.
+        /// </return>
+        public async Task<HttpOperationResponse<OperationStatus>> DeleteIntentFeatureWithHttpMessagesAsync(System.Guid appId, string versionId, System.Guid intentId, ModelFeatureInformation featureRelationDeleteObject, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (Client.Endpoint == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.Endpoint");
+            }
+            if (versionId == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
+            }
+            if (featureRelationDeleteObject == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "featureRelationDeleteObject");
+            }
+            // Tracing
+            bool _shouldTrace = ServiceClientTracing.IsEnabled;
+            string _invocationId = null;
+            if (_shouldTrace)
+            {
+                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("appId", appId);
+                tracingParameters.Add("versionId", versionId);
+                tracingParameters.Add("intentId", intentId);
+                tracingParameters.Add("featureRelationDeleteObject", featureRelationDeleteObject);
+                tracingParameters.Add("cancellationToken", cancellationToken);
+                ServiceClientTracing.Enter(_invocationId, this, "DeleteIntentFeature", tracingParameters);
+            }
+            // Construct URL
+            var _baseUrl = Client.BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "apps/{appId}/versions/{versionId}/intents/{intentId}/features";
+            _url = _url.Replace("{Endpoint}", Client.Endpoint);
+            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(appId, Client.SerializationSettings).Trim('"')));
+            _url = _url.Replace("{versionId}", System.Uri.EscapeDataString(versionId));
+            _url = _url.Replace("{intentId}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(intentId, Client.SerializationSettings).Trim('"')));
+            // Create HTTP transport objects
+            var _httpRequest = new HttpRequestMessage();
+            HttpResponseMessage _httpResponse = null;
+            _httpRequest.Method = new HttpMethod("DELETE");
+            _httpRequest.RequestUri = new System.Uri(_url);
+            // Set Headers
+
+
+            if (customHeaders != null)
+            {
+                foreach(var _header in customHeaders)
+                {
+                    if (_httpRequest.Headers.Contains(_header.Key))
+                    {
+                        _httpRequest.Headers.Remove(_header.Key);
+                    }
+                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
+                }
+            }
+
+            // Serialize Request
+            string _requestContent = null;
+            if(featureRelationDeleteObject != null)
+            {
+                _requestContent = Rest.Serialization.SafeJsonConvert.SerializeObject(featureRelationDeleteObject, Client.SerializationSettings);
+                _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
+                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+            }
+            // Set Credentials
+            if (Client.Credentials != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await Client.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            }
+            // Send Request
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            _httpResponse = await Client.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
+            }
+            HttpStatusCode _statusCode = _httpResponse.StatusCode;
+            cancellationToken.ThrowIfCancellationRequested();
+            string _responseContent = null;
+            if ((int)_statusCode != 200)
+            {
+                var ex = new ErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                try
+                {
+                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    ErrorResponse _errorBody =  Rest.Serialization.SafeJsonConvert.DeserializeObject<ErrorResponse>(_responseContent, Client.DeserializationSettings);
+                    if (_errorBody != null)
+                    {
+                        ex.Body = _errorBody;
+                    }
+                }
+                catch (JsonException)
+                {
+                    // Ignore the exception
+                }
+                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
+                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
+                if (_shouldTrace)
+                {
+                    ServiceClientTracing.Error(_invocationId, ex);
+                }
+                _httpRequest.Dispose();
+                if (_httpResponse != null)
+                {
+                    _httpResponse.Dispose();
+                }
+                throw ex;
+            }
+            // Create Result
+            var _result = new HttpOperationResponse<OperationStatus>();
+            _result.Request = _httpRequest;
+            _result.Response = _httpResponse;
+            // Deserialize Response
+            if ((int)_statusCode == 200)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = Rest.Serialization.SafeJsonConvert.DeserializeObject<OperationStatus>(_responseContent, Client.DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.Exit(_invocationId, _result);
+            }
+            return _result;
+        }
+
+        /// <summary>
+        /// Gets the information of the features used by the entity in a version of the
+        /// application.
         /// </summary>
         /// <param name='appId'>
         /// The application ID.
@@ -3667,7 +4129,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<OperationStatus>> DeleteEntityWithHttpMessagesAsync(System.Guid appId, string versionId, System.Guid entityId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<IList<ModelFeatureInformation>>> GetEntityFeaturesWithHttpMessagesAsync(System.Guid appId, string versionId, System.Guid entityId, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (Client.Endpoint == null)
             {
@@ -3688,11 +4150,361 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
                 tracingParameters.Add("versionId", versionId);
                 tracingParameters.Add("entityId", entityId);
                 tracingParameters.Add("cancellationToken", cancellationToken);
-                ServiceClientTracing.Enter(_invocationId, this, "DeleteEntity", tracingParameters);
+                ServiceClientTracing.Enter(_invocationId, this, "GetEntityFeatures", tracingParameters);
             }
             // Construct URL
             var _baseUrl = Client.BaseUri;
-            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "apps/{appId}/versions/{versionId}/entities/{entityId}";
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "apps/{appId}/versions/{versionId}/entities/{entityId}/features";
+            _url = _url.Replace("{Endpoint}", Client.Endpoint);
+            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(appId, Client.SerializationSettings).Trim('"')));
+            _url = _url.Replace("{versionId}", System.Uri.EscapeDataString(versionId));
+            _url = _url.Replace("{entityId}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(entityId, Client.SerializationSettings).Trim('"')));
+            // Create HTTP transport objects
+            var _httpRequest = new HttpRequestMessage();
+            HttpResponseMessage _httpResponse = null;
+            _httpRequest.Method = new HttpMethod("GET");
+            _httpRequest.RequestUri = new System.Uri(_url);
+            // Set Headers
+
+
+            if (customHeaders != null)
+            {
+                foreach(var _header in customHeaders)
+                {
+                    if (_httpRequest.Headers.Contains(_header.Key))
+                    {
+                        _httpRequest.Headers.Remove(_header.Key);
+                    }
+                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
+                }
+            }
+
+            // Serialize Request
+            string _requestContent = null;
+            // Set Credentials
+            if (Client.Credentials != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await Client.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            }
+            // Send Request
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            _httpResponse = await Client.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
+            }
+            HttpStatusCode _statusCode = _httpResponse.StatusCode;
+            cancellationToken.ThrowIfCancellationRequested();
+            string _responseContent = null;
+            if ((int)_statusCode != 200)
+            {
+                var ex = new ErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                try
+                {
+                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    ErrorResponse _errorBody =  Rest.Serialization.SafeJsonConvert.DeserializeObject<ErrorResponse>(_responseContent, Client.DeserializationSettings);
+                    if (_errorBody != null)
+                    {
+                        ex.Body = _errorBody;
+                    }
+                }
+                catch (JsonException)
+                {
+                    // Ignore the exception
+                }
+                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
+                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
+                if (_shouldTrace)
+                {
+                    ServiceClientTracing.Error(_invocationId, ex);
+                }
+                _httpRequest.Dispose();
+                if (_httpResponse != null)
+                {
+                    _httpResponse.Dispose();
+                }
+                throw ex;
+            }
+            // Create Result
+            var _result = new HttpOperationResponse<IList<ModelFeatureInformation>>();
+            _result.Request = _httpRequest;
+            _result.Response = _httpResponse;
+            // Deserialize Response
+            if ((int)_statusCode == 200)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = Rest.Serialization.SafeJsonConvert.DeserializeObject<IList<ModelFeatureInformation>>(_responseContent, Client.DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.Exit(_invocationId, _result);
+            }
+            return _result;
+        }
+
+        /// <summary>
+        /// Updates the information of the features used by the entity in a version of
+        /// the application.
+        /// </summary>
+        /// <param name='appId'>
+        /// The application ID.
+        /// </param>
+        /// <param name='versionId'>
+        /// The version ID.
+        /// </param>
+        /// <param name='entityId'>
+        /// The entity extractor ID.
+        /// </param>
+        /// <param name='featureRelationsUpdateObject'>
+        /// A list of feature information objects containing the new feature relations.
+        /// </param>
+        /// <param name='customHeaders'>
+        /// Headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        /// <exception cref="ErrorResponseException">
+        /// Thrown when the operation returned an invalid status code
+        /// </exception>
+        /// <exception cref="SerializationException">
+        /// Thrown when unable to deserialize the response
+        /// </exception>
+        /// <exception cref="ValidationException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <return>
+        /// A response object containing the response body and response headers.
+        /// </return>
+        public async Task<HttpOperationResponse<OperationStatus>> ReplaceEntityFeaturesWithHttpMessagesAsync(System.Guid appId, string versionId, System.Guid entityId, IList<ModelFeatureInformation> featureRelationsUpdateObject, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (Client.Endpoint == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.Endpoint");
+            }
+            if (versionId == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
+            }
+            if (featureRelationsUpdateObject == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "featureRelationsUpdateObject");
+            }
+            // Tracing
+            bool _shouldTrace = ServiceClientTracing.IsEnabled;
+            string _invocationId = null;
+            if (_shouldTrace)
+            {
+                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("appId", appId);
+                tracingParameters.Add("versionId", versionId);
+                tracingParameters.Add("entityId", entityId);
+                tracingParameters.Add("featureRelationsUpdateObject", featureRelationsUpdateObject);
+                tracingParameters.Add("cancellationToken", cancellationToken);
+                ServiceClientTracing.Enter(_invocationId, this, "ReplaceEntityFeatures", tracingParameters);
+            }
+            // Construct URL
+            var _baseUrl = Client.BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "apps/{appId}/versions/{versionId}/entities/{entityId}/features";
+            _url = _url.Replace("{Endpoint}", Client.Endpoint);
+            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(appId, Client.SerializationSettings).Trim('"')));
+            _url = _url.Replace("{versionId}", System.Uri.EscapeDataString(versionId));
+            _url = _url.Replace("{entityId}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(entityId, Client.SerializationSettings).Trim('"')));
+            // Create HTTP transport objects
+            var _httpRequest = new HttpRequestMessage();
+            HttpResponseMessage _httpResponse = null;
+            _httpRequest.Method = new HttpMethod("PUT");
+            _httpRequest.RequestUri = new System.Uri(_url);
+            // Set Headers
+
+
+            if (customHeaders != null)
+            {
+                foreach(var _header in customHeaders)
+                {
+                    if (_httpRequest.Headers.Contains(_header.Key))
+                    {
+                        _httpRequest.Headers.Remove(_header.Key);
+                    }
+                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
+                }
+            }
+
+            // Serialize Request
+            string _requestContent = null;
+            if(featureRelationsUpdateObject != null)
+            {
+                _requestContent = Rest.Serialization.SafeJsonConvert.SerializeObject(featureRelationsUpdateObject, Client.SerializationSettings);
+                _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
+                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+            }
+            // Set Credentials
+            if (Client.Credentials != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await Client.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            }
+            // Send Request
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            _httpResponse = await Client.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
+            }
+            HttpStatusCode _statusCode = _httpResponse.StatusCode;
+            cancellationToken.ThrowIfCancellationRequested();
+            string _responseContent = null;
+            if ((int)_statusCode != 200)
+            {
+                var ex = new ErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                try
+                {
+                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    ErrorResponse _errorBody =  Rest.Serialization.SafeJsonConvert.DeserializeObject<ErrorResponse>(_responseContent, Client.DeserializationSettings);
+                    if (_errorBody != null)
+                    {
+                        ex.Body = _errorBody;
+                    }
+                }
+                catch (JsonException)
+                {
+                    // Ignore the exception
+                }
+                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
+                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
+                if (_shouldTrace)
+                {
+                    ServiceClientTracing.Error(_invocationId, ex);
+                }
+                _httpRequest.Dispose();
+                if (_httpResponse != null)
+                {
+                    _httpResponse.Dispose();
+                }
+                throw ex;
+            }
+            // Create Result
+            var _result = new HttpOperationResponse<OperationStatus>();
+            _result.Request = _httpRequest;
+            _result.Response = _httpResponse;
+            // Deserialize Response
+            if ((int)_statusCode == 200)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = Rest.Serialization.SafeJsonConvert.DeserializeObject<OperationStatus>(_responseContent, Client.DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.Exit(_invocationId, _result);
+            }
+            return _result;
+        }
+
+        /// <summary>
+        /// Deletes a relation from the feature relations used by the entity in a
+        /// version of the application.
+        /// </summary>
+        /// <param name='appId'>
+        /// The application ID.
+        /// </param>
+        /// <param name='versionId'>
+        /// The version ID.
+        /// </param>
+        /// <param name='entityId'>
+        /// The entity extractor ID.
+        /// </param>
+        /// <param name='featureRelationDeleteObject'>
+        /// A feature information object containing the feature relation to delete.
+        /// </param>
+        /// <param name='customHeaders'>
+        /// Headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        /// <exception cref="ErrorResponseException">
+        /// Thrown when the operation returned an invalid status code
+        /// </exception>
+        /// <exception cref="SerializationException">
+        /// Thrown when unable to deserialize the response
+        /// </exception>
+        /// <exception cref="ValidationException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <return>
+        /// A response object containing the response body and response headers.
+        /// </return>
+        public async Task<HttpOperationResponse<OperationStatus>> DeleteEntityFeatureWithHttpMessagesAsync(System.Guid appId, string versionId, System.Guid entityId, ModelFeatureInformation featureRelationDeleteObject, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (Client.Endpoint == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.Endpoint");
+            }
+            if (versionId == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
+            }
+            if (featureRelationDeleteObject == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "featureRelationDeleteObject");
+            }
+            // Tracing
+            bool _shouldTrace = ServiceClientTracing.IsEnabled;
+            string _invocationId = null;
+            if (_shouldTrace)
+            {
+                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("appId", appId);
+                tracingParameters.Add("versionId", versionId);
+                tracingParameters.Add("entityId", entityId);
+                tracingParameters.Add("featureRelationDeleteObject", featureRelationDeleteObject);
+                tracingParameters.Add("cancellationToken", cancellationToken);
+                ServiceClientTracing.Enter(_invocationId, this, "DeleteEntityFeature", tracingParameters);
+            }
+            // Construct URL
+            var _baseUrl = Client.BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "apps/{appId}/versions/{versionId}/entities/{entityId}/features";
             _url = _url.Replace("{Endpoint}", Client.Endpoint);
             _url = _url.Replace("{appId}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(appId, Client.SerializationSettings).Trim('"')));
             _url = _url.Replace("{versionId}", System.Uri.EscapeDataString(versionId));
@@ -3719,6 +4531,12 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
 
             // Serialize Request
             string _requestContent = null;
+            if(featureRelationDeleteObject != null)
+            {
+                _requestContent = Rest.Serialization.SafeJsonConvert.SerializeObject(featureRelationDeleteObject, Client.SerializationSettings);
+                _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
+                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+            }
             // Set Credentials
             if (Client.Credentials != null)
             {
@@ -3962,8 +4780,8 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
         }
 
         /// <summary>
-        /// Updates the name and children of a hierarchical entity model in a version
-        /// of the application.
+        /// Updates the name of a hierarchical entity model in a version of the
+        /// application.
         /// </summary>
         /// <param name='appId'>
         /// The application ID.
@@ -3974,8 +4792,8 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
         /// <param name='hEntityId'>
         /// The hierarchical entity extractor ID.
         /// </param>
-        /// <param name='hierarchicalModelUpdateObject'>
-        /// Model containing names of the children of the hierarchical entity.
+        /// <param name='modelUpdateObject'>
+        /// Model containing names of the hierarchical entity.
         /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
@@ -3998,7 +4816,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<OperationStatus>> UpdateHierarchicalEntityWithHttpMessagesAsync(System.Guid appId, string versionId, System.Guid hEntityId, HierarchicalEntityModel hierarchicalModelUpdateObject, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<OperationStatus>> UpdateHierarchicalEntityWithHttpMessagesAsync(System.Guid appId, string versionId, System.Guid hEntityId, ModelUpdateObject modelUpdateObject, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (Client.Endpoint == null)
             {
@@ -4008,9 +4826,9 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
             }
-            if (hierarchicalModelUpdateObject == null)
+            if (modelUpdateObject == null)
             {
-                throw new ValidationException(ValidationRules.CannotBeNull, "hierarchicalModelUpdateObject");
+                throw new ValidationException(ValidationRules.CannotBeNull, "modelUpdateObject");
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -4022,7 +4840,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
                 tracingParameters.Add("appId", appId);
                 tracingParameters.Add("versionId", versionId);
                 tracingParameters.Add("hEntityId", hEntityId);
-                tracingParameters.Add("hierarchicalModelUpdateObject", hierarchicalModelUpdateObject);
+                tracingParameters.Add("modelUpdateObject", modelUpdateObject);
                 tracingParameters.Add("cancellationToken", cancellationToken);
                 ServiceClientTracing.Enter(_invocationId, this, "UpdateHierarchicalEntity", tracingParameters);
             }
@@ -4036,7 +4854,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
             // Create HTTP transport objects
             var _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
-            _httpRequest.Method = new HttpMethod("PUT");
+            _httpRequest.Method = new HttpMethod("PATCH");
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
@@ -4055,9 +4873,9 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
 
             // Serialize Request
             string _requestContent = null;
-            if(hierarchicalModelUpdateObject != null)
+            if(modelUpdateObject != null)
             {
-                _requestContent = Rest.Serialization.SafeJsonConvert.SerializeObject(hierarchicalModelUpdateObject, Client.SerializationSettings);
+                _requestContent = Rest.Serialization.SafeJsonConvert.SerializeObject(modelUpdateObject, Client.SerializationSettings);
                 _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
                 _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
             }
@@ -6181,6 +6999,9 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
         /// <param name='take'>
         /// The number of entries to return. Maximum page size is 500. Default is 100.
         /// </param>
+        /// <param name='enableNestedChildren'>
+        /// Toggles nested/flat format
+        /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
         /// </param>
@@ -6202,7 +7023,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<IList<IntentsSuggestionExample>>> ListIntentSuggestionsWithHttpMessagesAsync(System.Guid appId, string versionId, System.Guid intentId, int? take = 100, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<IList<IntentsSuggestionExample>>> ListIntentSuggestionsWithHttpMessagesAsync(System.Guid appId, string versionId, System.Guid intentId, int? take = 100, bool? enableNestedChildren = false, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (Client.Endpoint == null)
             {
@@ -6212,13 +7033,16 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
             }
-            if (take > 500)
+            if (take != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
-            }
-            if (take < 0)
-            {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                if (take > 500)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
+                }
+                if (take < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                }
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -6231,6 +7055,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
                 tracingParameters.Add("versionId", versionId);
                 tracingParameters.Add("intentId", intentId);
                 tracingParameters.Add("take", take);
+                tracingParameters.Add("enableNestedChildren", enableNestedChildren);
                 tracingParameters.Add("cancellationToken", cancellationToken);
                 ServiceClientTracing.Enter(_invocationId, this, "ListIntentSuggestions", tracingParameters);
             }
@@ -6245,6 +7070,10 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
             if (take != null)
             {
                 _queryParameters.Add(string.Format("take={0}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(take, Client.SerializationSettings).Trim('"'))));
+            }
+            if (enableNestedChildren != null)
+            {
+                _queryParameters.Add(string.Format("enableNestedChildren={0}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(enableNestedChildren, Client.SerializationSettings).Trim('"'))));
             }
             if (_queryParameters.Count > 0)
             {
@@ -6366,6 +7195,9 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
         /// <param name='take'>
         /// The number of entries to return. Maximum page size is 500. Default is 100.
         /// </param>
+        /// <param name='enableNestedChildren'>
+        /// Toggles nested/flat format
+        /// </param>
         /// <param name='customHeaders'>
         /// Headers that will be added to request.
         /// </param>
@@ -6387,7 +7219,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
         /// <return>
         /// A response object containing the response body and response headers.
         /// </return>
-        public async Task<HttpOperationResponse<IList<EntitiesSuggestionExample>>> ListEntitySuggestionsWithHttpMessagesAsync(System.Guid appId, string versionId, System.Guid entityId, int? take = 100, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<HttpOperationResponse<IList<EntitiesSuggestionExample>>> ListEntitySuggestionsWithHttpMessagesAsync(System.Guid appId, string versionId, System.Guid entityId, int? take = 100, bool? enableNestedChildren = false, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (Client.Endpoint == null)
             {
@@ -6397,13 +7229,16 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
             }
-            if (take > 500)
+            if (take != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
-            }
-            if (take < 0)
-            {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                if (take > 500)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
+                }
+                if (take < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                }
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -6416,6 +7251,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
                 tracingParameters.Add("versionId", versionId);
                 tracingParameters.Add("entityId", entityId);
                 tracingParameters.Add("take", take);
+                tracingParameters.Add("enableNestedChildren", enableNestedChildren);
                 tracingParameters.Add("cancellationToken", cancellationToken);
                 ServiceClientTracing.Enter(_invocationId, this, "ListEntitySuggestions", tracingParameters);
             }
@@ -6430,6 +7266,10 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
             if (take != null)
             {
                 _queryParameters.Add(string.Format("take={0}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(take, Client.SerializationSettings).Trim('"'))));
+            }
+            if (enableNestedChildren != null)
+            {
+                _queryParameters.Add(string.Format("enableNestedChildren={0}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(enableNestedChildren, Client.SerializationSettings).Trim('"'))));
             }
             if (_queryParameters.Count > 0)
             {
@@ -7875,6 +8715,184 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
         }
 
         /// <summary>
+        /// Creates a single child in an existing entity model hierarchy in a version
+        /// of the application.
+        /// </summary>
+        /// <param name='appId'>
+        /// The application ID.
+        /// </param>
+        /// <param name='versionId'>
+        /// The version ID.
+        /// </param>
+        /// <param name='entityId'>
+        /// The entity extractor ID.
+        /// </param>
+        /// <param name='childEntityModelCreateObject'>
+        /// A model object containing the name of the new child model and its children.
+        /// </param>
+        /// <param name='customHeaders'>
+        /// Headers that will be added to request.
+        /// </param>
+        /// <param name='cancellationToken'>
+        /// The cancellation token.
+        /// </param>
+        /// <exception cref="ErrorResponseException">
+        /// Thrown when the operation returned an invalid status code
+        /// </exception>
+        /// <exception cref="SerializationException">
+        /// Thrown when unable to deserialize the response
+        /// </exception>
+        /// <exception cref="ValidationException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <exception cref="System.ArgumentNullException">
+        /// Thrown when a required parameter is null
+        /// </exception>
+        /// <return>
+        /// A response object containing the response body and response headers.
+        /// </return>
+        public async Task<HttpOperationResponse<System.Guid>> AddEntityChildWithHttpMessagesAsync(System.Guid appId, string versionId, System.Guid entityId, ChildEntityModelCreateObject childEntityModelCreateObject, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (Client.Endpoint == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.Endpoint");
+            }
+            if (versionId == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
+            }
+            if (childEntityModelCreateObject == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "childEntityModelCreateObject");
+            }
+            // Tracing
+            bool _shouldTrace = ServiceClientTracing.IsEnabled;
+            string _invocationId = null;
+            if (_shouldTrace)
+            {
+                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
+                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
+                tracingParameters.Add("appId", appId);
+                tracingParameters.Add("versionId", versionId);
+                tracingParameters.Add("entityId", entityId);
+                tracingParameters.Add("childEntityModelCreateObject", childEntityModelCreateObject);
+                tracingParameters.Add("cancellationToken", cancellationToken);
+                ServiceClientTracing.Enter(_invocationId, this, "AddEntityChild", tracingParameters);
+            }
+            // Construct URL
+            var _baseUrl = Client.BaseUri;
+            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "apps/{appId}/versions/{versionId}/entities/{entityId}/children";
+            _url = _url.Replace("{Endpoint}", Client.Endpoint);
+            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(appId, Client.SerializationSettings).Trim('"')));
+            _url = _url.Replace("{versionId}", System.Uri.EscapeDataString(versionId));
+            _url = _url.Replace("{entityId}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(entityId, Client.SerializationSettings).Trim('"')));
+            // Create HTTP transport objects
+            var _httpRequest = new HttpRequestMessage();
+            HttpResponseMessage _httpResponse = null;
+            _httpRequest.Method = new HttpMethod("POST");
+            _httpRequest.RequestUri = new System.Uri(_url);
+            // Set Headers
+
+
+            if (customHeaders != null)
+            {
+                foreach(var _header in customHeaders)
+                {
+                    if (_httpRequest.Headers.Contains(_header.Key))
+                    {
+                        _httpRequest.Headers.Remove(_header.Key);
+                    }
+                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
+                }
+            }
+
+            // Serialize Request
+            string _requestContent = null;
+            if(childEntityModelCreateObject != null)
+            {
+                _requestContent = Rest.Serialization.SafeJsonConvert.SerializeObject(childEntityModelCreateObject, Client.SerializationSettings);
+                _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
+                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
+            }
+            // Set Credentials
+            if (Client.Credentials != null)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await Client.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            }
+            // Send Request
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            _httpResponse = await Client.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
+            }
+            HttpStatusCode _statusCode = _httpResponse.StatusCode;
+            cancellationToken.ThrowIfCancellationRequested();
+            string _responseContent = null;
+            if ((int)_statusCode != 201)
+            {
+                var ex = new ErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
+                try
+                {
+                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    ErrorResponse _errorBody =  Rest.Serialization.SafeJsonConvert.DeserializeObject<ErrorResponse>(_responseContent, Client.DeserializationSettings);
+                    if (_errorBody != null)
+                    {
+                        ex.Body = _errorBody;
+                    }
+                }
+                catch (JsonException)
+                {
+                    // Ignore the exception
+                }
+                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
+                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
+                if (_shouldTrace)
+                {
+                    ServiceClientTracing.Error(_invocationId, ex);
+                }
+                _httpRequest.Dispose();
+                if (_httpResponse != null)
+                {
+                    _httpResponse.Dispose();
+                }
+                throw ex;
+            }
+            // Create Result
+            var _result = new HttpOperationResponse<System.Guid>();
+            _result.Request = _httpRequest;
+            _result.Response = _httpResponse;
+            // Deserialize Response
+            if ((int)_statusCode == 201)
+            {
+                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+                try
+                {
+                    _result.Body = Rest.Serialization.SafeJsonConvert.DeserializeObject<System.Guid>(_responseContent, Client.DeserializationSettings);
+                }
+                catch (JsonException ex)
+                {
+                    _httpRequest.Dispose();
+                    if (_httpResponse != null)
+                    {
+                        _httpResponse.Dispose();
+                    }
+                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
+                }
+            }
+            if (_shouldTrace)
+            {
+                ServiceClientTracing.Exit(_invocationId, _result);
+            }
+            return _result;
+        }
+
+        /// <summary>
         /// Gets information about the child's model contained in an hierarchical
         /// entity child model in a version of the application.
         /// </summary>
@@ -8123,7 +9141,7 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
             // Create HTTP transport objects
             var _httpRequest = new HttpRequestMessage();
             HttpResponseMessage _httpResponse = null;
-            _httpRequest.Method = new HttpMethod("PUT");
+            _httpRequest.Method = new HttpMethod("PATCH");
             _httpRequest.RequestUri = new System.Uri(_url);
             // Set Headers
 
@@ -8377,184 +9395,6 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
                 try
                 {
                     _result.Body = Rest.Serialization.SafeJsonConvert.DeserializeObject<OperationStatus>(_responseContent, Client.DeserializationSettings);
-                }
-                catch (JsonException ex)
-                {
-                    _httpRequest.Dispose();
-                    if (_httpResponse != null)
-                    {
-                        _httpResponse.Dispose();
-                    }
-                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
-                }
-            }
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.Exit(_invocationId, _result);
-            }
-            return _result;
-        }
-
-        /// <summary>
-        /// Creates a single child in an existing hierarchical entity model in a
-        /// version of the application.
-        /// </summary>
-        /// <param name='appId'>
-        /// The application ID.
-        /// </param>
-        /// <param name='versionId'>
-        /// The version ID.
-        /// </param>
-        /// <param name='hEntityId'>
-        /// The hierarchical entity extractor ID.
-        /// </param>
-        /// <param name='hierarchicalChildModelCreateObject'>
-        /// A model object containing the name of the new hierarchical child model.
-        /// </param>
-        /// <param name='customHeaders'>
-        /// Headers that will be added to request.
-        /// </param>
-        /// <param name='cancellationToken'>
-        /// The cancellation token.
-        /// </param>
-        /// <exception cref="ErrorResponseException">
-        /// Thrown when the operation returned an invalid status code
-        /// </exception>
-        /// <exception cref="SerializationException">
-        /// Thrown when unable to deserialize the response
-        /// </exception>
-        /// <exception cref="ValidationException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <exception cref="System.ArgumentNullException">
-        /// Thrown when a required parameter is null
-        /// </exception>
-        /// <return>
-        /// A response object containing the response body and response headers.
-        /// </return>
-        public async Task<HttpOperationResponse<System.Guid>> AddHierarchicalEntityChildWithHttpMessagesAsync(System.Guid appId, string versionId, System.Guid hEntityId, HierarchicalChildModelCreateObject hierarchicalChildModelCreateObject, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (Client.Endpoint == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.Endpoint");
-            }
-            if (versionId == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
-            }
-            if (hierarchicalChildModelCreateObject == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "hierarchicalChildModelCreateObject");
-            }
-            // Tracing
-            bool _shouldTrace = ServiceClientTracing.IsEnabled;
-            string _invocationId = null;
-            if (_shouldTrace)
-            {
-                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("appId", appId);
-                tracingParameters.Add("versionId", versionId);
-                tracingParameters.Add("hEntityId", hEntityId);
-                tracingParameters.Add("hierarchicalChildModelCreateObject", hierarchicalChildModelCreateObject);
-                tracingParameters.Add("cancellationToken", cancellationToken);
-                ServiceClientTracing.Enter(_invocationId, this, "AddHierarchicalEntityChild", tracingParameters);
-            }
-            // Construct URL
-            var _baseUrl = Client.BaseUri;
-            var _url = _baseUrl + (_baseUrl.EndsWith("/") ? "" : "/") + "apps/{appId}/versions/{versionId}/hierarchicalentities/{hEntityId}/children";
-            _url = _url.Replace("{Endpoint}", Client.Endpoint);
-            _url = _url.Replace("{appId}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(appId, Client.SerializationSettings).Trim('"')));
-            _url = _url.Replace("{versionId}", System.Uri.EscapeDataString(versionId));
-            _url = _url.Replace("{hEntityId}", System.Uri.EscapeDataString(Rest.Serialization.SafeJsonConvert.SerializeObject(hEntityId, Client.SerializationSettings).Trim('"')));
-            // Create HTTP transport objects
-            var _httpRequest = new HttpRequestMessage();
-            HttpResponseMessage _httpResponse = null;
-            _httpRequest.Method = new HttpMethod("POST");
-            _httpRequest.RequestUri = new System.Uri(_url);
-            // Set Headers
-
-
-            if (customHeaders != null)
-            {
-                foreach(var _header in customHeaders)
-                {
-                    if (_httpRequest.Headers.Contains(_header.Key))
-                    {
-                        _httpRequest.Headers.Remove(_header.Key);
-                    }
-                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
-                }
-            }
-
-            // Serialize Request
-            string _requestContent = null;
-            if(hierarchicalChildModelCreateObject != null)
-            {
-                _requestContent = Rest.Serialization.SafeJsonConvert.SerializeObject(hierarchicalChildModelCreateObject, Client.SerializationSettings);
-                _httpRequest.Content = new StringContent(_requestContent, System.Text.Encoding.UTF8);
-                _httpRequest.Content.Headers.ContentType =System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json; charset=utf-8");
-            }
-            // Set Credentials
-            if (Client.Credentials != null)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await Client.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            }
-            // Send Request
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
-            }
-            cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await Client.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
-            }
-            HttpStatusCode _statusCode = _httpResponse.StatusCode;
-            cancellationToken.ThrowIfCancellationRequested();
-            string _responseContent = null;
-            if ((int)_statusCode != 201)
-            {
-                var ex = new ErrorResponseException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                try
-                {
-                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    ErrorResponse _errorBody =  Rest.Serialization.SafeJsonConvert.DeserializeObject<ErrorResponse>(_responseContent, Client.DeserializationSettings);
-                    if (_errorBody != null)
-                    {
-                        ex.Body = _errorBody;
-                    }
-                }
-                catch (JsonException)
-                {
-                    // Ignore the exception
-                }
-                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
-                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_shouldTrace)
-                {
-                    ServiceClientTracing.Error(_invocationId, ex);
-                }
-                _httpRequest.Dispose();
-                if (_httpResponse != null)
-                {
-                    _httpResponse.Dispose();
-                }
-                throw ex;
-            }
-            // Create Result
-            var _result = new HttpOperationResponse<System.Guid>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
-            // Deserialize Response
-            if ((int)_statusCode == 201)
-            {
-                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                try
-                {
-                    _result.Body = Rest.Serialization.SafeJsonConvert.DeserializeObject<System.Guid>(_responseContent, Client.DeserializationSettings);
                 }
                 catch (JsonException ex)
                 {
@@ -8967,17 +9807,31 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
             }
-            if (skip < 0)
+            if (skip != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "skip", 0);
+                if (skip < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "skip", 0);
+                }
             }
-            if (take > 500)
+            else if (skip == null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
+                throw new ValidationException(ValidationRules.CannotBeNull, "skip", 0);
             }
-            if (take < 0)
+            if (take != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                if (take > 500)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
+                }
+                if (take < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                }
+            }
+            else if (take == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "take", 0);
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;
@@ -9332,17 +10186,31 @@ namespace Microsoft.Azure.CognitiveServices.Language.LUIS.Authoring
             {
                 throw new ValidationException(ValidationRules.CannotBeNull, "versionId");
             }
-            if (skip < 0)
+            if (skip != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "skip", 0);
+                if (skip < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "skip", 0);
+                }
             }
-            if (take > 500)
+            else if (skip == null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
+                throw new ValidationException(ValidationRules.CannotBeNull, "skip", 0);
             }
-            if (take < 0)
+            if (take != null)
             {
-                throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                if (take > 500)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMaximum, "take", 500);
+                }
+                if (take < 0)
+                {
+                    throw new ValidationException(ValidationRules.InclusiveMinimum, "take", 0);
+                }
+            }
+            else if (take == null)
+            {
+                throw new ValidationException(ValidationRules.CannotBeNull, "take", 0);
             }
             // Tracing
             bool _shouldTrace = ServiceClientTracing.IsEnabled;

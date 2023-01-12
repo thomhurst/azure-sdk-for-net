@@ -7,18 +7,18 @@ using System.Text;
 
 namespace Azure.Identity.Tests.Mock
 {
-    class MockScopes
+    internal class MockScopes
     {
-        private string[] _scopes;
+        private readonly string[] _scopes;
 
         private MockScopes(string[] scopes)
         {
             _scopes = scopes;
         }
 
-        public static MockScopes Default = new MockScopes(new string[] { "https://default.mock.auth.scope/,defualt" });
+        public static MockScopes Default = new MockScopes(new string[] { "https://default.mock.auth.scope/.default" });
 
-        public static MockScopes Alternate = new MockScopes(new string[] { "https://alternate.mock.auth.scope/,defualt" });
+        public static MockScopes Alternate = new MockScopes(new string[] { "https://alternate.mock.auth.scope/.default" });
 
         public override string ToString()
         {

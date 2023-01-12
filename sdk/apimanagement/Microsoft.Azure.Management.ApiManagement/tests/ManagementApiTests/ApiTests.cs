@@ -19,10 +19,11 @@ namespace ApiManagement.Tests.ManagementApiTests
     public class ApiTests : TestBase
     {
         [Fact]
+        [Trait("owner", "jikang")]
         public async Task CreateListUpdateDelete()
         {
             Environment.SetEnvironmentVariable("AZURE_TEST_MODE", "Playback");
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 var testBase = new ApiManagementTestBase(context);
                 testBase.TryCreateApiManagementService();
@@ -32,7 +33,7 @@ namespace ApiManagement.Tests.ManagementApiTests
                     testBase.rgName,
                     testBase.serviceName,
                     null);
-                Assert.NotNull(listResponse);                                
+                Assert.NotNull(listResponse);
                 Assert.Single(listResponse);
                 Assert.Null(listResponse.NextPageLink);
 
@@ -52,7 +53,7 @@ namespace ApiManagement.Tests.ManagementApiTests
                     testBase.serviceName,
                     echoApi.Name);
 
-                Assert.NotNull(getResponse);                
+                Assert.NotNull(getResponse);
 
                 Assert.Equal("Echo API", getResponse.Body.DisplayName);
                 Assert.Null(getResponse.Body.Description);
@@ -105,7 +106,7 @@ namespace ApiManagement.Tests.ManagementApiTests
                         {
                             AuthorizationServerId = newApiAuthorizationServerId,
                             Scope = newApiAuthorizationScope
-                        }                        
+                        }
                     };
 
                     var createdApiContract = testBase.client.Api.CreateOrUpdate(
@@ -118,15 +119,15 @@ namespace ApiManagement.Tests.ManagementApiTests
                             Description = newApiDescription,
                             Path = newApiPath,
                             ServiceUrl = newApiServiceUrl,
-                            Protocols = new List<Protocol?> { Protocol.Https, Protocol.Http },
+                            Protocols = new List<string> { Protocol.Https, Protocol.Http },
                             SubscriptionKeyParameterNames = new SubscriptionKeyParameterNamesContract
                             {
                                 Header = subscriptionKeyParametersHeader,
                                 Query = subscriptionKeyQueryStringParamName
                             },
-                            AuthenticationSettings = newApiAuthenticationSettings                            
+                            AuthenticationSettings = newApiAuthenticationSettings
                         });
-                    
+
                     // get new api to check it was added
                     var apiGetResponse = testBase.client.Api.Get(testBase.rgName, testBase.serviceName, newApiId);
 
@@ -190,6 +191,54 @@ namespace ApiManagement.Tests.ManagementApiTests
                     Assert.True(apiGetResponse.Protocols.Contains(Protocol.Http));
                     Assert.True(apiGetResponse.Protocols.Contains(Protocol.Https));
 
+                    // get the latest API Entity Tag
+                    apiTag = testBase.client.Api.GetEntityTag(
+                        testBase.rgName,
+                        testBase.serviceName,
+                        newApiId);
+
+                    // patch added api again with Tos Contact License
+                    string patchedNameTos = TestUtilities.GenerateName("patchednametos");
+                    string patchedDescriptionTos = TestUtilities.GenerateName("patchedDescriptiontos");
+                    string patchedPathTos = TestUtilities.GenerateName("patchedPathtos");
+
+                    testBase.client.Api.Update(
+                        testBase.rgName,
+                        testBase.serviceName,
+                        newApiId,
+                        new ApiUpdateContract
+                        {
+                            DisplayName = patchedNameTos,
+                            Description = patchedDescriptionTos,
+                            Path = patchedPathTos,
+                            TermsOfServiceUrl = "https://fabrikam.com/tos",
+                            Contact = new ApiContactInformation
+                            {
+                                Name = "Alice",
+                                Url = "https://fabrikam.com/alice",
+                                Email = "alice@fabrikam.com"
+                            },
+                            License = new ApiLicenseInformation
+                            {
+                                Name = "Fabrikam license",
+                                Url = "https://fabrikam.com/license"
+                            }
+                        },
+                        apiTag.ETag);
+
+                    // get patched api to check it was patched
+                    apiGetResponse = testBase.client.Api.Get(testBase.rgName, testBase.serviceName, newApiId);
+
+                    Assert.NotNull(apiGetResponse);
+                    Assert.Equal(newApiId, apiGetResponse.Name);
+                    Assert.Equal(patchedNameTos, apiGetResponse.DisplayName);
+                    Assert.Equal("https://fabrikam.com/tos", apiGetResponse.TermsOfServiceUrl);
+                    Assert.Equal("Alice", apiGetResponse.Contact?.Name);
+                    Assert.Equal("https://fabrikam.com/alice", apiGetResponse.Contact?.Url);
+                    Assert.Equal("alice@fabrikam.com", apiGetResponse.Contact?.Email);
+                    Assert.Equal("Fabrikam license", apiGetResponse.License?.Name);
+                    Assert.Equal("https://fabrikam.com/license", apiGetResponse.License?.Url);
+
                     // add an api with OpenId authentication settings
                     // create a openId connect provider
                     string openIdProviderName = TestUtilities.GenerateName("openIdName");
@@ -211,7 +260,7 @@ namespace ApiManagement.Tests.ManagementApiTests
                     string newOpenIdApiName = TestUtilities.GenerateName("apiname");
                     string newOpenIdApiDescription = TestUtilities.GenerateName("apidescription");
                     string newOpenIdApiPath = "newOpenapiPath";
-                    string newOpenIdApiServiceUrl = "http://newechoapi2.cloudapp.net/api";                    
+                    string newOpenIdApiServiceUrl = "http://newechoapi2.cloudapp.net/api";
                     string newOpenIdAuthorizationScope = TestUtilities.GenerateName("oauth2scope");
                     var newnewOpenIdAuthenticationSettings = new AuthenticationSettingsContract
                     {
@@ -232,7 +281,7 @@ namespace ApiManagement.Tests.ManagementApiTests
                             Description = newOpenIdApiDescription,
                             Path = newOpenIdApiPath,
                             ServiceUrl = newOpenIdApiServiceUrl,
-                            Protocols = new List<Protocol?> { Protocol.Https, Protocol.Http },
+                            Protocols = new List<string> { Protocol.Https, Protocol.Http },
                             SubscriptionKeyParameterNames = new SubscriptionKeyParameterNamesContract
                             {
                                 Header = subscriptionKeyParametersHeader,
@@ -341,10 +390,11 @@ namespace ApiManagement.Tests.ManagementApiTests
         }
 
         [Fact]
+        [Trait("owner", "jikang")]
         public async Task CloneApiUsingSourceApiId()
         {
             Environment.SetEnvironmentVariable("AZURE_TEST_MODE", "Playback");
-            using (MockContext context = MockContext.Start(this.GetType().FullName))
+            using (MockContext context = MockContext.Start(this.GetType()))
             {
                 var testBase = new ApiManagementTestBase(context);
                 testBase.TryCreateApiManagementService();
@@ -380,7 +430,7 @@ namespace ApiManagement.Tests.ManagementApiTests
                             apiCreateOrUpdate);
 
                     Assert.NotNull(swaggerApiResponse);
-                    Assert.Null(swaggerApiResponse.SubscriptionRequired);
+                    Assert.True(swaggerApiResponse.SubscriptionRequired);
                     Assert.Equal(path, swaggerApiResponse.Path);
 
                     var swagerApiOperations = await testBase.client.ApiOperation.ListByApiAsync(
@@ -434,7 +484,7 @@ namespace ApiManagement.Tests.ManagementApiTests
                             Description = newApiDescription,
                             Path = newApiPath,
                             ServiceUrl = newApiServiceUrl,
-                            Protocols = new List<Protocol?> { Protocol.Https, Protocol.Http },
+                            Protocols = new List<string> { Protocol.Https, Protocol.Http },
                             SubscriptionKeyParameterNames = new SubscriptionKeyParameterNamesContract
                             {
                                 Header = subscriptionKeyParametersHeader,
@@ -494,7 +544,7 @@ namespace ApiManagement.Tests.ManagementApiTests
                         newApiAuthorizationServerId,
                         "*");
                 }
-            }            
+            }
         }
     }
 }
