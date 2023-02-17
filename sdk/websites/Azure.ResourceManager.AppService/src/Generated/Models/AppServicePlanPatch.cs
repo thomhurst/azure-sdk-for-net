@@ -53,7 +53,8 @@ namespace Azure.ResourceManager.AppService.Models
         /// If &lt;code&gt;false&lt;/code&gt;, this App Service Plan will not perform availability zone balancing.
         /// </param>
         /// <param name="kind"> Kind of resource. </param>
-        internal AppServicePlanPatch(ResourceIdentifier id, string name, ResourceType resourceType, SystemData systemData, string workerTierName, AppServicePlanStatus? status, string subscription, HostingEnvironmentProfile hostingEnvironmentProfile, int? maximumNumberOfWorkers, string geoRegion, bool? isPerSiteScaling, bool? isElasticScaleEnabled, int? maximumElasticWorkerCount, int? numberOfSites, bool? isSpot, DateTimeOffset? spotExpirationOn, DateTimeOffset? freeOfferExpirationOn, string resourceGroup, bool? isReserved, bool? isXenon, bool? isHyperV, int? targetWorkerCount, int? targetWorkerSizeId, ProvisioningState? provisioningState, KubeEnvironmentProfile kubeEnvironmentProfile, bool? isZoneRedundant, string kind) : base(id, name, resourceType, systemData)
+        /// <param name="sku"> Description of a SKU for a scalable resource. </param>
+        internal AppServicePlanPatch(ResourceIdentifier id, string name, ResourceType resourceType, SystemData systemData, string workerTierName, AppServicePlanStatus? status, string subscription, HostingEnvironmentProfile hostingEnvironmentProfile, int? maximumNumberOfWorkers, string geoRegion, bool? isPerSiteScaling, bool? isElasticScaleEnabled, int? maximumElasticWorkerCount, int? numberOfSites, bool? isSpot, DateTimeOffset? spotExpirationOn, DateTimeOffset? freeOfferExpirationOn, string resourceGroup, bool? isReserved, bool? isXenon, bool? isHyperV, int? targetWorkerCount, int? targetWorkerSizeId, ProvisioningState? provisioningState, KubeEnvironmentProfile kubeEnvironmentProfile, bool? isZoneRedundant, string kind, AppServiceSkuDescription sku) : base(id, name, resourceType, systemData)
         {
             WorkerTierName = workerTierName;
             Status = status;
@@ -78,6 +79,7 @@ namespace Azure.ResourceManager.AppService.Models
             KubeEnvironmentProfile = kubeEnvironmentProfile;
             IsZoneRedundant = isZoneRedundant;
             Kind = kind;
+            Sku = sku;
         }
 
         /// <summary> Target worker tier assigned to the App Service plan. </summary>
@@ -132,5 +134,7 @@ namespace Azure.ResourceManager.AppService.Models
         public bool? IsZoneRedundant { get; set; }
         /// <summary> Kind of resource. </summary>
         public string Kind { get; set; }
+        /// <summary> Description of a SKU for a scalable resource. </summary>
+        public AppServiceSkuDescription Sku { get; set; }
     }
 }
